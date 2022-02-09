@@ -1,4 +1,8 @@
-package main;
+package main.engine;
+
+import main.engine.display.Renderer;
+import main.engine.display.Window;
+import main.game.Table;
 
 public class MainLoop implements Runnable
 {

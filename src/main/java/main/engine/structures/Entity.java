@@ -1,4 +1,7 @@
-package main;
+package main.engine.structures;
+
+import main.engine.display.Image;
+import main.engine.display.Renderer;
 
 public class Entity
 {

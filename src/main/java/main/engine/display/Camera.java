@@ -1,4 +1,6 @@
-package main;
+package main.engine.display;
+
+import main.engine.Input;
 
 import java.awt.event.KeyEvent;
 

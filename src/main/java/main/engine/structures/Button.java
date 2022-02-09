@@ -1,4 +1,8 @@
-package main;
+package main.engine.structures;
+
+import main.engine.Input;
+import main.engine.display.Image;
+import main.game.Table;
 
 import java.awt.event.MouseEvent;
 

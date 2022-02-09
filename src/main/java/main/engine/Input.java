@@ -1,4 +1,6 @@
-package main;
+package main.engine;
+
+import main.engine.display.Window;
 
 import java.awt.event.*;
 

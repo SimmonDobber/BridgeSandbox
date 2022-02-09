@@ -1,4 +1,4 @@
-package main;
+package main.engine.display;
 
 public class Font
 {

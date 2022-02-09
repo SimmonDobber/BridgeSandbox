@@ -1,4 +1,9 @@
-package main;
+package main.game;
+
+import main.engine.*;
+import main.engine.display.Renderer;
+import main.engine.display.Window;
+import main.engine.structures.State;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +89,6 @@ public class Table implements State
         int atu = contractId % 5;
         int currentWinner = currentPlayer;
         int currentAtu = choosenCards[currentPlayer].getColor();
-        System.out.println(currentAtu + " " + currentWinner);
         for(int i = 0; i < PLAYER_COUNT; i++)
         {
             if(i == currentPlayer)
@@ -94,7 +98,6 @@ public class Table implements State
             else if(choosenCards[i].getColor() != currentAtu);
             else if(choosenCards[currentWinner].getFigure() < choosenCards[i].getFigure())
                 currentWinner = i;
-            System.out.println(currentAtu + " " + currentWinner);
         }
 
         return currentWinner;

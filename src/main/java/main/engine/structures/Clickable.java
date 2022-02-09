@@ -1,4 +1,6 @@
-package main;
+package main.engine.structures;
+
+import main.engine.Input;
 
 public interface Clickable
 {

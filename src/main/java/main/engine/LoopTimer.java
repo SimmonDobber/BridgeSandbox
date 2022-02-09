@@ -1,4 +1,4 @@
-package main;
+package main.engine;
 
 public class LoopTimer
 {

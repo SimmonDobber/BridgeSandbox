@@ -1,4 +1,8 @@
-package main;
+package main.game;
+
+import main.engine.structures.Button;
+import main.engine.display.Renderer;
+import main.engine.structures.State;
 
 public class Card extends Button
 {

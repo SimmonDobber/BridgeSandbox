@@ -1,4 +1,6 @@
-package main;
+package main.engine.display;
+
+import main.engine.structures.Button;
 
 import javax.swing.*;
 import java.awt.*;

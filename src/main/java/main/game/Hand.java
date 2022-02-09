@@ -1,4 +1,7 @@
-package main;
+package main.game;
+
+import main.engine.Input;
+import main.engine.display.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
