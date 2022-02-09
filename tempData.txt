@@ -1,0 +1,345 @@
+#include <bits/stdc++.h>
+ 
+#define INF 2147483647
+#define LINF 9223372036854775807
+#define NINF -2147483648
+#define NLINF -9223372036854775808
+#define M 1000000007
+#define M1 998244353
+#define A 26
+#define K 31
+#define P 2137
+ 
+using namespace std;
+using db=double;
+using dbl=long double;
+using ll=long long;
+using pi=pair<int,int>;
+using pl=pair<ll,ll>;
+using vi=vector<int>;
+using vl=vector<ll>;
+using gr=vector<vector<int> >;
+using grl=vector<vector<ll> >;
+
+ 
+#define fp(x, a, b) for (int (x) = (a); (x) < (b); (x)++)
+#define f(x, n) for (int (x) = 0; (x) < (n); (x)++)
+#define fnp(x, a, b) for (int (x) = (b) - 1; (x) >= (a); (x)--)
+#define fn(x, n) for (int (x) = (n - 1); (x) >= 0; (x)--)
+#define sgn(x) (x) > 0 ? 1 : (x) == 0 ? 0 : -1
+#define gcd(a, b) __gcd((a), (b))
+#define lcm(a, b) (a) * (b) / gcd((a), (b))
+#define x first
+#define y second
+#define mp make_pair 
+#define pb push_back
+#define s(x) x.size()
+#define all(x) x.begin(), x.end()
+#define ans(x) cout<<(x)<<"\n"
+#define yes printf("YES\n")
+#define no printf("NO\n")
+#define fl cout.flush()
+#define debarr(x, n) f(i, (n)){cout<<(x)[i]<<" ";}cout<<"\n"
+#define debgr(x, n) f(i, (n)){f(j, s((x)[i])){cout<<(x)[i][j]<<" ";}cout<<"\n";}
+
+ 
+mt19937 rnd(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+const char sides[4] = {'N', 'E', 'S', 'W'};
+const char colors[5] = {'C', 'D', 'H', 'S', 'N'};
+const char figures[13] = {'2', '3', '4', '5', '6', '7', '8', '9', 'D', 'J', 'Q', 'K', 'A'};
+
+struct GameState
+{
+	int currPlayer;
+	int currPlayerInTurn;
+	int currColor;
+	int atu;
+	int cardAmount;
+	int taken[4];
+	vector<pi> cards[4];
+	vector<pi> trace;
+};
+
+struct Feedback
+{
+	int amount;
+	int moves;
+	vector<pi> trace;
+};
+GameState init()
+{
+	GameState g;
+	g.currColor = -1;
+	g.currPlayer = 0;
+	g.currPlayerInTurn = 0;
+	f(i, 4)
+		g.taken[i] = 0;
+	return g;
+}
+
+void deal(GameState& g,int atu, int cardAmount)
+{
+	g.atu = atu;
+	g.cardAmount = cardAmount;
+	pi deck[52];
+	f(i, 4)
+	{
+		f(j, 13)
+		{
+			deck[i * 13 + j].x = i;
+			deck[i * 13 + j].y = j;
+		}
+	}
+	random_shuffle(deck, deck + 52);
+	f(i, 4)
+	{
+		f(j, g.cardAmount)
+		{
+			g.cards[i].pb(deck[i * g.cardAmount + j]);
+		}
+		sort(all(g.cards[i]));
+	}
+}
+void input(GameState& g)
+{
+	cout<<"Enter atu: "<<"\n";
+	char c;
+	cin >> c;
+	if(c == 'C') g.atu = 0;
+	if(c == 'D') g.atu = 1;
+	if(c == 'H') g.atu = 2;
+	if(c == 'S') g.atu = 3;
+	cout<<"Enter cards number: "<<"\n";
+	cin >> g.cardAmount;
+	f(i, 4)
+	{
+		cout<<"Cards for player "<<sides[i]<<": "<<"\n";
+		f(j, g.cardAmount)
+		{
+			char xc;
+			char yc;
+			int x;
+			int y;
+			cin >> yc >> xc;
+			if(yc == '2') y = 0;
+			if(yc == '3') y = 1;
+			if(yc == '4') y = 2;
+			if(yc == '5') y = 3;
+			if(yc == '6') y = 4;
+			if(yc == '7') y = 5;
+			if(yc == '8') y = 6;
+			if(yc == '9') y = 7;
+			if(yc == 'D') y = 8;
+			if(yc == 'J') y = 9;
+			if(yc == 'Q') y = 10;
+			if(yc == 'K') y = 11;
+			if(yc == 'A') y = 12;
+			
+			if(xc == 'C') x = 0;
+			if(xc == 'D') x = 1;
+			if(xc == 'H') x = 2;
+			if(xc == 'S') x = 3;
+			
+			g.cards[i].pb(mp(x, y));
+		}
+		sort(all(g.cards[i]));
+	}
+	cout<<"---"<<"\n";
+}
+void dealPrint(GameState g)
+{
+	f(i, 4)
+	{
+		cout<<sides[i]<<": ";
+		f(j, s(g.cards[i]))
+		{
+			cout<<figures[g.cards[i][j].y]<<colors[g.cards[i][j].x]<<" ";
+		}
+		cout<<"\n";
+	}
+	cout<<"---"<<"\n";
+}
+void print(GameState g, int id)
+{
+	cout<<"Current Player: "<<sides[g.currPlayer]<<"\n";
+	cout<<"Current Player In Turn: "<<g.currPlayerInTurn<<"\n";
+	cout<<"Current Color: "<<colors[(g.currColor == -1 ? 4 : g.currColor)]<<"\n";
+	cout<<"Current card: "<<figures[g.cards[g.currPlayer][id].y]<<colors[g.cards[g.currPlayer][id].x]<<"\n";
+	cout<<"Atu: "<<colors[g.atu]<<"\n";
+	f(i, 4)
+	{
+		cout<<sides[i]<<": ";
+		f(j, s(g.cards[i]))
+		{
+			cout<<figures[g.cards[i][j].y]<<colors[g.cards[i][j].x]<<" ";
+		}
+		cout<<"\n";
+	}
+	cout<<"Taken: ";
+	f(i, 4)
+	{
+		cout<<sides[i]<<": "<<g.taken[i]<<" | ";
+	}
+	cout<<"\n";
+}
+int winner(vector<pi> trace, int firstPlayer, int atu)
+{
+	pi lastCards[4];
+	int currAtu = -1;
+	int mx = 0;
+	int winning;
+	f(i, 4)
+	{
+		lastCards[i] = trace[s(trace) - 4 + i];
+		if(lastCards[i].x == atu)
+			currAtu = atu;
+	}
+	if(currAtu == -1)
+		currAtu = lastCards[0].x;
+	f(i, 4)
+	{
+		if(lastCards[i].x == currAtu)
+			mx = max(mx, lastCards[i].y);
+	}
+	f(i, 4)
+	{
+		if((lastCards[i].x == currAtu) && (lastCards[i].y == mx))
+		{
+			winning = i;
+			break;
+		}
+	}
+	return (firstPlayer + winning) % 4;	
+}
+bool valid(GameState g, int id)
+{
+	if((g.cards[g.currPlayer][id].x == g.currColor) || (g.currColor == -1))
+		return true;
+	f(i, s(g.cards[g.currPlayer]))
+	{
+		if(g.cards[g.currPlayer][i].x == g.currColor)
+			return false;
+	}
+	return true;
+}
+Feedback move(GameState g, pi card, int id)
+{
+	g.trace.pb(card);
+	g.cards[g.currPlayer].erase(g.cards[g.currPlayer].begin() + id);
+	if(g.currPlayerInTurn == 3)
+	{
+		g.currPlayerInTurn = 0;
+		g.currPlayer = winner(g.trace, (g.currPlayer + 1) % 4, g.atu);
+		g.taken[g.currPlayer]++;
+	}
+	else
+	{
+		if(g.currPlayerInTurn == 0)
+		{
+			g.currColor = card.x;
+		}
+		g.currPlayerInTurn++;
+		g.currPlayer = (g.currPlayer + 1) % 4;
+	}
+	
+	Feedback fb;
+	Feedback feedback;
+	int moves = 0;
+	feedback.amount = 1000 * (g.currPlayer & 1) - 1;
+	f(i, s(g.cards[g.currPlayer]))
+	{
+		if(!valid(g, i))
+			continue;
+		fb = move(g, g.cards[g.currPlayer][i], i);
+		moves += fb.moves;
+		if((g.currPlayer & 1) && (feedback.amount > fb.amount))
+		{
+			feedback = fb;
+		}
+		else if((!(g.currPlayer & 1)) && (feedback.amount < fb.amount))
+		{
+			feedback = fb;
+		}
+	}	
+	if(g.cards[g.currPlayer].empty())
+	{
+		feedback.amount = g.taken[0] + g.taken[2];
+		feedback.trace = g.trace;
+		feedback.moves = 1;
+		return feedback;
+	}
+	feedback.moves = moves + 1;
+	return feedback;
+}
+Feedback move(GameState g)
+{
+	Feedback fb;
+	Feedback feedback;
+	int moves = 0;
+	feedback.amount = 1000 * (g.currPlayer & 1) - 1;
+	f(i, s(g.cards[g.currPlayer]))
+	{
+		if(!valid(g, i))
+			continue;
+		fb = move(g, g.cards[g.currPlayer][i], i);
+		moves += fb.moves;
+		if((g.currPlayer & 1) && (feedback.amount > fb.amount))
+		{
+			feedback = fb;
+		}
+		else if((!(g.currPlayer & 1)) && (feedback.amount < fb.amount))
+		{
+			feedback = fb;
+		}
+	}
+	feedback.moves = moves + 1;
+	return feedback;
+}
+void printResults(GameState g, Feedback feedback, double time)
+{
+	cout<<"Taken: "<<feedback.amount<<"\n";
+	f(i, s(feedback.trace) / 4)
+	{
+		cout<<i + 1<<": ";
+		f(j, 4)
+		{
+			cout<<figures[feedback.trace[i * 4 + j].y]<<colors[feedback.trace[i * 4 + j].x]<<" ";
+		}
+		cout<<"\n";
+	}
+	cout<<"Moves: "<<feedback.moves<<"\n";
+	cout<<"Execution time: "<<time<<"\n";
+	cout<<"Moves per second: "<<(int)((double) feedback.moves / time)<<"\n";
+
+}
+int main()
+{
+	GameState g;
+	Feedback feedback;
+	srand(time(NULL));
+	clock_t start;
+	double time;
+	ll allMoves = 0;
+	double allTime = 0;
+	ll games = 1;
+	f(q, games)
+	{
+		g = init();
+		deal(g, 0, 5);
+		//input(g);
+		//dealPrint(g);
+		start = clock();
+		feedback = move(g);
+		time = (clock() - start) / (double) CLOCKS_PER_SEC;
+		//printResults(g, feedback, time);
+		allMoves += feedback.moves;
+		allTime += time;
+		cout<<q + 1<<"\n";
+	}
+	cout<<"Average moves: "<<allMoves / games<<"\n";
+	cout<<"Average time: "<<allTime / games<<"\n";
+	cout<<"Average moves per second: "<<(ll)(allMoves / allTime)<<"\n";
+	return 0;
+}
+
