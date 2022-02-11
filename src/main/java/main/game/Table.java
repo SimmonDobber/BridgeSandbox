@@ -43,7 +43,7 @@ public class Table implements State
         hand = new Hand[PLAYER_COUNT];
         choosenCards = new Card[PLAYER_COUNT];
         dealHands(13);
-        setContractId(14);
+        setContractId(18);
         reenableCards();
     }
     private void dealHands(int cardAmount)

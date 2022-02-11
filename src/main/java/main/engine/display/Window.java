@@ -43,7 +43,7 @@ public class Window
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        canvas.createBufferStrategy(3);
+        canvas.createBufferStrategy(1);
         bs = canvas.getBufferStrategy();
         g = (Graphics2D)bs.getDrawGraphics();
     }

@@ -3,6 +3,7 @@ package main.engine.display;
 import main.engine.structures.Button;
 
 import java.awt.image.DataBufferInt;
+import java.util.HashMap;
 
 public class Renderer
 {
@@ -12,11 +13,13 @@ public class Renderer
     private Font font;
     private int[] p;
     private int[] pOwner;
+    HashMap<Long, Integer> colors;
     public Renderer(Window window)
     {
         screenW = (int)(window.getWidth() * Window.SCALE);
         screenH = (int)(window.getHeight() * Window.SCALE);
         camera = window.getCamera();
+        colors = new HashMap<>();
         font = new Font("/sansBoldplus.png", 2410, 40);
         p = ((DataBufferInt)window.getImage().getRaster().getDataBuffer()).getData();
         pOwner = new int[window.getWidth() * window.getHeight()];
@@ -31,6 +34,11 @@ public class Renderer
     }
     private int alphaCompose(int color2, int color1)
     {
+        long colorId = color2;
+        colorId <<= 32;
+        colorId += color1;
+        if(colors.containsKey(colorId))
+            return colors.get(colorId);
         double alpha1 = (color1 >>> 24) / 255f;
         double alpha2 = (color2 >>> 24) / 255f;
         double red1 = ((color1 << 8) >>> 24) / 255f;
@@ -50,21 +58,24 @@ public class Renderer
         color0 += green0;
         color0 <<= 8;
         color0 += blue0;
+        if(!colors.containsKey(colorId))
+            colors.put(colorId, color0);
         return color0;
     }
-    private void drawPixel(int x,int y, int value, int fixed, int owner)
+    private void drawPixel(int x,int y, int value, int owner)
     {
+        int id = x + y * screenW;
         if((x < 0 || x >= screenW || y < 0 || y >= screenH) || value == 0xFFFF00FF)
             return;
-        if((p[x + y * screenW] != 0xFF000000) && (value != 0xFF000000))
+        pOwner[id] = owner;
+        if((p[id] != 0xFF000000) && (value != 0xFF000000))
         {
-            p[x + y * screenW] = alphaCompose(p[x + y * screenW], value);
+            p[id] = alphaCompose(p[id], value);
         }
         else
         {
-            p[x + y * screenW] = value;
+            p[id] = value;
         }
-        pOwner[x + y * screenW] = owner;
     }
     public void drawRectangle(int x, int y, int w, int h, int value, int fixed)
     {
@@ -72,11 +83,24 @@ public class Renderer
     }
     public void drawRectangle(int x, int y, int w, int h, int value, int fixed, int owner)
     {
-        for(int i = Math.max(x, 0); i < Math.min(w + x, screenW); i++)
+        if(fixed == 0)
         {
-            for(int j = Math.max(y, 0); j < Math.min(h + y, screenH); j++)
+            for(int i = Math.max(x, 0) + camera.offX; i < Math.min(w + x, screenW) + camera.offX; i++)
             {
-                drawPixel(i + camera.offX * (1 - fixed), j + camera.offY * (1 - fixed), value, fixed, owner);
+                for(int j = Math.max(y, 0) + camera.offY; j < Math.min(h + y, screenH) + camera.offY; j++)
+                {
+                    drawPixel(i, j, value, owner);
+                }
+            }
+        }
+        else
+        {
+            for(int i = Math.max(x, 0); i < Math.min(w + x, screenW); i++)
+            {
+                for(int j = Math.max(y, 0); j < Math.min(h + y, screenH); j++)
+                {
+                    drawPixel(i, j, value, owner);
+                }
             }
         }
     }
@@ -92,7 +116,7 @@ public class Renderer
         {
             for(int i = x; i < x + newW; i++)
             {
-                drawPixel(i, j, image.getP()[(i - x) + (j - y) * image.getW()], fixed, owner);
+                drawPixel(i, j, image.getP()[(i - x) + (j - y) * image.getW()], owner);
             }
         }
     }
@@ -119,7 +143,7 @@ public class Renderer
                 {
                     if(font.getLetters()[size / 2][unicode].getP()[x + y * font.getLetters()[size / 2][unicode].getW()] == 0xFF000000)
                     {
-                        drawPixel(x + offX + offsetX + camera.offX * (1 - fixed), y + offY + offsetY + + camera.offY * (1 - fixed), color, fixed, owner);
+                        drawPixel(x + offX + offsetX + camera.offX * (1 - fixed), y + offY + offsetY + + camera.offY * (1 - fixed), color, owner);
                     }
                 }
             }

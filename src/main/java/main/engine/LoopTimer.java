@@ -37,7 +37,7 @@ public class LoopTimer
         prevTime = currTime;
         unprocessedTime += passedTime;
         frameTime += passedTime;
-        if(unprocessedTime >= updateCap)
+        while(unprocessedTime >= updateCap)
         {
             unprocessedTime -= updateCap;
             if(unprocessedTime < updateCap)
