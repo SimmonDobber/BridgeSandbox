@@ -34,33 +34,11 @@ public class Renderer
     }
     private int alphaCompose(int color2, int color1)
     {
-        long colorId = color2;
-        colorId <<= 32;
-        colorId += color1;
-        if(colors.containsKey(colorId))
-            return colors.get(colorId);
-        double alpha1 = (color1 >>> 24) / 255f;
-        double alpha2 = (color2 >>> 24) / 255f;
-        double red1 = ((color1 << 8) >>> 24) / 255f;
-        double red2 = ((color2 << 8) >>> 24) / 255f;
-        double green1 = ((color1 << 16) >>> 24) / 255f;
-        double green2 = ((color2 << 16) >>> 24) / 255f;
-        double blue1 = ((color1 << 24) >>> 24) / 255f;
-        double blue2 = ((color2 << 24) >>> 24) / 255f;
-        double alpha0 = alpha1 + alpha2 - alpha1 * alpha2;
-        int red0 = (int)(((red1 * alpha1 + (red2 * alpha2) * (1 - alpha1)) / alpha0) * 255);
-        int green0 = (int)(((green1 * alpha1 + (green2 * alpha2) * (1 - alpha1)) / alpha0) * 255);
-        int blue0 = (int)(((blue1 * alpha1 + (blue2 * alpha2) * (1 - alpha1)) / alpha0) * 255);
-        int color0 = (int)((alpha0) * 255);
-        color0 <<= 8;
-        color0 += red0;
-        color0 <<= 8;
-        color0 += green0;
-        color0 <<= 8;
-        color0 += blue0;
-        if(!colors.containsKey(colorId))
-            colors.put(colorId, color0);
-        return color0;
+        float alpha = ((color1 & 0xFF000000) >>> 24) * (1.0f / 255.0f);
+        int red = (int)((((color1 & 0x00FF0000) >>> 16) * alpha) + (((color2 & 0x00FF0000) >>> 16) * (1.0 - alpha)));
+        int green = (int)((((color1 & 0x0000FF00) >>> 8) * alpha) + (((color2 & 0x0000FF00) >>> 8) * (1.0 - alpha)));
+        int blue = (int)(((color1 & 0x000000FF) * alpha) + ((color2 & 0x000000FF) * (1.0 - alpha)));
+        return 255 << 24 | red << 16 | green << 8 | blue;
     }
     private void drawPixel(int x,int y, int value, int owner)
     {
