@@ -18,7 +18,7 @@ public class GameState
     {
         currPlayer = table.getCurrentPlayer();
         lastWinner = table.getLastWinner();
-        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChoosenCards()[currPlayer].getColor());
+        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChoosenCards()[table.getLastWinner()].getColor());
         taken = new IntPair(table.getTaken());
         cards = new List[Table.PLAYER_COUNT];
         for(int i = 0; i < Table.PLAYER_COUNT; i++)
@@ -28,6 +28,11 @@ public class GameState
                 cards[i].add(new IntPair(table.getHand()[i].getCard().get(j).getColor(), table.getHand()[i].getCard().get(j).getFigure()));
         }
         trace = new ArrayList<>();
+        for(int i = 0; i < Table.PLAYER_COUNT; i++)
+        {
+            if(table.getChoosenCards()[(table.getCurrentPlayer() + i) % Table.PLAYER_COUNT] != null)
+              trace.add(new IntPair(table.getChoosenCards()[(table.getCurrentPlayer() + i) % Table.PLAYER_COUNT].getColor(), table.getChoosenCards()[(table.getCurrentPlayer() + i) % Table.PLAYER_COUNT].getFigure()));
+        }
     }
     public GameState(GameState g)
     {
