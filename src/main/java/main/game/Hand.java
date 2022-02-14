@@ -46,4 +46,14 @@ public class Hand
     public List<Card> getCard() {
         return card;
     }
+
+    public boolean hasColor(int c)
+    {
+        for(int i = 0; i < card.size(); i++)
+        {
+            if(card.get(i).getColor() == c)
+                return true;
+        }
+        return false;
+    }
 }

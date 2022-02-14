@@ -4,12 +4,12 @@ import main.engine.Input;
 
 public interface Clickable
 {
-    void onClick(State table);
-    void onDoubleClick(State table);
-    void onRelease(State table);
-    void onHold(State table);
-    void onHover(State table);
-    void nonHover(State table);
+    void onClick(State state);
+    void onDoubleClick(State state);
+    void onRelease(State state);
+    void onHold(State state);
+    void onHover(State state);
+    void nonHover(State state);
     default boolean onSurface(Input input, int screenW, int owner, int[] pOwner)
     {
         if(pOwner[input.getMouseX() + input.getMouseY() * screenW] != owner)

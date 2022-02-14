@@ -3,6 +3,7 @@ package main.engine.display;
 import main.engine.structures.Button;
 
 import java.awt.image.DataBufferInt;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Renderer
@@ -27,10 +28,7 @@ public class Renderer
     }
     public void clear()
     {
-        for(int i = 0; i < p.length; i++)
-        {
-            p[i] = 0xFF000000;
-        }
+        Arrays.fill(p, 0);
     }
     private int alphaCompose(int color2, int color1)
     {
@@ -47,13 +45,9 @@ public class Renderer
             return;
         pOwner[id] = owner;
         if((p[id] != 0xFF000000) && (value != 0xFF000000))
-        {
             p[id] = alphaCompose(p[id], value);
-        }
         else
-        {
             p[id] = value;
-        }
     }
     public void drawRectangle(int x, int y, int w, int h, int value, int fixed)
     {

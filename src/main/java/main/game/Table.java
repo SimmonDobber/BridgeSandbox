@@ -4,6 +4,7 @@ import main.engine.*;
 import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.State;
+import main.game.solver.Solver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,14 +24,16 @@ public class Table implements State
     public static final char[] PLAYERS = {'N', 'E', 'S', 'W'};
     public static final char[] FIGURES = {'2', '3', '4', '5', '6', '7', '8', '9', ':', 'J', 'Q', 'K', 'A'};
     public static final char[] COLORS  = {'[', '\\', ']', '^', '_'};
+    public static final char[] WRITTEN_COLORS  = {'C', 'D', 'H', 'S', 'N'};
     private int width;
     private int height;
     private int contractId;
     private int currentPlayer;
     private int lastWinner;
-    private int taken[];
+    private IntPair taken;
     private Hand[] hand;
     private Card[] choosenCards;
+    private Solver solver;
 
     public Table(int width, int height)
     {
@@ -38,13 +41,13 @@ public class Table implements State
         this.height = height;
         this.lastWinner = 0;
         this.currentPlayer = 0;
-        taken = new int[2];
-        taken[0] = taken[1] = 0;
+        taken = new IntPair();
         hand = new Hand[PLAYER_COUNT];
         choosenCards = new Card[PLAYER_COUNT];
-        dealHands(13);
+        dealHands(5);
         setContractId(18);
         reenableCards();
+        solver = new Solver(this);
     }
     private void dealHands(int cardAmount)
     {
@@ -77,7 +80,10 @@ public class Table implements State
         if(currentPlayer == lastWinner)
         {
             lastWinner = selectWinner();
-            taken[lastWinner % 2]++;
+            if(lastWinner % 2 == 0)
+                taken.x++;
+            else
+                taken.y++;
             currentPlayer = lastWinner;
             for(int i = 0; i < PLAYER_COUNT; i++)
                 choosenCards[i] = null;
@@ -95,11 +101,10 @@ public class Table implements State
                 continue;
             if(choosenCards[currentWinner].getColor() != atu && choosenCards[i].getColor() == atu)
                 currentWinner = i;
-            else if(choosenCards[i].getColor() != currentAtu);
+            else if((choosenCards[i].getColor() != currentAtu) || (choosenCards[i].getColor() != atu && choosenCards[currentWinner].getColor() == atu));
             else if(choosenCards[currentWinner].getFigure() < choosenCards[i].getFigure())
                 currentWinner = i;
         }
-
         return currentWinner;
     }
     private void removeCard(int id)
@@ -116,7 +121,7 @@ public class Table implements State
         {
             for(int j = 0; j < hand[i].getCard().size(); j++)
             {
-                if(hand[i].getCard().get(j).getOwner() == currentPlayer)
+                if(hand[i].getCard().get(j).getOwner() == currentPlayer && (currentPlayer == lastWinner || (hand[i].getCard().get(j).getColor() == choosenCards[lastWinner].getColor() || !hand[i].hasColor(choosenCards[lastWinner].getColor()))))
                     hand[i].getCard().get(j).setActive(true);
                 else
                     hand[i].getCard().get(j).setActive(false);
@@ -129,6 +134,7 @@ public class Table implements State
     {
         for(int i = 0; i < 4; i++)
             hand[i].update(input, this);
+        solver.buttonUpdate(input, this);
     }
     @Override
     public void render(Renderer r)
@@ -139,7 +145,7 @@ public class Table implements State
         r.drawText("Contract; " + Integer.toString(contractId / 5 + 1) , 10, 10, GRAY, DEFAULT_FONT_SIZE, 1);
         r.drawText(Character.toString((char)(contractId % 5 + '[')), 176, 10, Card.getColorValue(contractId % 5), DEFAULT_FONT_SIZE, 1);
         r.drawText("Current player; " + Character.toString(PLAYERS[currentPlayer]), 10, 50, GRAY, DEFAULT_FONT_SIZE, 1);
-        r.drawText("Taken; N/S - " + Integer.toString(taken[0]) + " | W/E - " + Integer.toString(taken[1]), 10, 90, GRAY, DEFAULT_FONT_SIZE, 1);
+        r.drawText("Taken; N/S - " + Integer.toString(taken.x) + " | W/E - " + Integer.toString(taken.y), 10, 90, GRAY, DEFAULT_FONT_SIZE, 1);
         for(int i = 0; i < PLAYER_COUNT; i++)
             hand[i].render(r);
         for(int i = 0; i < PLAYER_COUNT; i++)
@@ -147,6 +153,15 @@ public class Table implements State
             if(choosenCards[i] != null)
                 choosenCards[i].render(r);
         }
+        solver.render(r);
+    }
+
+    public int getLastWinner() {
+        return lastWinner;
+    }
+
+    public IntPair getTaken() {
+        return taken;
     }
 
     public int getContractId() {

@@ -51,34 +51,33 @@ public abstract class Button extends Entity implements Clickable
         this.stateCount = stateCount;
         active = true;
     }
-    public void buttonUpdate(Input input, Table table)
+    public void buttonUpdate(Input input, State state)
     {
-
         if(!inborders(input, x, y, w, h) || !onSurface(input, screenW, buttonId, pOwner) || !active)
         {
-            nonHover(table);
+            nonHover(state);
             return;
         }
         if(!active)
             return;
-        onHover(table);
+        onHover(state);
         if(!input.isMouseClicked() && !input.isButton(MouseEvent.BUTTON1))
             return;
         if(input.isButtonDown(MouseEvent.BUTTON1))
         {
-            onClick(table);
+            onClick(state);
             if(Button.clickedId == buttonId)
             {
-                onDoubleClick(table);
+                onDoubleClick(state);
                 Button.clickedId = -1;
             }
             else
               Button.clickedId = buttonId;
         }
         if(input.isButtonUp(MouseEvent.BUTTON1))
-            onRelease(table);
+            onRelease(state);
         if(input.isButton(MouseEvent.BUTTON1))
-            onHold(table);
+            onHold(state);
     }
 
     public int getStateCount() {
