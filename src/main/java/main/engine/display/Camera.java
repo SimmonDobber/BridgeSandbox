@@ -9,12 +9,14 @@ public class Camera
     public int offX;
     public int offY;
     public int speed;
+
     public Camera()
     {
         offX = 0;
         offY = 0;
         speed = 5;
     }
+
     public void cameraControl(Input input)
     {
         if(input.isKey(KeyEvent.VK_A))

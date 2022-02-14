@@ -4,8 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Image
-{
+public class Image implements Drawable {
     private int w, h;
     private int fixed;
     private int[] p;
@@ -109,5 +108,10 @@ public class Image
 
     public void setFixed(int fixed) {
         this.fixed = fixed;
+    }
+
+    @Override
+    public void render(Renderer r) {
+        // TODO implement
     }
 }

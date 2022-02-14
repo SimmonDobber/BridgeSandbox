@@ -16,7 +16,8 @@ public class Hand
     private List<Card> card;
     private int x;
     private int y;
-    private int owner;
+    private int owner; // Bardzo mi się nie podoba
+
     public Hand(int[] id, int cardAmount, int owner)
     {
         this.owner = owner;

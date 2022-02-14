@@ -15,6 +15,7 @@ public class Renderer
     private int[] p;
     private int[] pOwner;
     HashMap<Long, Integer> colors;
+
     public Renderer(Window window)
     {
         screenW = (int)(window.getWidth() * Window.SCALE);

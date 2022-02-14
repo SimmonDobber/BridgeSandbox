@@ -28,6 +28,7 @@ public class LoopTimer
         toUpdate = false;
         toRender = false;
     }
+
     void update()
     {
         toRender = false;

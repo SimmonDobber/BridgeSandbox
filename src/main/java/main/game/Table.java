@@ -11,8 +11,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static main.game.Colors.*;
+
 public class Table implements State
 {
+
+    // Do oddzielnej klasy
     public static final int COLOR_COUNT = 4;
     public static final int PLAYER_COUNT = 4;
     public static final int FIGURE_COUNT = 13;
@@ -21,14 +25,15 @@ public class Table implements State
     public static final int BLACK = 0xFF000000;
     public static final int SILVER = 0xFFE8E8E8;
     public static final int GRAY = 0xFFB0B0B0;
+
     public static final char[] PLAYERS = {'N', 'E', 'S', 'W'};
     public static final char[] FIGURES = {'2', '3', '4', '5', '6', '7', '8', '9', ':', 'J', 'Q', 'K', 'A'};
-    public static final char[] COLORS  = {'[', '\\', ']', '^', '_'};
+//    public static final Colors[] COLORS  = {SPADE, DIAMOND, CLUB, HEART, NO_ATU};
     public static final char[] WRITTEN_COLORS  = {'C', 'D', 'H', 'S', 'N'};
     private int width;
     private int height;
-    private int contractId;
-    private int currentPlayer;
+    private int contractId; // do klasy Contract
+    private int currentPlayer; // enum
     private int lastWinner;
     private IntPair taken;
     private Hand[] hand;
@@ -49,8 +54,10 @@ public class Table implements State
         reenableCards();
         solver = new Solver(this);
     }
-    private void dealHands(int cardAmount)
+
+    private void dealHands(int cardAmount) // zmien nazwe init hands
     {
+        // nie powinno być w metodzie deal hand
         List<Integer> deck = new ArrayList<>();
         for (int i = 0; i < COLOR_COUNT * FIGURE_COUNT; i++) {
             deck.add(i);
@@ -58,15 +65,20 @@ public class Table implements State
         Collections.shuffle(deck);
         for(int i = 0; i < PLAYER_COUNT; i++)
         {
-            int[] temp = new int[cardAmount];
-            for(int j = 0; j < cardAmount; j++)
-            {
-                temp[j] = deck.get(i * cardAmount + j);
-            }
-            Arrays.sort(temp);
-            hand[i] = new Hand(temp, cardAmount, i);
+            dealHand(cardAmount, deck, i);
         }
     }
+
+    private void dealHand(int cardAmount, List<Integer> deck, int i) {
+        int[] temp = new int[cardAmount];
+        for(int j = 0; j < cardAmount; j++)
+        {
+            temp[j] = deck.get(i * cardAmount + j);
+        }
+        Arrays.sort(temp);
+        hand[i] = new Hand(temp, cardAmount, i);
+    }
+
     public void nextTurn()
     {
         for(int i = 0; i < hand[currentPlayer].getCard().size(); i++)
@@ -90,6 +102,7 @@ public class Table implements State
         }
         reenableCards();
     }
+
     private int selectWinner()
     {
         int atu = contractId % 5;
@@ -99,14 +112,28 @@ public class Table implements State
         {
             if(i == currentPlayer)
                 continue;
-            if(choosenCards[currentWinner].getColor() != atu && choosenCards[i].getColor() == atu)
+            if(checkSth1(atu, currentWinner, i))
                 currentWinner = i;
-            else if((choosenCards[i].getColor() != currentAtu) || (choosenCards[i].getColor() != atu && choosenCards[currentWinner].getColor() == atu));
-            else if(choosenCards[currentWinner].getFigure() < choosenCards[i].getFigure())
+            else if(checkSth2(atu, currentWinner, currentAtu, i));
+            else if(checkSth3(currentWinner, i))
                 currentWinner = i;
         }
         return currentWinner;
     }
+
+    private boolean checkSth1(int atu, int currentWinner, int i) { // dobra nazwa
+        return choosenCards[currentWinner].getColor() != atu &&
+                choosenCards[i].getColor() == atu;
+    }
+
+    private boolean checkSth2(int atu, int currentWinner, int currentAtu, int i) { // dobra nazwa
+        return (choosenCards[i].getColor() != currentAtu) || (choosenCards[i].getColor() != atu && choosenCards[currentWinner].getColor() == atu);
+    }
+
+    private boolean checkSth3(int currentWinner, int i) { // dobra nazwa
+        return choosenCards[currentWinner].getFigure() < choosenCards[i].getFigure();
+    }
+
     private void removeCard(int id)
     {
         hand[currentPlayer].getCard().remove(id);
@@ -121,12 +148,20 @@ public class Table implements State
         {
             for(int j = 0; j < hand[i].getCard().size(); j++)
             {
-                if(hand[i].getCard().get(j).getOwner() == currentPlayer && (currentPlayer == lastWinner || (hand[i].getCard().get(j).getColor() == choosenCards[lastWinner].getColor() || !hand[i].hasColor(choosenCards[lastWinner].getColor()))))
+                if(isaBoolean(i, j))
                     hand[i].getCard().get(j).setActive(true);
                 else
                     hand[i].getCard().get(j).setActive(false);
             }
         }
+    }
+
+    private boolean isaBoolean(int i, int j) { // lepsza nazwa
+        // jeszcze 1 lub 2 metody
+        return hand[i].getCard().get(j).getOwner() == currentPlayer &&
+                (
+                        currentPlayer == lastWinner || (hand[i].getCard().get(j).getColor() == choosenCards[lastWinner].getColor() || !hand[i].hasColor(choosenCards[lastWinner].getColor()))
+                );
     }
 
     @Override
@@ -139,6 +174,7 @@ public class Table implements State
     @Override
     public void render(Renderer r)
     {
+        // metody
         r.drawRectangle(0, 0, width, height, 0xFF009900, 1);
         r.drawRectangle(410, 166, 377, 343, 0xFF8B4513, 1);
         r.drawRectangle(412, 168, 373, 339, 0x7700FFFF, 1);

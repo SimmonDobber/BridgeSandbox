@@ -12,7 +12,10 @@ public class Card extends Button
     private static final int BORDER_THICKNESS = 2;
     private int figure;
     private int color;
-    private int owner;
+    private int owner; // Bardzo mi się nie podoba
+
+    // Klsa gracza
+    // Z lisrt kart
 
     public Card(Card card)
     {
@@ -83,6 +86,7 @@ public class Card extends Button
     public void render(Renderer r) {
         r.drawRectangle(x - BORDER_THICKNESS, y - BORDER_THICKNESS, w + 2 + BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, getColorValue(), img.getFixed(), buttonId);
         r.drawRectangle(x, y, w, h, Table.SILVER, img.getFixed(), buttonId);
+
         r.drawText(Character.toString(Table.FIGURES[figure]), x + 3, y + 2, getColorValue(), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
         r.drawText(Character.toString(Table.COLORS[color]), x - 1, y + Table.DEFAULT_FONT_SIZE - 3, ((color == 0 || color == 3) ? Table.BLACK : Table.RED), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
         r.drawText(Character.toString(Table.FIGURES[figure]), x + w - Table.DEFAULT_FONT_SIZE / 2 - 8, y + h - Table.DEFAULT_FONT_SIZE, getColorValue(), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);

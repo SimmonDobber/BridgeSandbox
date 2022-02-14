@@ -1,5 +1,8 @@
 package main.engine.display;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import main.engine.structures.Button;
 
 import javax.swing.*;
@@ -7,6 +10,9 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class Window
 {
     public static final double SCALE = 1.0;
@@ -32,9 +38,20 @@ public class Window
         camera = new Camera();
         renderer = new Renderer(this);
         Dimension s = new Dimension((int)(width * SCALE), (int)(height * SCALE));
+        setupCanvas(s);
+        setupFrame();
+        canvas.createBufferStrategy(1);
+        bs = canvas.getBufferStrategy();
+        g = (Graphics2D)bs.getDrawGraphics();
+    }
+
+    private void setupCanvas(Dimension s) {
         canvas.setPreferredSize(s);
         canvas.setMaximumSize(s);
         canvas.setMinimumSize(s);
+    }
+
+    private void setupFrame() {
         frame = new JFrame("");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -43,46 +60,13 @@ public class Window
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        canvas.createBufferStrategy(1);
-        bs = canvas.getBufferStrategy();
-        g = (Graphics2D)bs.getDrawGraphics();
     }
+
     public void render()
     {
         g.drawImage(image, 0, 0, width, height, null);
         bs.show();
         renderer.clear();
-    }
-    public Graphics getG() {
-        return g;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
-    public double getScale() {
-        return SCALE;
     }
 
 }
