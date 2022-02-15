@@ -1,5 +1,7 @@
 package main.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import main.engine.*;
 import main.engine.display.Renderer;
 import main.engine.display.Window;
@@ -27,11 +29,19 @@ public class Table implements State
     public static final char[] WRITTEN_COLORS  = {'C', 'D', 'H', 'S', 'N'};
     private int width;
     private int height;
+    @Getter
+    @Setter
     private int contractId;
+    @Getter
+    @Setter
     private int currentPlayer;
+    @Getter
     private int lastWinner;
+    @Getter
     private IntPair taken;
+    @Getter
     private Hand[] hand;
+    @Getter
     private Card[] choosenCards;
     private Solver solver;
 
@@ -154,38 +164,6 @@ public class Table implements State
                 choosenCards[i].render(r);
         }
         solver.render(r);
-    }
-
-    public int getLastWinner() {
-        return lastWinner;
-    }
-
-    public IntPair getTaken() {
-        return taken;
-    }
-
-    public int getContractId() {
-        return contractId;
-    }
-
-    public int getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public Hand[] getHand() {
-        return hand;
-    }
-
-    public Card[] getChoosenCards() {
-        return choosenCards;
-    }
-
-    public void setContractId(int contractId) {
-        this.contractId = contractId;
-    }
-
-    public void setCurrentPlayer(int currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
     public void nextPlayer()
     {

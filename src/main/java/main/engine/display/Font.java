@@ -1,10 +1,16 @@
 package main.engine.display;
 
+import lombok.Getter;
+
 public class Font
 {
+    @Getter
     private Image fontImage;
+    @Getter
     private Image[][] letters;
+    @Getter
     private int[] offsets;
+    @Getter
     private int[] widths;
 
     public Font(String path, int width, int height)
@@ -40,21 +46,5 @@ public class Font
                 unicode++;
             }
         }
-    }
-
-    public Image getFontImage() {
-        return fontImage;
-    }
-
-    public int[] getOffsets() {
-        return offsets;
-    }
-
-    public int[] getWidths() {
-        return widths;
-    }
-
-    public Image[][] getLetters() {
-        return letters;
     }
 }

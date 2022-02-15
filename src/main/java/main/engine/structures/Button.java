@@ -1,5 +1,7 @@
 package main.engine.structures;
 
+import lombok.Getter;
+import lombok.Setter;
 import main.engine.Input;
 import main.engine.display.Image;
 import main.game.Table;
@@ -10,12 +12,23 @@ public abstract class Button extends Entity implements Clickable
 {
     protected static int buttonCount;
     protected static int clickedId = -1;
+    @Getter
     protected int buttonId;
+    @Getter
     protected int stateCount;
+    @Getter
     protected int state;
+    @Getter
+    @Setter
     protected boolean active;
+    @Getter
+    @Setter
     protected boolean highlighted;
+    @Getter
+    @Setter
     private static int[] pOwner;
+    @Getter
+    @Setter
     private static int screenW;
 
     public Button(String path, int x, int y, int w, int h, int stateCount, int fixed) {
@@ -80,32 +93,10 @@ public abstract class Button extends Entity implements Clickable
             onHold(state);
     }
 
-    public int getStateCount() {
-        return stateCount;
-    }
-
-    public int getstate() {
-        return state;
-    }
 
     public void incState()
     {
         state = (state + 1) % stateCount;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public static void setP(int[] p) {
-        Button.pOwner = p;
-    }
-
-    public static void setScreenW(int screenW) {
-        Button.screenW = screenW;
-    }
 }

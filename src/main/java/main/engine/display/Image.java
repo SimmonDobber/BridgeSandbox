@@ -1,13 +1,22 @@
 package main.engine.display;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Image
 {
-    private int w, h;
+    @Getter
+    private int w;
+    @Getter
+    private int h;
+    @Getter
+    @Setter
     private int fixed;
+    @Getter
     private int[] p;
     public Image(String path, int width, int height, int fixed)
     {
@@ -88,26 +97,5 @@ public class Image
             }
             angle -= Math.PI / 2;
         }
-    }
-
-
-    public int getW() {
-        return w;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public int[] getP() {
-        return p;
-    }
-
-    public int getFixed() {
-        return fixed;
-    }
-
-    public void setFixed(int fixed) {
-        this.fixed = fixed;
     }
 }

@@ -1,5 +1,6 @@
 package main.game;
 
+import lombok.Getter;
 import main.engine.Input;
 import main.engine.display.Renderer;
 
@@ -13,8 +14,11 @@ public class Hand
     public static final int OWNER_Y[] = {24, 277, 531, 277};
     public static final int OWNER_CENTER_X[] = {556, 676, 556, 436};
     public static final int OWNER_CENTER_Y[] = {192, 277, 363, 277};
+    @Getter
     private List<Card> card;
+    @Getter
     private int x;
+    @Getter
     private int y;
     private int owner;
     public Hand(int[] id, int cardAmount, int owner)
@@ -37,14 +41,6 @@ public class Hand
     {
         for(int i = 0; i < card.size(); i++)
             card.get(i).render(r);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public List<Card> getCard() {
-        return card;
     }
 
     public boolean hasColor(int c)

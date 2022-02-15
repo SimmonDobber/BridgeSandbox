@@ -1,5 +1,6 @@
 package main.engine;
 
+import lombok.Getter;
 import main.engine.display.Window;
 
 import java.awt.event.*;
@@ -14,11 +15,17 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private boolean[] buttons = new boolean[NUM_BUTTONS];
     private boolean[] buttonsLast = new  boolean[NUM_BUTTONS];
 
-    private int mouseX, mouseY;
+    @Getter
+    private int mouseX;
+    @Getter
+    private int mouseY;
+    @Getter
     private int scroll;
-    private double windowScale;
+    @Getter
     private boolean mouseClicked;
+    @Getter
     private boolean mouseMoved;
+    @Getter
     private boolean keyboardClicked;
 
     Input(Window window)
@@ -29,7 +36,6 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
         mouseClicked = false;
         mouseMoved = false;
         keyboardClicked = false;
-        windowScale = window.getScale();
         window.getCanvas().addKeyListener(this);
         window.getCanvas().addMouseMotionListener(this);
         window.getCanvas().addMouseListener(this);
@@ -132,16 +138,16 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        mouseX = (int)(e.getX() / windowScale);
-        mouseY = (int)(e.getY() / windowScale);
+        mouseX = (int)(e.getX() / Window.SCALE);
+        mouseY = (int)(e.getY() / Window.SCALE);
         mouseMoved = true;
     }
 
     @Override
     public void mouseMoved(MouseEvent e)
     {
-        mouseX = (int)(e.getX() / windowScale);
-        mouseY = (int)(e.getY() / windowScale);
+        mouseX = (int)(e.getX() / Window.SCALE);
+        mouseY = (int)(e.getY() / Window.SCALE);
         mouseMoved = true;
     }
 
@@ -149,29 +155,5 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     public void mouseWheelMoved(MouseWheelEvent e)
     {
         scroll = e.getWheelRotation();
-    }
-
-    public int getMouseX() {
-        return mouseX;
-    }
-
-    public int getMouseY() {
-        return mouseY;
-    }
-
-    public int getScroll() {
-        return scroll;
-    }
-
-    public boolean isMouseClicked() {
-        return mouseClicked;
-    }
-
-    public boolean isMouseMoved() {
-        return mouseMoved;
-    }
-
-    public boolean isKeyboardClicked() {
-        return keyboardClicked;
     }
 }

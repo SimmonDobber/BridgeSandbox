@@ -1,5 +1,7 @@
 package main.engine;
 
+import lombok.Getter;
+
 public class LoopTimer
 {
     private double updateCap;
@@ -8,11 +10,15 @@ public class LoopTimer
     private double absoluteTime;
     private double passedTime;
     private double unprocessedTime;
+    @Getter
     private double elapsedTime;
     private double frameTime;
     private double frames;
+    @Getter
     private double fps;
+    @Getter
     private boolean toUpdate;
+    @Getter
     private boolean toRender;
 
     public LoopTimer(double updateCap)
@@ -63,21 +69,5 @@ public class LoopTimer
                 e.printStackTrace();
             }
         }
-    }
-
-    public boolean isToUpdate() {
-        return toUpdate;
-    }
-
-    public boolean isToRender() {
-        return toRender;
-    }
-
-    public double getFps() {
-        return fps;
-    }
-
-    public double getElapsedTime() {
-        return elapsedTime;
     }
 }

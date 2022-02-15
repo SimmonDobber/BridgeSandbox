@@ -1,5 +1,6 @@
 package main.game;
 
+import lombok.Getter;
 import main.engine.structures.Button;
 import main.engine.display.Renderer;
 import main.engine.structures.State;
@@ -10,8 +11,11 @@ public class Card extends Button
     public static final int DEFAULT_HEIGHT = 120;
     private static final int DEFAULT_STATE_COUNT = 2;
     private static final int BORDER_THICKNESS = 2;
+    @Getter
     private int figure;
+    @Getter
     private int color;
+    @Getter
     private int owner;
 
     public Card(Card card)
@@ -98,18 +102,6 @@ public class Card extends Button
     public static int getColorValue(int c)
     {
         return ((c == 0 || c == 3 || c == 4) ? Table.BLACK : Table.RED);
-    }
-
-    public int getFigure() {
-        return figure;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public int getOwner() {
-        return owner;
     }
     public int getId()
     {

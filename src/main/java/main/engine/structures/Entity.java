@@ -1,14 +1,24 @@
 package main.engine.structures;
 
+import lombok.Getter;
+import lombok.Setter;
 import main.engine.display.Image;
 import main.engine.display.Renderer;
 
 public class Entity
 {
+    @Getter
+    @Setter
     protected int x;
+    @Getter
+    @Setter
     protected int y;
+    @Getter
     protected int w;
+    @Getter
     protected int h;
+    @Getter
+    @Setter
     protected Image img;
     public Entity(String path, int x, int y, int w, int h, int fixed)
     {
@@ -51,34 +61,6 @@ public class Entity
         r.drawImage(img, x, y, img.getFixed());
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getW() {
-        return w;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public Image getImg() {
-        return img;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public void setW(int w) {
         this.w = w;
         if(img != null)
@@ -90,9 +72,4 @@ public class Entity
         if(img != null)
             img.rescale(w, h);
     }
-
-    public void setImg(Image img) {
-        this.img = img;
-    }
-
 }

@@ -15,6 +15,7 @@ public class Renderer
     private int[] p;
     private int[] pOwner;
     HashMap<Long, Integer> colors;
+
     public Renderer(Window window)
     {
         screenW = (int)(window.getWidth() * Window.SCALE);
@@ -24,7 +25,7 @@ public class Renderer
         font = new Font("/sansBoldplus.png", 2410, 40);
         p = ((DataBufferInt)window.getImage().getRaster().getDataBuffer()).getData();
         pOwner = new int[window.getWidth() * window.getHeight()];
-        Button.setP(pOwner);
+        Button.setPOwner(pOwner);
     }
     public void clear()
     {

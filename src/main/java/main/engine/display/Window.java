@@ -1,5 +1,6 @@
 package main.engine.display;
 
+import lombok.Getter;
 import main.engine.structures.Button;
 
 import javax.swing.*;
@@ -13,13 +14,20 @@ public class Window
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
     private JFrame frame;
+    @Getter
     private Canvas canvas;
     private BufferStrategy bs;
+    @Getter
     private BufferedImage image;
+    @Getter
     private Graphics2D g;
+    @Getter
     private Renderer renderer;
+    @Getter
     private Camera camera;
+    @Getter
     private int width;
+    @Getter
     private int height;
 
     public Window()
@@ -53,36 +61,4 @@ public class Window
         bs.show();
         renderer.clear();
     }
-    public Graphics getG() {
-        return g;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
-    public double getScale() {
-        return SCALE;
-    }
-
 }
