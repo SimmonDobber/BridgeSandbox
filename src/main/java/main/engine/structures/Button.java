@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
 import main.engine.display.Image;
+import main.engine.display.Renderer;
 import main.game.Table;
 
 import java.awt.event.MouseEvent;
@@ -92,11 +93,8 @@ public abstract class Button extends Entity implements Clickable
         if(input.isButton(MouseEvent.BUTTON1))
             onHold(state);
     }
-
-
     public void incState()
     {
         state = (state + 1) % stateCount;
     }
-
 }

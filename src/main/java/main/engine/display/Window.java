@@ -34,16 +34,32 @@ public class Window
     {
         this.width = WIDTH;
         this.height = HEIGHT;
-        Button.setScreenW(width);
-        canvas = new Canvas();
+        initializeObjects();
+        connectButtons();
+    }
+    private void initializeObjects()
+    {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         camera = new Camera();
         renderer = new Renderer(this);
+        canvas = initializeCanvas();
+        frame = initializeFrame();
+        bs = canvas.getBufferStrategy();
+        g = (Graphics2D)bs.getDrawGraphics();
+    }
+    private Canvas initializeCanvas()
+    {
         Dimension s = new Dimension((int)(width * SCALE), (int)(height * SCALE));
+        Canvas canvas = new Canvas();
         canvas.setPreferredSize(s);
         canvas.setMaximumSize(s);
         canvas.setMinimumSize(s);
-        frame = new JFrame("");
+        canvas.createBufferStrategy(1);
+        return canvas;
+    }
+    private JFrame initializeFrame()
+    {
+        JFrame frame = new JFrame("");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
@@ -51,9 +67,12 @@ public class Window
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        canvas.createBufferStrategy(1);
-        bs = canvas.getBufferStrategy();
-        g = (Graphics2D)bs.getDrawGraphics();
+        return frame;
+    }
+    private void connectButtons()
+    {
+        Button.setScreenW(width);
+        Button.setPOwner(renderer.getPOwner());
     }
     public void render()
     {

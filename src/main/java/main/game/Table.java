@@ -15,14 +15,6 @@ import java.util.List;
 
 public class Table implements State
 {
-    public static final int COLOR_COUNT = 4;
-    public static final int PLAYER_COUNT = 4;
-    public static final int FIGURE_COUNT = 13;
-    public static final int DEFAULT_FONT_SIZE = 32;
-    public static final int RED = 0xFFB8000A;
-    public static final int BLACK = 0xFF000000;
-    public static final int SILVER = 0xFFE8E8E8;
-    public static final int GRAY = 0xFFB0B0B0;
     public static final char[] PLAYERS = {'N', 'E', 'S', 'W'};
     public static final char[] FIGURES = {'2', '3', '4', '5', '6', '7', '8', '9', ':', 'J', 'Q', 'K', 'A'};
     public static final char[] COLORS  = {'[', '\\', ']', '^', '_'};
@@ -52,9 +44,9 @@ public class Table implements State
         this.lastWinner = 0;
         this.currentPlayer = 0;
         taken = new IntPair();
-        hand = new Hand[PLAYER_COUNT];
-        choosenCards = new Card[PLAYER_COUNT];
-        dealHands(5);
+        hand = new Hand[GameConstants.PLAYER_COUNT];
+        choosenCards = new Card[GameConstants.PLAYER_COUNT];
+        dealHands(13);
         setContractId(18);
         reenableCards();
         solver = new Solver(this);
@@ -62,11 +54,11 @@ public class Table implements State
     private void dealHands(int cardAmount)
     {
         List<Integer> deck = new ArrayList<>();
-        for (int i = 0; i < COLOR_COUNT * FIGURE_COUNT; i++) {
+        for (int i = 0; i < GameConstants.COLOR_COUNT * GameConstants.FIGURE_COUNT; i++) {
             deck.add(i);
         }
         Collections.shuffle(deck);
-        for(int i = 0; i < PLAYER_COUNT; i++)
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             int[] temp = new int[cardAmount];
             for(int j = 0; j < cardAmount; j++)
@@ -95,7 +87,7 @@ public class Table implements State
             else
                 taken.y++;
             currentPlayer = lastWinner;
-            for(int i = 0; i < PLAYER_COUNT; i++)
+            for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
                 choosenCards[i] = null;
         }
         reenableCards();
@@ -105,7 +97,7 @@ public class Table implements State
         int atu = contractId % 5;
         int currentWinner = currentPlayer;
         int currentAtu = choosenCards[currentPlayer].getColor();
-        for(int i = 0; i < PLAYER_COUNT; i++)
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             if(i == currentPlayer)
                 continue;
@@ -127,7 +119,7 @@ public class Table implements State
     }
     private void reenableCards()
     {
-        for(int i = 0; i < PLAYER_COUNT; i++)
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             for(int j = 0; j < hand[i].getCard().size(); j++)
             {
@@ -152,13 +144,13 @@ public class Table implements State
         r.drawRectangle(0, 0, width, height, 0xFF009900, 1);
         r.drawRectangle(410, 166, 377, 343, 0xFF8B4513, 1);
         r.drawRectangle(412, 168, 373, 339, 0x7700FFFF, 1);
-        r.drawText("Contract; " + Integer.toString(contractId / 5 + 1) , 10, 10, GRAY, DEFAULT_FONT_SIZE, 1);
-        r.drawText(Character.toString((char)(contractId % 5 + '[')), 176, 10, Card.getColorValue(contractId % 5), DEFAULT_FONT_SIZE, 1);
-        r.drawText("Current player; " + Character.toString(PLAYERS[currentPlayer]), 10, 50, GRAY, DEFAULT_FONT_SIZE, 1);
-        r.drawText("Taken; N/S - " + Integer.toString(taken.x) + " | W/E - " + Integer.toString(taken.y), 10, 90, GRAY, DEFAULT_FONT_SIZE, 1);
-        for(int i = 0; i < PLAYER_COUNT; i++)
+        r.drawText("Contract; " + Integer.toString(contractId / 5 + 1) , 10, 10, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
+        r.drawText(Character.toString((char)(contractId % 5 + '[')), 176, 10, Card.getColorValue(contractId % 5), GameConstants.DEFAULT_FONT_SIZE, 1);
+        r.drawText("Current player; " + Character.toString(PLAYERS[currentPlayer]), 10, 50, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
+        r.drawText("Taken; N/S - " + Integer.toString(taken.x) + " | W/E - " + Integer.toString(taken.y), 10, 90, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
             hand[i].render(r);
-        for(int i = 0; i < PLAYER_COUNT; i++)
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             if(choosenCards[i] != null)
                 choosenCards[i].render(r);
@@ -167,6 +159,6 @@ public class Table implements State
     }
     public void nextPlayer()
     {
-        this.currentPlayer  = (this.currentPlayer + 1) % PLAYER_COUNT;
+        this.currentPlayer  = (this.currentPlayer + 1) % GameConstants.PLAYER_COUNT;
     }
 }

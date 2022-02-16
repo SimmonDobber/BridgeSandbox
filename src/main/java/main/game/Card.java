@@ -86,25 +86,25 @@ public class Card extends Button
     }
     public void render(Renderer r) {
         r.drawRectangle(x - BORDER_THICKNESS, y - BORDER_THICKNESS, w + 2 + BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, getColorValue(), img.getFixed(), buttonId);
-        r.drawRectangle(x, y, w, h, Table.SILVER, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.FIGURES[figure]), x + 3, y + 2, getColorValue(), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.COLORS[color]), x - 1, y + Table.DEFAULT_FONT_SIZE - 3, ((color == 0 || color == 3) ? Table.BLACK : Table.RED), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.FIGURES[figure]), x + w - Table.DEFAULT_FONT_SIZE / 2 - 8, y + h - Table.DEFAULT_FONT_SIZE, getColorValue(), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.COLORS[color]), x + w - Table.DEFAULT_FONT_SIZE / 2 - 11, y + h - Table.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), Table.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawRectangle(x, y, w, h, GameConstants.SILVER, img.getFixed(), buttonId);
+        r.drawText(Character.toString(Table.FIGURES[figure]), x + 3, y + 2, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(Character.toString(Table.COLORS[color]), x - 1, y + GameConstants.DEFAULT_FONT_SIZE - 3, ((color == 0 || color == 3) ? GameConstants.BLACK : GameConstants.RED), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(Character.toString(Table.FIGURES[figure]), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 8, y + h - GameConstants.DEFAULT_FONT_SIZE, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(Character.toString(Table.COLORS[color]), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 11, y + h - GameConstants.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
         hoveredRender(r);
         inactiveRender(r);
 
     }
     public int getColorValue()
     {
-        return ((color == 0 || color == 3 || color == 4) ? Table.BLACK : Table.RED);
+        return ((color == 0 || color == 3 || color == 4) ? GameConstants.BLACK : GameConstants.RED);
     }
     public static int getColorValue(int c)
     {
-        return ((c == 0 || c == 3 || c == 4) ? Table.BLACK : Table.RED);
+        return ((c == 0 || c == 3 || c == 4) ? GameConstants.BLACK : GameConstants.RED);
     }
     public int getId()
     {
-        return color * Table.FIGURE_COUNT + figure;
+        return color * GameConstants.FIGURE_COUNT + figure;
     }
 }

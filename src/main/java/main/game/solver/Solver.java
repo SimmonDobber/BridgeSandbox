@@ -4,6 +4,7 @@ import main.engine.IntPair;
 import main.engine.display.Renderer;
 import main.engine.structures.Button;
 import main.engine.structures.State;
+import main.game.GameConstants;
 import main.game.Table;
 
 import java.util.List;
@@ -20,14 +21,14 @@ public class Solver extends Button
     private int chooseWinner(GameState g)
     {
         IntPair[] lastCards;
-        lastCards = new IntPair[Table.PLAYER_COUNT];
-        for(int i = 0; i < Table.PLAYER_COUNT; i++)
+        lastCards = new IntPair[GameConstants.PLAYER_COUNT];
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
-            lastCards[(i + g.lastWinner) % Table.PLAYER_COUNT] = new IntPair(g.trace.get(g.trace.size() - 4 + i));
+            lastCards[(i + g.lastWinner) % GameConstants.PLAYER_COUNT] = new IntPair(g.trace.get(g.trace.size() - 4 + i));
         }
         int currentWinner = g.lastWinner;
         int currentAtu = lastCards[g.lastWinner].x;
-        for(int i = 0; i < Table.PLAYER_COUNT; i++)
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             if(i == g.lastWinner)
                 continue;
@@ -54,7 +55,7 @@ public class Solver extends Button
     {
         g.trace.add(card);
         g.cards[g.currPlayer].remove(id);
-        if((g.currPlayer + 1) % Table.PLAYER_COUNT == g.lastWinner)
+        if((g.currPlayer + 1) % GameConstants.PLAYER_COUNT == g.lastWinner)
         {
             g.currPlayer = chooseWinner(g);
             g.lastWinner = g.currPlayer;
@@ -67,7 +68,7 @@ public class Solver extends Button
         {
             if(g.currPlayer == g.lastWinner)
                 g.currColor = card.x;
-            g.currPlayer = (g.currPlayer + 1) % Table.PLAYER_COUNT;
+            g.currPlayer = (g.currPlayer + 1) % GameConstants.PLAYER_COUNT;
         }
         Feedback f;
         Feedback feedback = new Feedback();

@@ -38,6 +38,7 @@ public class MainLoop implements Runnable
     }
     public void update()
     {
+        System.out.println(loopTimer.getFps());
         table.update(window, input, loopTimer);
         window.getCamera().cameraControl(input);
         input.update();
