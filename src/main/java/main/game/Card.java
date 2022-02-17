@@ -12,35 +12,36 @@ public class Card extends Button
     private static final int DEFAULT_STATE_COUNT = 2;
     private static final int BORDER_THICKNESS = 2;
     @Getter
-    private int figure;
+    private CardFigure figure;
     @Getter
-    private int color;
+    private CardColor color;
     @Getter
     private int owner;
 
     public Card(Card card)
     {
         super(card.x, card.y, card.w, card.h, card.stateCount, 1);
-        this.figure = card.figure;
-        this.color = card.color;
-        this.owner = card.owner;
+        initializeCard(card.figure, card.color, card.owner);
     }
 
-    public Card(int x, int y, int figure, int color, int owner) {
+    public Card(int x, int y, CardFigure figure, CardColor color, int owner) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_STATE_COUNT, 1);
-        this.figure = figure;
-        this.color = color;
-        this.owner = owner;
+        initializeCard(figure, color, owner);
     }
-    public Card(int x, int y, int w, int h, int stateCount, int figure, int color, int owner) {
+    public Card(int x, int y, int w, int h, int stateCount, CardFigure figure, CardColor color, int owner) {
         super(x, y, w, h, stateCount, 1);
-        this.figure = figure;
-        this.color = color;
-        this.owner = owner;
+        initializeCard(figure, color, owner);
     }
 
     public Card(int x, int y, int w, int h, int stateCount, int fixed) {
         super(x, y, w, h, stateCount, fixed);
+    }
+
+    private void initializeCard(CardFigure figure, CardColor color, int owner)
+    {
+        this.figure = figure;
+        this.color = color;
+        this.owner = owner;
     }
 
     @Override
@@ -48,63 +49,85 @@ public class Card extends Button
         select(((Table)(table)));
         ((Table)(table)).nextTurn();
     }
+
     @Override
     public void onDoubleClick(State table) {
 
     }
+
     @Override
     public void onRelease(State table) {
 
     }
+
     @Override
     public void onHold(State table) {
 
     }
+
     @Override
     public void onHover(State table) {
             highlighted = true;
     }
+
     @Override
     public void nonHover(State table) {
         highlighted = false;
     }
+
     private void select(Table table)
     {
         x = Hand.OWNER_CENTER_X[owner];
         y = Hand.OWNER_CENTER_Y[owner];
         table.getChoosenCards()[owner] = new Card(this);
     }
+
+    public void render(Renderer r)
+    {
+        renderBackground(r);
+        renderSymbols(r);
+        hoveredRender(r);
+        inactiveRender(r);
+    }
+
+    private void renderBackground(Renderer r)
+    {
+        r.drawRectangle(x - BORDER_THICKNESS, y - BORDER_THICKNESS, w + 2 + BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, getColorValue(), img.getFixed(), buttonId);
+        r.drawRectangle(x, y, w, h, GameConstants.SILVER, img.getFixed(), buttonId);
+    }
+
+    private void renderSymbols(Renderer r)
+    {
+        r.drawText(figure.getAsciiString(), x + 3, y + 2, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(color.getAsciiString(), x - 1, y + GameConstants.DEFAULT_FONT_SIZE - 3, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(figure.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 8, y + h - GameConstants.DEFAULT_FONT_SIZE, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(color.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 11, y + h - GameConstants.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+    }
+
     private void hoveredRender(Renderer r)
     {
         if(highlighted)
             r.drawRectangle(x, y, w, h, 0x220000FF, img.getFixed(), buttonId);
     }
+
     private void inactiveRender(Renderer r)
     {
         if(!active)
             r.drawRectangle(x, y, w, h, 0x77333333, img.getFixed(), buttonId);
     }
-    public void render(Renderer r) {
-        r.drawRectangle(x - BORDER_THICKNESS, y - BORDER_THICKNESS, w + 2 + BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, getColorValue(), img.getFixed(), buttonId);
-        r.drawRectangle(x, y, w, h, GameConstants.SILVER, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.FIGURES[figure]), x + 3, y + 2, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.COLORS[color]), x - 1, y + GameConstants.DEFAULT_FONT_SIZE - 3, ((color == 0 || color == 3) ? GameConstants.BLACK : GameConstants.RED), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.FIGURES[figure]), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 8, y + h - GameConstants.DEFAULT_FONT_SIZE, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(Character.toString(Table.COLORS[color]), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 11, y + h - GameConstants.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        hoveredRender(r);
-        inactiveRender(r);
 
-    }
     public int getColorValue()
     {
-        return ((color == 0 || color == 3 || color == 4) ? GameConstants.BLACK : GameConstants.RED);
+        return ((color == CardColor.CLUB || color == CardColor.SPADE || color == CardColor.NO_ATU) ? GameConstants.BLACK : GameConstants.RED);
     }
-    public static int getColorValue(int c)
+
+    public static int getColorValue(CardColor c)
     {
-        return ((c == 0 || c == 3 || c == 4) ? GameConstants.BLACK : GameConstants.RED);
+        return ((c == CardColor.CLUB || c == CardColor.SPADE || c == CardColor.NO_ATU) ? GameConstants.BLACK : GameConstants.RED);
     }
+
     public int getId()
     {
-        return color * GameConstants.FIGURE_COUNT + figure;
+        return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
     }
 }

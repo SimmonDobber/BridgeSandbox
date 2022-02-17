@@ -72,8 +72,6 @@ public abstract class Button extends Entity implements Clickable
             nonHover(state);
             return;
         }
-        if(!active)
-            return;
         onHover(state);
         if(!input.isMouseClicked() && !input.isButton(MouseEvent.BUTTON1))
             return;

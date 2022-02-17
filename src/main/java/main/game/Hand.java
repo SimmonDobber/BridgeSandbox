@@ -26,10 +26,14 @@ public class Hand
         this.owner = owner;
         x = OWNER_X[owner];
         y = OWNER_Y[owner];
+        initializeCards(id, cardAmount);
+    }
+    private void initializeCards(int[] id, int cardAmount)
+    {
         card = new ArrayList<>();
         for(int i = 0; i < cardAmount; i++)
         {
-            card.add(new Card(x + i * CARD_SPACE, y, id[i] % 13, id[i] / 13, owner));
+            card.add(new Card(x + i * CARD_SPACE, y, CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT], CardColor.values()[id[i] / GameConstants.FIGURE_COUNT], owner));
         }
     }
     public void update(Input input, Table table)
@@ -43,7 +47,7 @@ public class Hand
             card.get(i).render(r);
     }
 
-    public boolean hasColor(int c)
+    public boolean hasColor(CardColor c)
     {
         for(int i = 0; i < card.size(); i++)
         {

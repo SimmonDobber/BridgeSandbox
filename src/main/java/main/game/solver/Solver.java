@@ -4,6 +4,7 @@ import main.engine.IntPair;
 import main.engine.display.Renderer;
 import main.engine.structures.Button;
 import main.engine.structures.State;
+import main.game.CardFigure;
 import main.game.GameConstants;
 import main.game.Table;
 
@@ -102,7 +103,7 @@ public class Solver extends Button
         feedback = initialMove(initialState);
         for(int i = 0; i < feedback.trace.size(); i++)
         {
-            System.out.println(Table.FIGURES[feedback.trace.get(i).y] + "" + Table.WRITTEN_COLORS[feedback.trace.get(i).x]);
+            System.out.println(CardFigure.values()[feedback.trace.get(i).y] + "" + Table.WRITTEN_COLORS[feedback.trace.get(i).x]);
         }
         System.out.println(feedback.moves + " " + feedback.amount);
     }
