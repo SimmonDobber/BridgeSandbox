@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Table implements State {
     public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     @Getter
     @Setter
     private int contractId;
@@ -148,13 +148,13 @@ public class Table implements State {
         return deck;
     }
 
-    private Hand dealToHand(List<Integer> deck, int cardAmount, int player) {
+    private Hand dealToHand(List<Integer> deck, int cardAmount, int playerId) {
         int[] temp = new int[cardAmount];
         for (int j = 0; j < cardAmount; j++) {
-            temp[j] = deck.get(player * cardAmount + j);
+            temp[j] = deck.get(playerId * cardAmount + j);
         }
         Arrays.sort(temp);
-        return new Hand(temp, cardAmount, player);
+        return new Hand(temp, cardAmount, playerId);
     }
 
     private void removeCard(int id) {
@@ -185,11 +185,9 @@ public class Table implements State {
     private boolean isNewWinning(Card old, Card _new, CardColor currentAtu) {
         if (hasNewAtuAdvantage(old, _new))
             return true;
-        else if (!hasNewColorAdvantage(old, _new, currentAtu))
+        if (!hasNewColorAdvantage(old, _new, currentAtu))
             return false;
-        else if (hasNewFigureAdvantage(old, _new))
-            return true;
-        return false;
+        return hasNewFigureAdvantage(old, _new);
     }
 
     private void manageHandActivity(Hand hand) {
@@ -206,9 +204,7 @@ public class Table implements State {
             return true;
         if(isCardColorMatchingCurrentColor(card))
             return true;
-        if(hasVoid)
-            return true;
-        return false;
+        return hasVoid;
     }
 
     private void clearTableCenter() {
@@ -242,7 +238,7 @@ public class Table implements State {
 
     private boolean isCardOwnedByCurrentPlayer(Card card)
     {
-        return card.getOwner() == currentPlayer.ordinal();
+        return hand[currentPlayer.ordinal()].getCard().contains(card);
     }
 
     private boolean isCardColorMatchingCurrentColor(Card card)

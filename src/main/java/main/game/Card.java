@@ -15,38 +15,35 @@ public class Card extends Button
     private CardFigure figure;
     @Getter
     private CardColor color;
-    @Getter
-    private int owner;
 
     public Card(Card card)
     {
         super(card.x, card.y, card.w, card.h, card.stateCount, 1);
-        initializeCard(card.figure, card.color, card.owner);
+        initializeCard(card.figure, card.color);
     }
 
-    public Card(int x, int y, CardFigure figure, CardColor color, int owner) {
+    public Card(int x, int y, CardFigure figure, CardColor color) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_STATE_COUNT, 1);
-        initializeCard(figure, color, owner);
+        initializeCard(figure, color);
     }
-    public Card(int x, int y, int w, int h, int stateCount, CardFigure figure, CardColor color, int owner) {
+    public Card(int x, int y, int w, int h, int stateCount, CardFigure figure, CardColor color) {
         super(x, y, w, h, stateCount, 1);
-        initializeCard(figure, color, owner);
+        initializeCard(figure, color);
     }
 
     public Card(int x, int y, int w, int h, int stateCount, int fixed) {
         super(x, y, w, h, stateCount, fixed);
     }
 
-    private void initializeCard(CardFigure figure, CardColor color, int owner)
+    private void initializeCard(CardFigure figure, CardColor color)
     {
         this.figure = figure;
         this.color = color;
-        this.owner = owner;
     }
 
     @Override
     public void onClick(State table) {
-        select(((Table)(table)));
+        selectCard(((Table)(table)));
         ((Table)(table)).nextTurn();
     }
 
@@ -75,11 +72,22 @@ public class Card extends Button
         highlighted = false;
     }
 
-    private void select(Table table)
+    private void selectCard(Table table)
     {
-        x = Hand.OWNER_CENTER_X[owner];
-        y = Hand.OWNER_CENTER_Y[owner];
-        table.getChoosenCards()[owner] = new Card(this);
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
+        {
+            if(table.getHand()[i].getCard().contains(this))
+            {
+                moveCardToCanter(table, i);
+            }
+        }
+    }
+
+    private void moveCardToCanter(Table table, int playerId)
+    {
+        x = Hand.OWNER_CENTER_X[playerId];
+        y = Hand.OWNER_CENTER_Y[playerId];
+        table.getChoosenCards()[playerId] = new Card(this);
     }
 
     public void render(Renderer r)
