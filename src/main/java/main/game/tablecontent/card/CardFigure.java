@@ -1,4 +1,4 @@
-package main.game.tablecontent;
+package main.game.tablecontent.card;
 
 public enum CardFigure
 {

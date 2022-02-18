@@ -12,5 +12,4 @@ public class GameConstants {
     public static final int GREEN = 0xFF009900;
     public static final int CYAN = 0x7700FFFF;
     public static final int BROWN = 0xFF8B4511;
-
 }

@@ -1,12 +1,10 @@
-package main.game.solver;
+package main.game.tablecontent;
 
 import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.Button;
 import main.engine.structures.State;
 import main.game.GameConstants;
-import main.game.tablecontent.Hand;
-import main.game.tablecontent.Table;
 
 public class SolverButton extends Button
 {
@@ -14,11 +12,6 @@ public class SolverButton extends Button
     public static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
     public static final int DEFAULT_SOLVER_BUTTON_X = Hand.CARD_SPACE;
     public static final int DEFAULT_SOLVER_BUTTON_Y = Window.HEIGHT - Hand.CARD_SPACE - DEFAULT_SOLVER_BUTTON_HEIGHT;
-
-    public SolverButton(int x, int y, int w, int h, int stateCount, int fixed) {
-        super(x, y, w, h, stateCount, fixed);
-    }
-
     public SolverButton() {
         super(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y, DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT, 1, 1);
     }
@@ -29,12 +22,6 @@ public class SolverButton extends Button
         r.drawRectangle(x, y, w, h, GameConstants.CYAN, 1, buttonId);
         r.drawText("calculate", x + 16, y + 22, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1, buttonId);
         hoveredRender(r);
-    }
-
-    private void hoveredRender(Renderer r)
-    {
-        if(highlighted)
-            r.drawRectangle(x + 2, y + 2, w - 4, h - 4, 0x220000FF, img.getFixed(), buttonId);
     }
 
     @Override

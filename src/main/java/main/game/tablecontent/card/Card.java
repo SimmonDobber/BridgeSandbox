@@ -1,10 +1,12 @@
-package main.game.tablecontent;
+package main.game.tablecontent.card;
 
 import lombok.Getter;
 import main.engine.structures.Button;
 import main.engine.display.Renderer;
 import main.engine.structures.State;
 import main.game.GameConstants;
+import main.game.tablecontent.Hand;
+import main.game.tablecontent.Table;
 
 public class Card extends Button
 {
@@ -110,18 +112,6 @@ public class Card extends Button
         r.drawText(color.getAsciiString(), x - 1, y + GameConstants.DEFAULT_FONT_SIZE - 3, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
         r.drawText(figure.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 8, y + h - GameConstants.DEFAULT_FONT_SIZE, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
         r.drawText(color.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 11, y + h - GameConstants.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-    }
-
-    private void hoveredRender(Renderer r)
-    {
-        if(highlighted)
-            r.drawRectangle(x, y, w, h, 0x220000FF, img.getFixed(), buttonId);
-    }
-
-    private void inactiveRender(Renderer r)
-    {
-        if(!active)
-            r.drawRectangle(x, y, w, h, 0x77333333, img.getFixed(), buttonId);
     }
 
     public int getColorValue()

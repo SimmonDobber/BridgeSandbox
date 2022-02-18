@@ -1,8 +1,7 @@
 package main.game.solver;
 
-import lombok.Getter;
 import main.engine.IntPair;
-import main.game.tablecontent.CardFigure;
+import main.game.tablecontent.card.CardFigure;
 import main.game.GameConstants;
 import main.game.tablecontent.Table;
 
@@ -11,11 +10,9 @@ public class Solver
     private int atu;
     private GameState initialState;
     private Feedback feedback;
-    @Getter
-    private SolverButton solverButton;
     public Solver()
     {
-        solverButton = new SolverButton();
+
     }
     private int chooseWinner(GameState g)
     {

@@ -8,6 +8,8 @@ import main.engine.display.Window;
 import main.engine.structures.State;
 import main.game.GameConstants;
 import main.game.solver.Solver;
+import main.game.tablecontent.card.Card;
+import main.game.tablecontent.card.CardColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,8 @@ public class Table implements State {
     private Card[] chosenCards;
     @Getter
     private Solver solver;
+    private SolverButton solverButton;
+    private ContractButton contractButton;
 
     public Table(int width, int height) {
         this.width = width;
@@ -42,14 +46,14 @@ public class Table implements State {
         initializeGame();
         manageActivity();
         solver = new Solver();
+        solverButton = new SolverButton();
+        contractButton = new ContractButton();
     }
 
     private void initializeTable() {
-
         taken = new IntPair();
         hand = new Hand[GameConstants.PLAYER_COUNT];
         chosenCards = new Card[GameConstants.PLAYER_COUNT];
-
     }
 
     private void initializeGame() {
@@ -100,8 +104,15 @@ public class Table implements State {
     {
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
             hand[i].update(input, this);
-        solver.getSolverButton().buttonUpdate(input, this);
+        buttonsUpdate(input);
     }
+
+    private void buttonsUpdate(Input input)
+    {
+        solverButton.buttonUpdate(input, this);
+        contractButton.buttonUpdate(input, this);
+    }
+
     @Override
     public void render(Renderer r)
     {
@@ -110,7 +121,7 @@ public class Table implements State {
         renderChosenCards(r);
         renderHands(r);
         renderButtons(r);
-        solver.getSolverButton().render(r);
+        solverButton.render(r);
     }
 
     private void renderBackground(Renderer r)
@@ -122,15 +133,16 @@ public class Table implements State {
 
     private void renderGameInfo(Renderer r)
     {
-        r.drawText("Contract; " + (contractId / 5 + 1) , 10, 10, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
-        r.drawText(Character.toString((char)(getAtu().ordinal() + '[')), 176, 10, Card.getColorValue(CardColor.values()[contractId % 5]), GameConstants.DEFAULT_FONT_SIZE, 1);
-        r.drawText("Current player; " + currentPlayer.getAsciiString(), 10, 50, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
-        r.drawText("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 90, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
+        r.drawText("Current player; " + currentPlayer.getAsciiString(), 10, 65, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
+        r.drawText("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 105, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
     }
+
     private void renderButtons(Renderer r)
     {
-        solver.getSolverButton().render(r);
+        solverButton.render(r);
+        contractButton.render(r, contractId, getAtu().ordinal());
     }
+
     private void renderChosenCards(Renderer r)
     {
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
@@ -139,6 +151,7 @@ public class Table implements State {
                 chosenCards[i].render(r);
         }
     }
+
     private void renderHands(Renderer r)
     {
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)

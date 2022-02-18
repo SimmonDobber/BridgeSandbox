@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Renderer
 {
-    public static final int DEFAULT_COLOR = 0xFF000000;
+    public static final int DEFAULT_COLOR = 0xFF000001;
     public static final int UNICODE_OFFSET = 32;
     private final int screenW;
     private final int screenH;
@@ -29,7 +29,7 @@ public class Renderer
 
     public void clear()
     {
-        Arrays.fill(p, 0);
+        Arrays.fill(p, 0xFF000001);
     }
 
     private int alphaCompose(int color2, int color1)
@@ -156,7 +156,7 @@ public class Renderer
     }
     private boolean isPixelInSymbol(int unicodeId, int size, int x, int y)
     {
-        return font.getLetters()[size / 2][unicodeId].getP()[x + y * font.getLetters()[size / 2][unicodeId].getW()] == DEFAULT_COLOR;
+        return font.getLetters()[size / 2][unicodeId].getP()[x + y * font.getLetters()[size / 2][unicodeId].getW()] == 0xFF000000;
     }
 
 }

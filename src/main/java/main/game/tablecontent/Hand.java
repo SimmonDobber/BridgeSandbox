@@ -4,6 +4,9 @@ import lombok.Getter;
 import main.engine.Input;
 import main.engine.display.Renderer;
 import main.game.GameConstants;
+import main.game.tablecontent.card.Card;
+import main.game.tablecontent.card.CardColor;
+import main.game.tablecontent.card.CardFigure;
 
 import java.util.ArrayList;
 import java.util.List;
