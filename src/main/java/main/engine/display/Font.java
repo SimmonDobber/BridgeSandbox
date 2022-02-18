@@ -11,13 +11,13 @@ public class Font
     public static final int LETTER_BEGINNING_COLOR = 0xFF0000FF;
     public static final int LETTER_END_COLOR = 0xFFFFFF00;
     @Getter
-    private Image fontImage;
+    private final Image fontImage;
     @Getter
-    private Image[][] letters;
+    private final Image[][] letters;
     @Getter
-    private int[] offsets;
+    private final int[] offsets;
     @Getter
-    private int[] widths;
+    private final int[] widths;
 
     public Font(String path)
     {
@@ -47,11 +47,11 @@ public class Font
         setLetterWidth(currentPixel, unicodeId);
         for(int size = 0; size < SIZE_COUNT; size++)
         {
-            loadLetter(size, currentPixel, unicodeId, fontImage.getW(), fontImage.getH());
+            loadLetter(size, unicodeId, fontImage.getW(), fontImage.getH());
         }
     }
 
-    private void loadLetter(int size, int currentPixel, int unicodeId, int imageWidth, int imageHeight)
+    private void loadLetter(int size, int unicodeId, int imageWidth, int imageHeight)
     {
         letters[size][unicodeId] = new Image(widths[unicodeId], imageHeight, 1);
         insertLetterIntoImage(size, unicodeId, offsets[unicodeId], widths[unicodeId], imageWidth, imageHeight);

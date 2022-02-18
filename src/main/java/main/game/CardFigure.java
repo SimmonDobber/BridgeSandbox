@@ -18,14 +18,9 @@ public enum CardFigure
 
     private final char ascii;
 
-    private CardFigure(char ascii)
+    CardFigure(char ascii)
     {
         this.ascii = ascii;
-    }
-
-    public char getAscii()
-    {
-        return ascii;
     }
 
     public String getAsciiString()

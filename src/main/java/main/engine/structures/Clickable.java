@@ -12,14 +12,10 @@ public interface Clickable
     void nonHover(State state);
     default boolean onSurface(Input input, int screenW, int owner, int[] pOwner)
     {
-        if(pOwner[input.getMouseX() + input.getMouseY() * screenW] != owner)
-            return false;
-        return true;
+        return pOwner[input.getMouseX() + input.getMouseY() * screenW] == owner;
     }
-    default boolean inborders(Input input, int x, int y, int w, int h)
+    default boolean inBorders(Input input, int x, int y, int w, int h)
     {
-        if(input.getMouseX() < x || input.getMouseX() >= x + w || input.getMouseY() < y || input.getMouseY() >= y + h)
-            return false;
-        return true;
+        return input.getMouseX() >= x && input.getMouseX() < x + w && input.getMouseY() >= y && input.getMouseY() < y + h;
     }
 }

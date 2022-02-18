@@ -36,20 +36,20 @@ public class Hand
     }
     public void update(Input input, Table table)
     {
-        for (Card value : card)
-            value.buttonUpdate(input, table);
+        for(int i = 0; i < card.size(); i++)
+            card.get(i).buttonUpdate(input, table);
     }
     public void render(Renderer r)
     {
-        for (Card value : card)
-            value.render(r);
+        for(int i = 0; i < card.size(); i++)
+            card.get(i).render(r);
     }
 
     public boolean hasColor(CardColor c)
     {
-        for (Card value : card)
+        for(int i = 0; i < card.size(); i++)
         {
-            if (value.getColor() == c)
+            if(card.get(i).getColor() == c)
                 return true;
         }
         return false;

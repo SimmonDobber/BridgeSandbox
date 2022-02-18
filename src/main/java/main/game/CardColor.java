@@ -10,14 +10,9 @@ public enum CardColor
 
     private final char ascii;
 
-    private CardColor(char ascii)
+    CardColor(char ascii)
     {
         this.ascii = ascii;
-    }
-
-    public char getAscii()
-    {
-        return ascii;
     }
 
     public String getAsciiString()

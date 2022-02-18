@@ -7,16 +7,15 @@ import java.util.Arrays;
 
 public class Renderer
 {
-    public static final int TRANSPARENT_COLOR = 0xFFFF00FF;
     public static final int DEFAULT_COLOR = 0xFF000000;
     public static final int UNICODE_OFFSET = 32;
-    private int screenW;
-    private int screenH;
-    private Camera camera;
-    private Font font;
-    private int[] p;
+    private final int screenW;
+    private final int screenH;
+    private final  Camera camera;
+    private final Font font;
+    private final int[] p;
     @Getter
-    private int[] pOwner;
+    private final int[] pOwner;
 
     public Renderer(Window window)
     {
@@ -138,11 +137,11 @@ public class Renderer
                 symbolOffsetY += font.getLetters()[size / 2][0].getH();
                 continue;
             }
-            drawSymbol(unicodeId, i, symbolOffsetX + textOffsetX, symbolOffsetY + textOffsetY, size, fixed, color, owner);
+            drawSymbol(unicodeId, symbolOffsetX + textOffsetX, symbolOffsetY + textOffsetY, size, fixed, color, owner);
             symbolOffsetX += font.getLetters()[size / 2][unicodeId].getW();
         }
     }
-    private void drawSymbol(int unicodeId, int i, int offsetX, int offsetY, int size, int fixed, int color, int owner)
+    private void drawSymbol(int unicodeId, int offsetX, int offsetY, int size, int fixed, int color, int owner)
     {
         for(int y = 0; y < font.getLetters()[size / 2][unicodeId].getH(); y++)
         {
@@ -150,7 +149,7 @@ public class Renderer
             {
                 if(isPixelInSymbol(unicodeId, size, x, y))
                 {
-                    drawPixel(x + offsetX + camera.offX * (1 - fixed), y + offsetY + + camera.offY * (1 - fixed), color, owner);
+                    drawPixel(x + offsetX + camera.offX * (1 - fixed), y + offsetY + camera.offY * (1 - fixed), color, owner);
                 }
             }
         }

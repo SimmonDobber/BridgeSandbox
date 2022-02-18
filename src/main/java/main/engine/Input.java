@@ -4,15 +4,16 @@ import lombok.Getter;
 import main.engine.display.Window;
 
 import java.awt.event.*;
+import java.util.Arrays;
 
 public class Input implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener
 {
     private final int NUM_KEYS = 256;
-    private boolean[] keys = new boolean[NUM_KEYS];
+    private final boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
 
     private final int NUM_BUTTONS = 5;
-    private boolean[] buttons = new boolean[NUM_BUTTONS];
+    private final boolean[] buttons = new boolean[NUM_BUTTONS];
     private boolean[] buttonsLast = new  boolean[NUM_BUTTONS];
 
     @Getter
@@ -30,12 +31,20 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     Input(Window window)
     {
+        initializeVariables();
+        initializeListeners(window);
+    }
+    private void initializeVariables()
+    {
         mouseX = 0;
         mouseY = 0;
         scroll = 0;
         mouseClicked = false;
         mouseMoved = false;
         keyboardClicked = false;
+    }
+    private void initializeListeners(Window window)
+    {
         window.getCanvas().addKeyListener(this);
         window.getCanvas().addMouseMotionListener(this);
         window.getCanvas().addMouseListener(this);
@@ -44,17 +53,19 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     public void update()
     {
+        updateMouse();
+        updateKeyboard();
+    }
+    private void updateMouse()
+    {
+        buttonsLast = Arrays.copyOf(buttons, NUM_BUTTONS);
         scroll = 0;
-        for(int i = 0; i < NUM_KEYS; i++)
-        {
-            keysLast[i] = keys[i];
-        }
-        for(int i = 0; i < NUM_BUTTONS; i++)
-        {
-            buttonsLast[i] = buttons[i];
-        }
         mouseClicked = false;
         mouseMoved = false;
+    }
+    private void updateKeyboard()
+    {
+        keysLast = Arrays.copyOf(keys, NUM_KEYS);
         keyboardClicked = false;
     }
 

@@ -2,31 +2,30 @@ package main.engine;
 
 import main.engine.display.Renderer;
 import main.engine.display.Window;
+import main.engine.structures.State;
 import main.game.Table;
 
 public class MainLoop implements Runnable
 {
+    public static final double FPS = 60.0;
+    private final LoopTimer loopTimer;
+    private final Window window;
+    private final Input input;
+    private final State table;
 
-    private final double FPS = 60.0;
-    private Thread thread;
-    private LoopTimer loopTimer;
-    private Window window;
-    private Input input;
-    private Table table;
-    private boolean running;
     public MainLoop()
     {
         table = new Table(Window.WIDTH, Window.HEIGHT);
         loopTimer = new LoopTimer(1.0 / FPS);
-        thread = new Thread(this);
         window = new Window();
         input = new Input(window);
-        thread.run();
+        Thread thread = new Thread(this);
+        thread.start();
     }
     @Override
     public void run()
     {
-        running = true;
+        boolean running = true;
         while(running)
         {
             loopTimer.update();

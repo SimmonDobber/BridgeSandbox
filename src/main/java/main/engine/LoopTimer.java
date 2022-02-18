@@ -5,10 +5,8 @@ import lombok.Getter;
 public class LoopTimer
 {
     private double updateCap;
-    private double currTime;
     private double prevTime;
     private double absoluteTime;
-    private double passedTime;
     private double unprocessedTime;
     @Getter
     private double elapsedTime;
@@ -23,44 +21,67 @@ public class LoopTimer
 
     public LoopTimer(double updateCap)
     {
-        this.updateCap = updateCap;
+        initializeTime();
+        initializeVariables(updateCap);
+    }
+    private void initializeTime()
+    {
         this.elapsedTime = System.nanoTime() / 1000000000.0;
-        this.prevTime = System.nanoTime() / 1000000000.0;;
+        this.prevTime = System.nanoTime() / 1000000000.0;
         this.absoluteTime = System.nanoTime() / 1000000000.0;
-        unprocessedTime = 0;
-        frameTime = 0;
-        frames = 0;
-        fps = 0;
-        toUpdate = false;
-        toRender = false;
+    }
+    private void initializeVariables(double updateCap)
+    {
+        this.updateCap = updateCap;
+        unprocessedTime = frameTime = frames = fps = 0;
+        toUpdate = toRender = false;
     }
     void update()
     {
         toRender = false;
         toUpdate = false;
-        currTime = System.nanoTime() / 1000000000.0;
-        passedTime = currTime - prevTime;
+        updateTime();
+        while(unprocessedTime >= updateCap)
+        {
+            processTime();
+        }
+        updateThread();
+    }
+    private void updateTime()
+    {
+        double currTime = System.nanoTime() / 1000000000.0;
+        double passedTime = currTime - prevTime;
         prevTime = currTime;
         unprocessedTime += passedTime;
         frameTime += passedTime;
-        while(unprocessedTime >= updateCap)
+        updateFps();
+    }
+
+    private void processTime()
+    {
+        unprocessedTime -= updateCap;
+        if(unprocessedTime < updateCap)
         {
-            unprocessedTime -= updateCap;
-            if(unprocessedTime < updateCap)
-            {
-                frames++;
-                toRender = true;
-            }
-            elapsedTime = System.nanoTime() / 1000000000.0 - absoluteTime;
-            toUpdate = true;
-            if(frameTime >= 1.0)
-            {
-                elapsedTime++;
-                fps = frames;
-                frames = 0;
-                frameTime = 0;
-            }
+            frames++;
+            toRender = true;
         }
+        elapsedTime = System.nanoTime() / 1000000000.0 - absoluteTime;
+        toUpdate = true;
+    }
+
+    private void updateFps()
+    {
+        if(frameTime >= 1.0)
+        {
+            elapsedTime++;
+            fps = frames;
+            frames = 0;
+            frameTime = 0;
+        }
+    }
+
+    private void updateThread()
+    {
         if(!toRender)
         {
             try {

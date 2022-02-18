@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Image
 {
@@ -43,7 +44,7 @@ public class Image
     {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(Image.class.getResourceAsStream((path)));
+            image = ImageIO.read(Objects.requireNonNull(Image.class.getResourceAsStream((path))));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -71,7 +72,7 @@ public class Image
             p = new int[w * h];
             imageTransposition(r);
             dimensionSwap();
-            imageMirror(r);
+            imageMirror();
             angle -= Math.PI / 2;
         }
     }
@@ -97,7 +98,7 @@ public class Image
             }
         }
     }
-    private void imageMirror(int[] r)
+    private void imageMirror()
     {
         for(int i = 0; i < w; i++)
         {

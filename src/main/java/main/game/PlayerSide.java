@@ -9,14 +9,9 @@ public enum PlayerSide
 
     private final char ascii;
 
-    private PlayerSide(char ascii)
+    PlayerSide(char ascii)
     {
         this.ascii = ascii;
-    }
-
-    public char getAscii()
-    {
-        return ascii;
     }
 
     public String getAsciiString()

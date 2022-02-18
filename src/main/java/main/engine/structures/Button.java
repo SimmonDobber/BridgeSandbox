@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
 import main.engine.display.Image;
-import main.engine.display.Renderer;
-import main.game.Table;
 
 import java.awt.event.MouseEvent;
 
@@ -67,7 +65,7 @@ public abstract class Button extends Entity implements Clickable
     }
     public void buttonUpdate(Input input, State state)
     {
-        if(!inborders(input, x, y, w, h) || !onSurface(input, screenW, buttonId, pOwner) || !active)
+        if(!inBorders(input, x, y, w, h) || !onSurface(input, screenW, buttonId, pOwner) || !active)
         {
             nonHover(state);
             return;

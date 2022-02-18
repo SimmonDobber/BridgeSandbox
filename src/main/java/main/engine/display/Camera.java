@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 
 public class Camera
 {
-    public final static int DEFAULIT_CAMERA_SPEED = 5;
+    public final static int DEFAULT_CAMERA_SPEED = 5;
     public int offX;
     public int offY;
     public int speed;
@@ -14,7 +14,7 @@ public class Camera
     {
         offX = 0;
         offY = 0;
-        speed = DEFAULIT_CAMERA_SPEED;
+        speed = DEFAULT_CAMERA_SPEED;
     }
     public void cameraControl(Input input)
     {

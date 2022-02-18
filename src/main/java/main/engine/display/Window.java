@@ -13,7 +13,6 @@ public class Window
     public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
-    private JFrame frame;
     @Getter
     private Canvas canvas;
     private BufferStrategy bs;
@@ -26,9 +25,9 @@ public class Window
     @Getter
     private Camera camera;
     @Getter
-    private int width;
+    private final int width;
     @Getter
-    private int height;
+    private final int height;
 
     public Window()
     {
@@ -43,7 +42,7 @@ public class Window
         camera = new Camera();
         renderer = new Renderer(this);
         canvas = initializeCanvas();
-        frame = initializeFrame();
+        initializeFrame();
         bs = canvas.getBufferStrategy();
         g = (Graphics2D)bs.getDrawGraphics();
     }
@@ -57,7 +56,7 @@ public class Window
         canvas.createBufferStrategy(1);
         return canvas;
     }
-    private JFrame initializeFrame()
+    private void initializeFrame()
     {
         JFrame frame = new JFrame("");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,7 +66,6 @@ public class Window
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        return frame;
     }
     private void connectButtons()
     {
