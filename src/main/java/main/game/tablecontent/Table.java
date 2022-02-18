@@ -40,13 +40,14 @@ public class Table implements State {
     private ContractButton contractButton;
 
     public Table(int width, int height) {
+        super(0, 0, );
         this.width = width;
         this.height = height;
         initializeTable();
         initializeGame();
         manageActivity();
         solver = new Solver();
-        solverButton = new SolverButton();
+        solverButton = new SolverButton(this);
         contractButton = new ContractButton();
     }
 

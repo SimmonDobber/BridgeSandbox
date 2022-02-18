@@ -3,19 +3,17 @@ package main.engine.structures;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
-import main.engine.display.Image;
 import main.engine.display.Renderer;
+import main.engine.structures.drawable.Drawable;
 
 import java.awt.event.MouseEvent;
+import java.util.List;
 
-public abstract class Button extends Entity implements Clickable
+public abstract class Button extends GameObject implements Clickable
 {
     public static final int HOVER_COLOR = 0x220000FF;
     public static final int INACTIVE_COLOR = 0x77333333;
-    protected static int buttonCount;
     protected static int clickedId = -1;
-    @Getter
-    protected int buttonId;
     @Getter
     protected int stateCount;
     @Getter
@@ -33,29 +31,18 @@ public abstract class Button extends Entity implements Clickable
     @Setter
     private static int screenW;
 
-    public Button(String path, int x, int y, int w, int h, int stateCount, int fixed) {
-        super(path, x, y, w, h, fixed);
-        initializeButton(stateCount);
+    public Button(int x, int y, int w, int h, GameObject parent) {
+        super(x, y, w, h, parent);
+        initializeButton(1);
     }
 
-    public Button(Image image, int x, int y, int w, int h, int stateCount, int fixed) {
-        super(image, x, y, w, h, fixed);
-        initializeButton(stateCount);
-    }
-
-    public Button(Image image, int x, int y, int stateCount, int fixed) {
-        super(image, x, y, fixed);
-        initializeButton(state);
-    }
-
-    public Button(int x, int y, int w, int h, int stateCount, int fixed) {
-        super(x, y, w, h, fixed);
+    public Button(int x, int y, int w, int h, GameObject parent, int stateCount) {
+        super(x, y, w, h, parent);
         initializeButton(stateCount);
     }
 
     private void initializeButton(int stateCount)
     {
-        buttonId = ++buttonCount;
         state = 0;
         this.stateCount = stateCount;
         active = true;
@@ -70,7 +57,7 @@ public abstract class Button extends Entity implements Clickable
 
     private boolean isOnButton(Input input, State state)
     {
-        if(inBorders(input, x, y, w, h) && onSurface(input, screenW, buttonId, pOwner) && active)
+        if(inBorders(input, x, y, w, h) && onSurface(input, screenW, id, pOwner) && active)
         {
             onHover(state);
             return true;
@@ -99,25 +86,25 @@ public abstract class Button extends Entity implements Clickable
 
     private void buttonIdUpdate(State state)
     {
-        if(Button.clickedId == buttonId)
+        if(Button.clickedId == id)
         {
             onDoubleClick(state);
             Button.clickedId = -1;
         }
         else
-            Button.clickedId = buttonId;
+            Button.clickedId = id;
     }
 
     protected void hoveredRender(Renderer r)
     {
         if(highlighted)
-            r.drawRectangle(x, y, w, h, HOVER_COLOR, img.getFixed(), buttonId);
+            r.drawRectangle(x, y, w, h, HOVER_COLOR, 1, id);
     }
 
     protected void inactiveRender(Renderer r)
     {
         if(!active)
-            r.drawRectangle(x, y, w, h, INACTIVE_COLOR, img.getFixed(), buttonId);
+            r.drawRectangle(x, y, w, h, INACTIVE_COLOR, 1, id);
     }
 
     public void incState()

@@ -1,7 +1,8 @@
-package main.engine.display;
+package main.engine.structures.drawable;
 
 import lombok.Getter;
 import lombok.Setter;
+import main.engine.display.Renderer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Image
+public class Image implements Drawable
 {
     @Getter
     private int w;
@@ -21,14 +22,14 @@ public class Image
     @Getter
     private int[] p;
 
-    public Image(String path, int width, int height, int fixed)
+    public Image(String path, int w, int h, int fixed)
     {
         BufferedImage image = loadImage(path);
-        this.w = image.getWidth();
-        this.h = image.getHeight();
+        this.w = w;
+        this.h = h;
         this.fixed = fixed;
         p = image.getRGB(0, 0, w, h, null, 0, w);
-        rescale(width, height);
+        rescale(w, h);
         image.flush();
     }
 
@@ -38,6 +39,11 @@ public class Image
         h = height;
         this.fixed = fixed;
         p = new int[width * height];
+    }
+    @Override
+    public void render(Renderer r, int x, int y, int id)
+    {
+        r.drawImage(this, x, y, id);
     }
 
     private BufferedImage loadImage(String path)

@@ -1,6 +1,7 @@
 package main.engine.display;
 
 import lombok.Getter;
+import main.engine.structures.drawable.Image;
 
 public class Font
 {
@@ -47,14 +48,14 @@ public class Font
         setLetterWidth(currentPixel, unicodeId);
         for(int size = 0; size < SIZE_COUNT; size++)
         {
-            loadLetter(size, unicodeId, fontImage.getW(), fontImage.getH());
+            loadLetter(size, unicodeId);
         }
     }
 
-    private void loadLetter(int size, int unicodeId, int imageWidth, int imageHeight)
+    private void loadLetter(int size, int unicodeId)
     {
-        letters[size][unicodeId] = new Image(widths[unicodeId], imageHeight, 1);
-        insertLetterIntoImage(size, unicodeId, offsets[unicodeId], widths[unicodeId], imageWidth, imageHeight);
+        letters[size][unicodeId] = new Image(widths[unicodeId], fontImage.getH(), 1);
+        insertLetterIntoImage(size, unicodeId, offsets[unicodeId], widths[unicodeId]);
         rescaleLetter(size, unicodeId);
     }
 
@@ -69,13 +70,13 @@ public class Font
         widths[unicode] = currentPixel - offsets[unicode] + 1;
     }
 
-    private void insertLetterIntoImage(int size, int unicodeId, int letterOffset, int letterWidth, int imageWidth, int imageHeight)
+    private void insertLetterIntoImage(int size, int unicodeId, int letterOffset, int letterWidth)
     {
         for(int j = letterOffset; j <= letterOffset + letterWidth - 1; j++)
         {
-            for(int k = 0; k < imageHeight; k++)
+            for(int k = 0; k < fontImage.getH(); k++)
             {
-                letters[size][unicodeId].getP()[j - letterOffset + k * letterWidth] = fontImage.getP()[j + k * imageWidth];
+                letters[size][unicodeId].getP()[j - letterOffset + k * letterWidth] = fontImage.getP()[j + k * fontImage.getW()];
             }
         }
     }

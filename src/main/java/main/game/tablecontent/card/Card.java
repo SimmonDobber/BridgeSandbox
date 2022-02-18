@@ -3,10 +3,12 @@ package main.game.tablecontent.card;
 import lombok.Getter;
 import main.engine.structures.Button;
 import main.engine.display.Renderer;
-import main.engine.structures.State;
+import main.engine.structures.Scene;
 import main.game.GameConstants;
 import main.game.tablecontent.Hand;
 import main.game.tablecontent.Table;
+
+import static main.game.GameConstants.*;
 
 public class Card extends Button
 {
@@ -44,33 +46,33 @@ public class Card extends Button
     }
 
     @Override
-    public void onClick(State table) {
+    public void onClick(Scene table) {
         selectCard(((Table)(table)));
         ((Table)(table)).nextTurn();
     }
 
     @Override
-    public void onDoubleClick(State table) {
+    public void onDoubleClick(Scene table) {
 
     }
 
     @Override
-    public void onRelease(State table) {
+    public void onRelease(Scene table) {
 
     }
 
     @Override
-    public void onHold(State table) {
+    public void onHold(Scene table) {
 
     }
 
     @Override
-    public void onHover(State table) {
+    public void onHover(Scene table) {
             highlighted = true;
     }
 
     @Override
-    public void nonHover(State table) {
+    public void nonHover(Scene table) {
         highlighted = false;
     }
 
@@ -108,20 +110,10 @@ public class Card extends Button
 
     private void renderSymbols(Renderer r)
     {
-        r.drawText(figure.getAsciiString(), x + 3, y + 2, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(color.getAsciiString(), x - 1, y + GameConstants.DEFAULT_FONT_SIZE - 3, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(figure.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 8, y + h - GameConstants.DEFAULT_FONT_SIZE, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(color.getAsciiString(), x + w - GameConstants.DEFAULT_FONT_SIZE / 2 - 11, y + h - GameConstants.DEFAULT_FONT_SIZE * 2 + 6, getColorValue(), GameConstants.DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-    }
-
-    public int getColorValue()
-    {
-        return ((color == CardColor.CLUB || color == CardColor.SPADE || color == CardColor.NO_ATU) ? GameConstants.BLACK : GameConstants.RED);
-    }
-
-    public static int getColorValue(CardColor c)
-    {
-        return ((c == CardColor.CLUB || c == CardColor.SPADE || c == CardColor.NO_ATU) ? GameConstants.BLACK : GameConstants.RED);
+        r.drawText(figure.getAsciiString(), x + 3, y + 2, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(color.getAsciiString(), x - 1, y + DEFAULT_FONT_SIZE - 3, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(figure.getAsciiString(), x + w - DEFAULT_FONT_SIZE / 2 - 8, y + h - DEFAULT_FONT_SIZE, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
+        r.drawText(color.getAsciiString(), x + w - DEFAULT_FONT_SIZE / 2 - 11, y + h - DEFAULT_FONT_SIZE * 2 + 6, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
     }
 
     public int getId()
