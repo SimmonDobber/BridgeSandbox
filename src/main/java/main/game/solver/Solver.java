@@ -1,28 +1,25 @@
 package main.game.solver;
 
+import lombok.Getter;
 import main.engine.IntPair;
-import main.engine.display.Renderer;
-import main.engine.structures.Button;
-import main.engine.structures.State;
-import main.game.CardFigure;
+import main.game.tablecontent.CardFigure;
 import main.game.GameConstants;
-import main.game.Table;
+import main.game.tablecontent.Table;
 
-import java.util.List;
-
-public class Solver extends Button
+public class Solver
 {
     private int atu;
     private GameState initialState;
     private Feedback feedback;
-    public Solver(Table table)
+    @Getter
+    private SolverButton solverButton;
+    public Solver()
     {
-        super(100, 500, 50, 50, 1, 1);
+        solverButton = new SolverButton();
     }
     private int chooseWinner(GameState g)
     {
-        IntPair[] lastCards;
-        lastCards = new IntPair[GameConstants.PLAYER_COUNT];
+        IntPair[] lastCards = new IntPair[GameConstants.PLAYER_COUNT];
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             lastCards[(i + g.lastWinner) % GameConstants.PLAYER_COUNT] = new IntPair(g.trace.get(g.trace.size() - 4 + i));
@@ -126,40 +123,5 @@ public class Solver extends Button
         }
         feedback.moves = moves + 1;
         return feedback;
-    }
-
-    public void render(Renderer r)
-    {
-        r.drawRectangle(x, y, w, h, 0xFFFFFFFF, img.getFixed(), buttonId);
-    }
-    @Override
-    public void onClick(State table) {
-        initialize(((Table)(table)));
-        System.out.println("click");
-    }
-
-    @Override
-    public void onDoubleClick(State table) {
-
-    }
-
-    @Override
-    public void onRelease(State table) {
-
-    }
-
-    @Override
-    public void onHold(State table) {
-
-    }
-
-    @Override
-    public void onHover(State table) {
-
-    }
-
-    @Override
-    public void nonHover(State table) {
-
     }
 }

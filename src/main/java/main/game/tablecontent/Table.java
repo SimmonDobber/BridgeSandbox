@@ -1,4 +1,4 @@
-package main.game;
+package main.game.tablecontent;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,6 +6,7 @@ import main.engine.*;
 import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.State;
+import main.game.GameConstants;
 import main.game.solver.Solver;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Table implements State {
-    public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};
+    public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
     private final int width;
     private final int height;
     @Getter
@@ -30,7 +31,8 @@ public class Table implements State {
     @Getter
     private Hand[] hand;
     @Getter
-    private Card[] choosenCards;
+    private Card[] chosenCards;
+    @Getter
     private Solver solver;
 
     public Table(int width, int height) {
@@ -39,14 +41,14 @@ public class Table implements State {
         initializeTable();
         initializeGame();
         manageActivity();
-        solver = new Solver(this);
+        solver = new Solver();
     }
 
     private void initializeTable() {
 
         taken = new IntPair();
         hand = new Hand[GameConstants.PLAYER_COUNT];
-        choosenCards = new Card[GameConstants.PLAYER_COUNT];
+        chosenCards = new Card[GameConstants.PLAYER_COUNT];
 
     }
 
@@ -74,14 +76,14 @@ public class Table implements State {
 
     private PlayerSide selectWinner() {
         PlayerSide currentWinner = currentPlayer;
-        CardColor currentAtu = choosenCards[currentPlayer.ordinal()].getColor();
+        CardColor currentAtu = chosenCards[currentPlayer.ordinal()].getColor();
         return compareCards(currentWinner, currentAtu);
     }
 
     private PlayerSide compareCards(PlayerSide currentWinner, CardColor currentAtu) {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             if (i == currentPlayer.ordinal()) continue;
-            if (isNewWinning(choosenCards[currentWinner.ordinal()], choosenCards[i], currentAtu))
+            if (isNewWinning(chosenCards[currentWinner.ordinal()], chosenCards[i], currentAtu))
                 currentWinner = PlayerSide.values()[i];
         }
         return currentWinner;
@@ -98,7 +100,7 @@ public class Table implements State {
     {
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
             hand[i].update(input, this);
-        solver.buttonUpdate(input, this);
+        solver.getSolverButton().buttonUpdate(input, this);
     }
     @Override
     public void render(Renderer r)
@@ -107,15 +109,15 @@ public class Table implements State {
         renderGameInfo(r);
         renderChosenCards(r);
         renderHands(r);
-
-        solver.render(r);
+        renderButtons(r);
+        solver.getSolverButton().render(r);
     }
 
     private void renderBackground(Renderer r)
     {
-        r.drawRectangle(0, 0, width, height, 0xFF009900, 1);
-        r.drawRectangle(410, 166, 377, 343, 0xFF8B4513, 1);
-        r.drawRectangle(412, 168, 373, 339, 0x7700FFFF, 1);
+        r.drawRectangle(0, 0, width, height, GameConstants.GREEN, 1);
+        r.drawRectangle(412, 168, 373, 339, GameConstants.BROWN, 1);
+        r.drawRectangle(410, 166, 377, 343, GameConstants.CYAN, 1);
     }
 
     private void renderGameInfo(Renderer r)
@@ -125,12 +127,16 @@ public class Table implements State {
         r.drawText("Current player; " + currentPlayer.getAsciiString(), 10, 50, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
         r.drawText("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 90, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
     }
+    private void renderButtons(Renderer r)
+    {
+        solver.getSolverButton().render(r);
+    }
     private void renderChosenCards(Renderer r)
     {
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
-            if(choosenCards[i] != null)
-                choosenCards[i].render(r);
+            if(chosenCards[i] != null)
+                chosenCards[i].render(r);
         }
     }
     private void renderHands(Renderer r)
@@ -209,7 +215,7 @@ public class Table implements State {
 
     private void clearTableCenter() {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-            choosenCards[i] = null;
+            chosenCards[i] = null;
     }
 
     private int getPlayedCardId() {
@@ -221,7 +227,7 @@ public class Table implements State {
     }
 
     private boolean isPlayedCardMatchingTable(int cardId) {
-        return hand[currentPlayer.ordinal()].getCard().get(cardId).getId() == choosenCards[currentPlayer.ordinal()].getId();
+        return hand[currentPlayer.ordinal()].getCard().get(cardId).getId() == chosenCards[currentPlayer.ordinal()].getId();
     }
 
     private boolean hasNewAtuAdvantage(Card old, Card _new) {
@@ -243,19 +249,19 @@ public class Table implements State {
 
     private boolean isCardColorMatchingCurrentColor(Card card)
     {
-        return card.getColor() == choosenCards[lastWinner.ordinal()].getColor();
+        return card.getColor() == chosenCards[lastWinner.ordinal()].getColor();
     }
 
     private CardColor getFirstColorInTurn()
     {
-        if(choosenCards[lastWinner.ordinal()] != null)
-            return choosenCards[lastWinner.ordinal()].getColor();
+        if(chosenCards[lastWinner.ordinal()] != null)
+            return chosenCards[lastWinner.ordinal()].getColor();
         return CardColor.NO_ATU;
     }
 
     private boolean hasAlreadyPlayed(PlayerSide p)
     {
-        return choosenCards[p.ordinal()] != null;
+        return chosenCards[p.ordinal()] != null;
     }
 
     private boolean isPlayerFirstInTurn()

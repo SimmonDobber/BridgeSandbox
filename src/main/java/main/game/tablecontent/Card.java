@@ -1,16 +1,16 @@
-package main.game;
+package main.game.tablecontent;
 
 import lombok.Getter;
 import main.engine.structures.Button;
 import main.engine.display.Renderer;
 import main.engine.structures.State;
+import main.game.GameConstants;
 
 public class Card extends Button
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
     private static final int DEFAULT_STATE_COUNT = 2;
-    private static final int BORDER_THICKNESS = 2;
     @Getter
     private CardFigure figure;
     @Getter
@@ -87,7 +87,7 @@ public class Card extends Button
     {
         x = Hand.OWNER_CENTER_X[playerId];
         y = Hand.OWNER_CENTER_Y[playerId];
-        table.getChoosenCards()[playerId] = new Card(this);
+        table.getChosenCards()[playerId] = new Card(this);
     }
 
     public void render(Renderer r)
@@ -100,7 +100,7 @@ public class Card extends Button
 
     private void renderBackground(Renderer r)
     {
-        r.drawRectangle(x - BORDER_THICKNESS, y - BORDER_THICKNESS, w + 2 + BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, getColorValue(), img.getFixed(), buttonId);
+        r.drawRectangle(x - 2, y - 2, w + 4, h + 4, getColorValue(), img.getFixed(), buttonId);
         r.drawRectangle(x, y, w, h, GameConstants.SILVER, img.getFixed(), buttonId);
     }
 

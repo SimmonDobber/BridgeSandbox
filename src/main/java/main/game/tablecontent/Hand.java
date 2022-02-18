@@ -1,8 +1,9 @@
-package main.game;
+package main.game.tablecontent;
 
 import lombok.Getter;
 import main.engine.Input;
 import main.engine.display.Renderer;
+import main.game.GameConstants;
 
 import java.util.ArrayList;
 import java.util.List;

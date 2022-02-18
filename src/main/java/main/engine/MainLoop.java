@@ -3,7 +3,8 @@ package main.engine;
 import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.State;
-import main.game.Table;
+import main.game.solver.Solver;
+import main.game.tablecontent.Table;
 
 public class MainLoop implements Runnable
 {

@@ -2,7 +2,7 @@ package main.game.solver;
 
 import main.engine.IntPair;
 import main.game.GameConstants;
-import main.game.Table;
+import main.game.tablecontent.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class GameState
     {
         currPlayer = table.getCurrentPlayer().ordinal();
         lastWinner = table.getLastWinner().ordinal();
-        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChoosenCards()[table.getLastWinner().ordinal()].getColor().ordinal());
+        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChosenCards()[table.getLastWinner().ordinal()].getColor().ordinal());
         taken = new IntPair(table.getTaken());
         cards = new List[GameConstants.PLAYER_COUNT];
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
@@ -31,8 +31,8 @@ public class GameState
         trace = new ArrayList<>();
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
-            if(table.getChoosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT] != null)
-              trace.add(new IntPair(table.getChoosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getColor().ordinal(), table.getChoosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getFigure().ordinal()));
+            if(table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT] != null)
+              trace.add(new IntPair(table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getColor().ordinal(), table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getFigure().ordinal()));
         }
     }
     public GameState(GameState g)
