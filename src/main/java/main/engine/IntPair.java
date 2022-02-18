@@ -4,6 +4,7 @@ public class IntPair
 {
     public int x;
     public int y;
+
     public IntPair()
     {
         this.x = 0;
