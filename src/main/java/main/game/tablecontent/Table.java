@@ -16,10 +16,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static main.game.GameConstants.*;
+
 public class Table implements State {
     public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
-    private final int width;
-    private final int height;
     @Getter
     @Setter
     private int contractId;
@@ -39,16 +39,15 @@ public class Table implements State {
     private SolverButton solverButton;
     private ContractButton contractButton;
 
-    public Table(int width, int height) {
-        super(0, 0, );
-        this.width = width;
-        this.height = height;
+    public Table()
+    {
+        super(0, 0, Window.WIDTH, Window.HEIGHT, null);
         initializeTable();
         initializeGame();
+        initializeSpriteList();
         manageActivity();
         solver = new Solver();
-        solverButton = new SolverButton(this);
-        contractButton = new ContractButton();
+        initializeButtons();
     }
 
     private void initializeTable() {
@@ -64,10 +63,42 @@ public class Table implements State {
         setContractId(18);
     }
 
+    private void initializeButtons()
+    {
+        solverButton = new SolverButton(this);
+        children.add(solverButton);
+        contractButton = new ContractButton(this, contractId);
+        children.add(contractButton);
+    }
+
+    private void initializeSpriteList()
+    {
+        spriteList.add(new Rectangle(0, 0, w, h, GREEN, 1));
+        spriteList.add(new Rectangle(410, 166, 377, 343, CYAN, BROWN, 1));
+        spriteList.add(new Text("Contract; ", 10, 25, DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text("Current player; " + currentPlayer.getAsciiString(), 10, 65, DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 105,  DEFAULT_FONT_SIZE, GRAY, 1));
+    }
+
+    @Override
+    public void update(Window window, Input input, LoopTimer loopTimer)
+    {
+        checkTableForUpdates();
+        updateChildren(window, input, loopTimer);
+    }
+
+    @Override
+    public void render(Renderer r)
+    {
+        spriteRender(r);
+        childrenRender(r);
+    }
+
     private void dealRandom(int cardAmount) {
         List<Integer> deck = createDeck();
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             hand[i] = dealToHand(deck, cardAmount, i);
+            children.add(hand[i]);
         }
     }
 
@@ -100,65 +131,6 @@ public class Table implements State {
         }
     }
 
-    @Override
-    public void update(Window window, Input input, LoopTimer loopTimer)
-    {
-        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-            hand[i].update(input, this);
-        buttonsUpdate(input);
-    }
-
-    private void buttonsUpdate(Input input)
-    {
-        solverButton.buttonUpdate(input, this);
-        contractButton.buttonUpdate(input, this);
-    }
-
-    @Override
-    public void render(Renderer r)
-    {
-        renderBackground(r);
-        renderGameInfo(r);
-        renderChosenCards(r);
-        renderHands(r);
-        renderButtons(r);
-        solverButton.render(r);
-    }
-
-    private void renderBackground(Renderer r)
-    {
-        r.drawRectangle(0, 0, width, height, GameConstants.GREEN, 1);
-        r.drawRectangle(412, 168, 373, 339, GameConstants.BROWN, 1);
-        r.drawRectangle(410, 166, 377, 343, GameConstants.CYAN, 1);
-    }
-
-    private void renderGameInfo(Renderer r)
-    {
-        r.drawText("Current player; " + currentPlayer.getAsciiString(), 10, 65, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
-        r.drawText("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 105, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
-    }
-
-    private void renderButtons(Renderer r)
-    {
-        solverButton.render(r);
-        contractButton.render(r, contractId, getAtu().ordinal());
-    }
-
-    private void renderChosenCards(Renderer r)
-    {
-        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-        {
-            if(chosenCards[i] != null)
-                chosenCards[i].render(r);
-        }
-    }
-
-    private void renderHands(Renderer r)
-    {
-        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-            hand[i].render(r);
-    }
-
     private List<Integer> createDeck() {
         List<Integer> deck = new ArrayList<>();
         for (int i = 0; i < GameConstants.COLOR_COUNT * GameConstants.FIGURE_COUNT; i++) {
@@ -174,12 +146,44 @@ public class Table implements State {
             temp[j] = deck.get(playerId * cardAmount + j);
         }
         Arrays.sort(temp);
-        return new Hand(temp, cardAmount, playerId);
+        return new Hand(temp, cardAmount, playerId, this);
     }
 
-    private void removeCard(int id) {
-        if (id < 0) return;
-        hand[currentPlayer.ordinal()].getCard().remove(id);
+    private void checkTableForUpdates()
+    {
+        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
+            checkHandForUpdates(i);
+        if(solverButton.isToProcess())
+            processSolver();
+    }
+
+    private void processSolver()
+    {
+        solver.initialize(this);
+        solverButton.setToProcess(false);
+    }
+
+    private void checkHandForUpdates(int handId)
+    {
+        for(int i = 0; i < hand[handId].getCard().size(); i++)
+        {
+            if(hand[handId].getCard().get(i).isToProcess())
+                manageCardUpdates(handId, hand[handId].getCard().get(i));
+        }
+    }
+    private void manageCardUpdates(int handId, Card card)
+    {
+        card.setX(Hand.OWNER_CENTER_X[handId]);
+        card.setY(Hand.OWNER_CENTER_Y[handId]);
+        chosenCards[handId] = new Card(card);
+        children.add(chosenCards[handId]);
+        card.setToProcess(false);
+        nextTurn();
+    }
+
+    private void removeCard(Card card) {
+        hand[currentPlayer.ordinal()].getChildren().remove(card);
+        hand[currentPlayer.ordinal()].getCard().remove(card);
         repositionCards();
     }
 
@@ -229,15 +233,18 @@ public class Table implements State {
 
     private void clearTableCenter() {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++)
+        {
+            children.remove(chosenCards[i]);
             chosenCards[i] = null;
+        }
     }
 
-    private int getPlayedCardId() {
+    private Card getPlayedCardId() {
         for (int i = 0; i < hand[currentPlayer.ordinal()].getCard().size(); i++) {
             if (hasAlreadyPlayed(currentPlayer) && isPlayedCardMatchingTable(i))
-                return i;
+                return hand[currentPlayer.ordinal()].getCard().get(i);
         }
-        return -1;
+        return null;
     }
 
     private boolean isPlayedCardMatchingTable(int cardId) {
@@ -287,4 +294,5 @@ public class Table implements State {
     {
         return CardColor.values()[contractId % (GameConstants.COLOR_COUNT + 1)];
     }
+
 }

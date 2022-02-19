@@ -1,119 +1,90 @@
 package main.game.tablecontent.card;
 
 import lombok.Getter;
+import lombok.Setter;
+import main.engine.Input;
+import main.engine.LoopTimer;
+import main.engine.display.Window;
 import main.engine.structures.Button;
 import main.engine.display.Renderer;
+import main.engine.structures.GameObject;
 import main.engine.structures.Scene;
+import main.engine.structures.drawable.Rectangle;
+import main.engine.structures.drawable.Text;
 import main.game.GameConstants;
 import main.game.tablecontent.Hand;
 import main.game.tablecontent.Table;
 
 import static main.game.GameConstants.*;
 
+@Getter
 public class Card extends Button
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
-    private static final int DEFAULT_STATE_COUNT = 2;
-    @Getter
     private CardFigure figure;
-    @Getter
     private CardColor color;
 
     public Card(Card card)
     {
-        super(card.x, card.y, card.w, card.h, card.stateCount, 1);
+        super(card.x, card.y, card.w, card.h, card.parent);
         initializeCard(card.figure, card.color);
     }
 
-    public Card(int x, int y, CardFigure figure, CardColor color) {
-        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_STATE_COUNT, 1);
-        initializeCard(figure, color);
-    }
-    public Card(int x, int y, int w, int h, int stateCount, CardFigure figure, CardColor color) {
-        super(x, y, w, h, stateCount, 1);
+    public Card(int x, int y, GameObject parent, CardFigure figure, CardColor color) {
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, parent);
         initializeCard(figure, color);
     }
 
-    public Card(int x, int y, int w, int h, int stateCount, int fixed) {
-        super(x, y, w, h, stateCount, fixed);
+    public Card(int x, int y, int w, int h, GameObject parent, CardFigure figure, CardColor color) {
+        super(x, y, w, h, parent);
+        initializeCard(figure, color);
     }
 
     private void initializeCard(CardFigure figure, CardColor color)
     {
         this.figure = figure;
         this.color = color;
+        initializeSpriteList();
+    }
+
+    private void initializeSpriteList()
+    {
+        spriteList.add(new Rectangle(0, 0, w, h, SILVER, color.getCardColor(), 1));
+        spriteList.add(new Text(figure.getAsciiString(), 3, 2, DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+        spriteList.add(new Text(color.getAsciiString(), -1, DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(figure.getAsciiString(), w - DEFAULT_FONT_SIZE / 2 - 8, h - DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(color.getAsciiString(), w - DEFAULT_FONT_SIZE / 2 - 11, h - DEFAULT_FONT_SIZE * 2 + 6, DEFAULT_FONT_SIZE, color.getCardColor(), 1));
     }
 
     @Override
-    public void onClick(Scene table) {
-        selectCard(((Table)(table)));
-        ((Table)(table)).nextTurn();
+    public void onClick() {
+        toProcess = true;
     }
 
     @Override
-    public void onDoubleClick(Scene table) {
-
-    }
-
-    @Override
-    public void onRelease(Scene table) {
+    public void onDoubleClick() {
 
     }
 
     @Override
-    public void onHold(Scene table) {
+    public void onRelease() {
 
     }
 
     @Override
-    public void onHover(Scene table) {
+    public void onHold() {
+
+    }
+
+    @Override
+    public void onHover() {
             highlighted = true;
     }
 
     @Override
-    public void nonHover(Scene table) {
+    public void nonHover() {
         highlighted = false;
-    }
-
-    private void selectCard(Table table)
-    {
-        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-        {
-            if(table.getHand()[i].getCard().contains(this))
-            {
-                moveCardToCanter(table, i);
-            }
-        }
-    }
-
-    private void moveCardToCanter(Table table, int playerId)
-    {
-        x = Hand.OWNER_CENTER_X[playerId];
-        y = Hand.OWNER_CENTER_Y[playerId];
-        table.getChosenCards()[playerId] = new Card(this);
-    }
-
-    public void render(Renderer r)
-    {
-        renderBackground(r);
-        renderSymbols(r);
-        hoveredRender(r);
-        inactiveRender(r);
-    }
-
-    private void renderBackground(Renderer r)
-    {
-        r.drawRectangle(x - 2, y - 2, w + 4, h + 4, getColorValue(), img.getFixed(), buttonId);
-        r.drawRectangle(x, y, w, h, GameConstants.SILVER, img.getFixed(), buttonId);
-    }
-
-    private void renderSymbols(Renderer r)
-    {
-        r.drawText(figure.getAsciiString(), x + 3, y + 2, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(color.getAsciiString(), x - 1, y + DEFAULT_FONT_SIZE - 3, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(figure.getAsciiString(), x + w - DEFAULT_FONT_SIZE / 2 - 8, y + h - DEFAULT_FONT_SIZE, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
-        r.drawText(color.getAsciiString(), x + w - DEFAULT_FONT_SIZE / 2 - 11, y + h - DEFAULT_FONT_SIZE * 2 + 6, color.getCardColor(), DEFAULT_FONT_SIZE, img.getFixed(), buttonId);
     }
 
     public int getId()

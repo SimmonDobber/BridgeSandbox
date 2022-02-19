@@ -111,11 +111,6 @@ public class Renderer
         }
     }
 
-    public void drawText(Text text, int textOffsetX, int textOffsetY)
-    {
-        drawText(text, textOffsetX, textOffsetY, -1);
-    }
-
     public void drawText(Text text, int textOffsetX, int textOffsetY, int owner)
     {
         int symbolOffsetX = 0;

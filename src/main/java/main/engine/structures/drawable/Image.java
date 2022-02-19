@@ -10,40 +10,43 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
+@Getter
 public class Image implements Drawable
 {
-    @Getter
+    private int x;
+    private int y;
     private int w;
-    @Getter
     private int h;
-    @Getter
-    @Setter
     private int fixed;
-    @Getter
     private int[] p;
 
-    public Image(String path, int w, int h, int fixed)
+    public Image(String path, int x, int y, int w, int h, int fixed)
     {
-        BufferedImage image = loadImage(path);
+        this.x = x;
+        this.y = y;
         this.w = w;
         this.h = h;
         this.fixed = fixed;
+        BufferedImage image = loadImage(path);
         p = image.getRGB(0, 0, w, h, null, 0, w);
         rescale(w, h);
         image.flush();
     }
 
-    public Image(int width, int height, int fixed)
+    public Image(int x, int y, int w, int h, int fixed)
     {
-        w = width;
-        h = height;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
         this.fixed = fixed;
-        p = new int[width * height];
+        p = new int[w * h];
     }
+
     @Override
     public void render(Renderer r, int x, int y, int id)
     {
-        r.drawImage(this, x, y, id);
+        r.drawImage(this, getAbsoluteX(x), getAbsoluteY(y), id);
     }
 
     private BufferedImage loadImage(String path)
@@ -129,5 +132,14 @@ public class Image implements Drawable
     private double normalizeAngle(double angle)
     {
         return Math.abs(angle) - 2 * Math.PI * Math.floor(Math.abs(angle) / (2 * Math.PI)) + (angle < 0 ? 2 * Math.PI : 0);
+    }
+
+    private int getAbsoluteX(int x)
+    {
+        return this.x + x;
+    }
+    private int getAbsoluteY(int y)
+    {
+        return this.y + y;
     }
 }

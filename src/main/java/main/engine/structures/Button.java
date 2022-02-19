@@ -3,33 +3,28 @@ package main.engine.structures;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
+import main.engine.LoopTimer;
 import main.engine.display.Renderer;
-import main.engine.structures.drawable.Drawable;
+import main.engine.display.Window;
 
 import java.awt.event.MouseEvent;
-import java.util.List;
 
+@Getter
+@Setter
 public abstract class Button extends GameObject implements Clickable
 {
     public static final int HOVER_COLOR = 0x220000FF;
     public static final int INACTIVE_COLOR = 0x77333333;
     protected static int clickedId = -1;
-    @Getter
-    protected int stateCount;
-    @Getter
-    protected int state;
-    @Getter
-    @Setter
-    protected boolean active;
-    @Getter
-    @Setter
-    protected boolean highlighted;
-    @Getter
     @Setter
     private static int[] pOwner;
-    @Getter
     @Setter
     private static int screenW;
+    protected int stateCount;
+    protected int state;
+    protected boolean active;
+    protected boolean highlighted;
+    protected boolean toProcess;
 
     public Button(int x, int y, int w, int h, GameObject parent) {
         super(x, y, w, h, parent);
@@ -47,22 +42,37 @@ public abstract class Button extends GameObject implements Clickable
         this.stateCount = stateCount;
         active = true;
         highlighted = false;
+        toProcess = false;
+    }
+
+    public void update(Window window, Input input, LoopTimer loopTimer)
+    {
+        buttonUpdate(input);
+        updateChildren(window, input, loopTimer);
+    }
+
+    public void render(Renderer r)
+    {
+        spriteRender(r);
+        childrenRender(r);
+        hoveredRender(r);
+        inactiveRender(r);
     }
 
     public void buttonUpdate(Input input, State state)
     {
-        if(isOnButton(input, state) && hasMouseInteraction(input))
-            buttonActionHandle(input, state);
+        if(isOnButton(input) && hasMouseInteraction(input))
+            buttonActionHandle(input);
     }
 
     private boolean isOnButton(Input input, State state)
     {
         if(inBorders(input, x, y, w, h) && onSurface(input, screenW, id, pOwner) && active)
         {
-            onHover(state);
+            onHover();
             return true;
         }
-        nonHover(state);
+        nonHover();
         return false;
     }
 
@@ -70,13 +80,13 @@ public abstract class Button extends GameObject implements Clickable
     {
         if(input.isButtonDown(MouseEvent.BUTTON1))
         {
-            onClick(state);
-            buttonIdUpdate(state);
+            onClick();
+            buttonIdUpdate();
         }
         if(input.isButtonUp(MouseEvent.BUTTON1))
-            onRelease(state);
+            onRelease();
         if(input.isButton(MouseEvent.BUTTON1))
-            onHold(state);
+            onHold();
     }
 
     private boolean hasMouseInteraction(Input input)
@@ -88,7 +98,7 @@ public abstract class Button extends GameObject implements Clickable
     {
         if(Button.clickedId == id)
         {
-            onDoubleClick(state);
+            onDoubleClick();
             Button.clickedId = -1;
         }
         else

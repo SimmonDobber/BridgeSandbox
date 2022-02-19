@@ -22,7 +22,7 @@ public class Font
 
     public Font(String path)
     {
-        fontImage = new Image(path, DEFAULT_WIDTH, DEFAULT_HEIGHT, 1);
+        fontImage = new Image(path, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 1);
         letters = new Image[SIZE_COUNT][CHARACTERS_COUNT];
         offsets = new int[CHARACTERS_COUNT];
         widths = new int[CHARACTERS_COUNT];
@@ -54,7 +54,7 @@ public class Font
 
     private void loadLetter(int size, int unicodeId)
     {
-        letters[size][unicodeId] = new Image(widths[unicodeId], fontImage.getH(), 1);
+        letters[size][unicodeId] = new Image(0, 0, widths[unicodeId], fontImage.getH(), 1);
         insertLetterIntoImage(size, unicodeId, offsets[unicodeId], widths[unicodeId]);
         rescaleLetter(size, unicodeId);
     }

@@ -23,6 +23,7 @@ public class MainLoop implements Runnable
         Thread thread = new Thread(this);
         thread.start();
     }
+
     @Override
     public void run()
     {

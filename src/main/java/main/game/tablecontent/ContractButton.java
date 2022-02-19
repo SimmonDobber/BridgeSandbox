@@ -1,6 +1,5 @@
 package main.game.tablecontent;
 
-import main.engine.display.Renderer;
 import main.engine.structures.Button;
 import main.engine.structures.GameObject;
 import main.engine.structures.Scene;
@@ -13,49 +12,48 @@ public class ContractButton extends Button
     public static final int DEFAULT_SOLVER_BUTTON_WIDTH = 55;
     public static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 40;
     public static final int DEFAULT_SOLVER_BUTTON_X = 150;
-    public static final int DEFAULT_SOLVER_BUTTON_Y = Hand.CARD_SPACE - 4;
+    public static final int DEFAULT_SOLVER_BUTTON_Y = 22;
 
-    public ContractButton(GameObject parent)
+    public ContractButton(GameObject parent, int contractId)
     {
         super(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y, DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT, parent);
+        initializeSpriteList(contractId);
     }
 
-    public void render(Renderer r, int contractId, int atuId)
+    private void initializeSpriteList(int contractId)
     {
-        r.drawRectangle(x + 2, y + 2, w - 4, h - 4, GameConstants.BROWN, 1, buttonId);
-        r.drawRectangle(x, y, w, h, GameConstants.CYAN, 1, buttonId);
-        r.drawText("Contract; " + (contractId / 5 + 1) , 10, 25, GameConstants.GRAY, GameConstants.DEFAULT_FONT_SIZE, 1);
-        r.drawText(Character.toString((char)(atuId + '[')), 176, 25, CardColor.values()[contractId % 5].getCardColor(), GameConstants.DEFAULT_FONT_SIZE, 1);
-        hoveredRender(r);
+        spriteList.add(new Rectangle(0, 0, w, h, CYAN, BROWN, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId / 5) + '1')), 7, 4, DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId % 5) + '[')), 26, 4, DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
     }
 
     @Override
-    public void onClick(Scene state) {
-
-    }
-
-    @Override
-    public void onDoubleClick(Scene state) {
+    public void onClick() {
 
     }
 
     @Override
-    public void onRelease(Scene state) {
+    public void onDoubleClick() {
 
     }
 
     @Override
-    public void onHold(Scene state) {
+    public void onRelease() {
 
     }
 
     @Override
-    public void onHover(Scene state) {
+    public void onHold() {
+
+    }
+
+    @Override
+    public void onHover() {
         highlighted = true;
     }
 
     @Override
-    public void nonHover(Scene state) {
+    public void nonHover() {
         highlighted = false;
     }
 }

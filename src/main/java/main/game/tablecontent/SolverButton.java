@@ -27,46 +27,40 @@ public class SolverButton extends Button {
         initializeSpriteList();
     }
 
-    public void render(Renderer r) {
-        /*r.drawRectangle(x + 2, y + 2, w - 4, h - 4, BROWN, 1, id);
-        r.drawRectangle(x, y, w, h, CYAN, 1, id);
-        r.drawText("calculate", x + 16, y + 22, GRAY, DEFAULT_FONT_SIZE, 1, id);*/
-        hoveredRender(r);
-    }
-
     private void initializeSpriteList()
     {
-        spriteList.add(new Rectangle(w, h, CYAN, BROWN, 1));
-        spriteList.add(new Text("calculate", DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Rectangle(0, 0, w, h, CYAN, BROWN, 1));
+        spriteList.add(new Text("calculate", 16, 22, DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
     @Override
-    public void onClick(Scene state) {
-        ((Table)(state)).getSolver().initialize(((Table)(state)));
+    public void onClick()
+    {
+        toProcess = true;
     }
 
     @Override
-    public void onDoubleClick(Scene state) {
-
-    }
-
-    @Override
-    public void onRelease(Scene state) {
+    public void onDoubleClick() {
 
     }
 
     @Override
-    public void onHold(Scene state) {
+    public void onRelease() {
 
     }
 
     @Override
-    public void onHover(Scene state) {
+    public void onHold() {
+
+    }
+
+    @Override
+    public void onHover() {
         highlighted = true;
     }
 
     @Override
-    public void nonHover(Scene state) {
+    public void nonHover() {
         highlighted = false;
     }
 

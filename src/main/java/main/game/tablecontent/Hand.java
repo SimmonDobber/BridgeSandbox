@@ -2,7 +2,10 @@ package main.game.tablecontent;
 
 import lombok.Getter;
 import main.engine.Input;
+import main.engine.LoopTimer;
 import main.engine.display.Renderer;
+import main.engine.display.Window;
+import main.engine.structures.GameObject;
 import main.game.GameConstants;
 import main.game.tablecontent.card.Card;
 import main.game.tablecontent.card.CardColor;
@@ -11,7 +14,7 @@ import main.game.tablecontent.card.CardFigure;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hand
+public class Hand extends GameObject
 {
     public static final int CARD_SPACE = 24;
     public static final int[] OWNER_X = {412, 803, 412, 24};
@@ -20,14 +23,9 @@ public class Hand
     public static final int[] OWNER_CENTER_Y = {192, 277, 363, 277};
     @Getter
     private List<Card> card;
-    @Getter
-    private final int x;
-    @Getter
-    private final int y;
-    public Hand(int[] id, int cardAmount, int playerId)
+    public Hand(int[] id, int cardAmount, int playerId, GameObject parent)
     {
-        x = OWNER_X[playerId];
-        y = OWNER_Y[playerId];
+        super(OWNER_X[playerId], OWNER_Y[playerId], 0, 0, parent);
         initializeCards(id, cardAmount);
     }
     private void initializeCards(int[] id, int cardAmount)
@@ -35,18 +33,14 @@ public class Hand
         card = new ArrayList<>();
         for(int i = 0; i < cardAmount; i++)
         {
-            card.add(new Card(x + i * CARD_SPACE, y, CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT], CardColor.values()[id[i] / GameConstants.FIGURE_COUNT]));
+            card.add(new Card(x + i * CARD_SPACE, y, this, CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT], CardColor.values()[id[i] / GameConstants.FIGURE_COUNT]));
+            children.add(card.get(card.size() - 1));
         }
     }
-    public void update(Input input, Table table)
+
+    public void update(Window window, Input input, LoopTimer loopTimer)
     {
-        for(int i = 0; i < card.size(); i++)
-            card.get(i).buttonUpdate(input, table);
-    }
-    public void render(Renderer r)
-    {
-        for(int i = 0; i < card.size(); i++)
-            card.get(i).render(r);
+        updateChildren(window, input, loopTimer);
     }
 
     public boolean hasColor(CardColor c)
