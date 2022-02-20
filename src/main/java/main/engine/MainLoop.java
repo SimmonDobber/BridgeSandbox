@@ -18,8 +18,8 @@ public class MainLoop implements Runnable
     {
         table = new Table(Window.WIDTH, Window.HEIGHT);
         loopTimer = new LoopTimer(1.0 / FPS);
-        window = new Window();
-        input = new Input(window);
+        window = Window.getWindow();
+        input = Input.getInput();
         Thread thread = new Thread(this);
         thread.start();
     }

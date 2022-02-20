@@ -1,17 +1,11 @@
 package main.game.tablecontent;
 
-import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.Button;
-import main.engine.structures.drawable.Drawable;
-import main.engine.structures.GameObject;
-import main.engine.structures.Scene;
+import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
-import main.game.GameConstants;
-
-import java.util.LinkedList;
-import java.util.List;
+import main.game.solver.Solver;
 
 import static main.game.GameConstants.*;
 
@@ -20,11 +14,13 @@ public class SolverButton extends Button {
     public static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
     public static final int DEFAULT_SOLVER_BUTTON_X = Hand.CARD_SPACE;
     public static final int DEFAULT_SOLVER_BUTTON_Y = Window.HEIGHT - Hand.CARD_SPACE - DEFAULT_SOLVER_BUTTON_HEIGHT;
+    private Solver solver;
 
-    public SolverButton(GameObject parent) {
+    public SolverButton(GameObject parent, Solver solver) {
         super(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y,
                 DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT, parent);
         initializeSpriteList();
+        this.solver = solver;
     }
 
     private void initializeSpriteList()
@@ -36,12 +32,7 @@ public class SolverButton extends Button {
     @Override
     public void onClick()
     {
-        toProcess = true;
-    }
-
-    @Override
-    public void onDoubleClick() {
-
+        solver.initialize((Table)(getParent()));
     }
 
     @Override
@@ -56,12 +47,11 @@ public class SolverButton extends Button {
 
     @Override
     public void onHover() {
-        highlighted = true;
+        hovered = true;
     }
 
     @Override
     public void nonHover() {
-        highlighted = false;
+        hovered = false;
     }
-
 }

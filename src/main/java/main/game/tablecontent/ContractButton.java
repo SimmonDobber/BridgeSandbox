@@ -1,10 +1,9 @@
 package main.game.tablecontent;
 
 import main.engine.structures.Button;
-import main.engine.structures.GameObject;
-import main.engine.structures.Scene;
-import main.game.GameConstants;
-import main.game.tablecontent.card.Card;
+import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.drawable.Rectangle;
+import main.engine.structures.drawable.Text;
 import main.game.tablecontent.card.CardColor;
 
 public class ContractButton extends Button
@@ -33,11 +32,6 @@ public class ContractButton extends Button
     }
 
     @Override
-    public void onDoubleClick() {
-
-    }
-
-    @Override
     public void onRelease() {
 
     }
@@ -49,11 +43,11 @@ public class ContractButton extends Button
 
     @Override
     public void onHover() {
-        highlighted = true;
+        hovered = true;
     }
 
     @Override
     public void nonHover() {
-        highlighted = false;
+        hovered = false;
     }
 }

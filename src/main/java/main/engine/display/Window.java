@@ -1,6 +1,7 @@
 package main.engine.display;
 
 import lombok.Getter;
+import main.engine.MainLoop;
 import main.engine.structures.Button;
 
 import javax.swing.*;
@@ -10,6 +11,14 @@ import java.awt.image.BufferedImage;
 
 public class Window
 {
+    private static Window WINDOW = null;
+
+    public static Window getWindow() {
+        if(WINDOW == null) {
+            WINDOW = new Window();
+        }
+        return WINDOW;
+    }
     public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
@@ -29,13 +38,13 @@ public class Window
     @Getter
     private final int height;
 
-    public Window()
+    private Window()
     {
         this.width = WIDTH;
         this.height = HEIGHT;
         initializeObjects();
-        connectButtons();
     }
+
     private void initializeObjects()
     {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -46,6 +55,7 @@ public class Window
         bs = canvas.getBufferStrategy();
         g = (Graphics2D)bs.getDrawGraphics();
     }
+
     private Canvas initializeCanvas()
     {
         Dimension s = new Dimension((int)(width * SCALE), (int)(height * SCALE));
@@ -56,6 +66,7 @@ public class Window
         canvas.createBufferStrategy(1);
         return canvas;
     }
+
     private void initializeFrame()
     {
         JFrame frame = new JFrame("");
@@ -67,11 +78,7 @@ public class Window
         frame.setResizable(false);
         frame.setVisible(true);
     }
-    private void connectButtons()
-    {
-        Button.setScreenW(width);
-        Button.setPOwner(renderer.getPOwner());
-    }
+
     public void render()
     {
         g.drawImage(image, 0, 0, width, height, null);

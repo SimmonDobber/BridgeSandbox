@@ -1,6 +1,6 @@
 package main.game.solver;
 
-import main.engine.IntPair;
+import main.engine.structures.IntPair;
 import main.game.tablecontent.card.CardFigure;
 import main.game.GameConstants;
 import main.game.tablecontent.Table;

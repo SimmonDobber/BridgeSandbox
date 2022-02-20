@@ -65,7 +65,7 @@ public class Table implements State {
 
     private void initializeButtons()
     {
-        solverButton = new SolverButton(this);
+        solverButton = new SolverButton(this, solver);
         children.add(solverButton);
         contractButton = new ContractButton(this, contractId);
         children.add(contractButton);
@@ -75,15 +75,34 @@ public class Table implements State {
     {
         spriteList.add(new Rectangle(0, 0, w, h, GREEN, 1));
         spriteList.add(new Rectangle(410, 166, 377, 343, CYAN, BROWN, 1));
+        loadTextSprites();
+    }
+
+    private void loadTextSprites()
+    {
         spriteList.add(new Text("Contract; ", 10, 25, DEFAULT_FONT_SIZE, GRAY, 1));
         spriteList.add(new Text("Current player; " + currentPlayer.getAsciiString(), 10, 65, DEFAULT_FONT_SIZE, GRAY, 1));
         spriteList.add(new Text("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 105,  DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
+    private void removeTextSprites()
+    {
+        for(int i = 0; i < spriteList.size(); i++)
+        {
+            if(spriteList.get(i).getClass().equals(Text.class))
+                spriteList.remove(i--);
+        }
+    }
+
+    private void reLoadTextSprites()
+    {
+        removeTextSprites();
+        loadTextSprites();
+    }
+
     @Override
     public void update(Window window, Input input, LoopTimer loopTimer)
     {
-        checkTableForUpdates();
         updateChildren(window, input, loopTimer);
     }
 
@@ -103,8 +122,9 @@ public class Table implements State {
     }
 
     public void nextTurn() {
-        removeCard(getPlayedCardId());
+        hand[currentPlayer.ordinal()].removeCard(getPlayedCardId());
         currentPlayer = currentPlayer.nextPlayer();
+        reLoadTextSprites();
         if (isPlayerFirstInTurn())
             summarizeTurn();
         manageActivity();
@@ -149,46 +169,34 @@ public class Table implements State {
         return new Hand(temp, cardAmount, playerId, this);
     }
 
-    private void checkTableForUpdates()
+    public void playCard(Card card)
     {
-        for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
-            checkHandForUpdates(i);
-        if(solverButton.isToProcess())
-            processSolver();
-    }
-
-    private void processSolver()
-    {
-        solver.initialize(this);
-        solverButton.setToProcess(false);
-    }
-
-    private void checkHandForUpdates(int handId)
-    {
-        for(int i = 0; i < hand[handId].getCard().size(); i++)
-        {
-            if(hand[handId].getCard().get(i).isToProcess())
-                manageCardUpdates(handId, hand[handId].getCard().get(i));
-        }
-    }
-    private void manageCardUpdates(int handId, Card card)
-    {
-        card.setX(Hand.OWNER_CENTER_X[handId]);
-        card.setY(Hand.OWNER_CENTER_Y[handId]);
+        int handId = getCardsHandId(card);
+        moveCardToCenter(card, handId);
         chosenCards[handId] = new Card(card);
         children.add(chosenCards[handId]);
-        card.setToProcess(false);
         nextTurn();
     }
 
-    private void removeCard(Card card) {
-        hand[currentPlayer.ordinal()].getChildren().remove(card);
-        hand[currentPlayer.ordinal()].getCard().remove(card);
-        repositionCards();
+    private void moveCardToCenter(Card card, int handId)
+    {
+        card.setX(Hand.OWNER_CENTER_X[handId]);
+        card.setY(Hand.OWNER_CENTER_Y[handId]);
+    }
+
+    private int getCardsHandId(Card card)
+    {
+        for(int i = 0; i < PLAYER_COUNT; i++)
+        {
+            if(hand[i].getCard().contains(card))
+                return i;
+        }
+        return -1;
     }
 
     private void summarizeTurn() {
         currentPlayer = lastWinner = selectWinner();
+        reLoadTextSprites();
         clearTableCenter();
         addPoints();
     }
@@ -198,12 +206,7 @@ public class Table implements State {
             taken.x++;
         else
             taken.y++;
-    }
-
-    private void repositionCards() {
-        for (int i = 0; i < hand[currentPlayer.ordinal()].getCard().size(); i++) {
-            hand[currentPlayer.ordinal()].getCard().get(i).setX(hand[currentPlayer.ordinal()].getX() + i * Hand.CARD_SPACE);
-        }
+        reLoadTextSprites();
     }
 
     private boolean isNewWinning(Card old, Card _new, CardColor currentAtu) {

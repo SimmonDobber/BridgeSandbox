@@ -2,28 +2,28 @@ package main.game.tablecontent.card;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.Input;
-import main.engine.LoopTimer;
-import main.engine.display.Window;
-import main.engine.structures.Button;
-import main.engine.display.Renderer;
-import main.engine.structures.GameObject;
-import main.engine.structures.Scene;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
+import main.engine.structures.features.Activable;
+import main.engine.structures.features.Clickable;
+import main.engine.structures.features.Hoverable;
+import main.engine.structures.gameObject.GameObject;
 import main.game.GameConstants;
-import main.game.tablecontent.Hand;
 import main.game.tablecontent.Table;
 
 import static main.game.GameConstants.*;
 
 @Getter
-public class Card extends Button
+public class Card extends GameObject implements Clickable, Activable, Hoverable
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
     private CardFigure figure;
     private CardColor color;
+    @Setter
+    private boolean active;
+    @Setter
+    private boolean hovered;
 
     public Card(Card card)
     {
@@ -45,6 +45,8 @@ public class Card extends Button
     {
         this.figure = figure;
         this.color = color;
+        this.active = true;
+        this.hovered = false;
         initializeSpriteList();
     }
 
@@ -58,12 +60,13 @@ public class Card extends Button
     }
 
     @Override
-    public void onClick() {
-        toProcess = true;
+    public void update()
+    {
+        ((Table)(getParent().getParent())).playCard(this);
     }
 
     @Override
-    public void onDoubleClick() {
+    public void onClick() {
 
     }
 
@@ -78,13 +81,14 @@ public class Card extends Button
     }
 
     @Override
-    public void onHover() {
-            highlighted = true;
+    public void onHover()
+    {
+        hovered = true;
     }
 
     @Override
     public void nonHover() {
-        highlighted = false;
+        hovered = false;
     }
 
     public int getId()

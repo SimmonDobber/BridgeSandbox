@@ -2,12 +2,25 @@ package main.engine;
 
 import lombok.Getter;
 import main.engine.display.Window;
+import main.engine.structures.features.Clickable;
+import main.engine.structures.observer.Observable;
+import main.engine.structures.observer.Observer;
 
 import java.awt.event.*;
-import java.util.Arrays;
+import java.util.LinkedList;
 
-public class Input implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener
+@Getter
+public class Input implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, Observable
 {
+    private static Input INPUT = null;
+
+    public static Input getInput() {
+        if(INPUT == null) {
+            INPUT = new Input(Window.getWindow());
+        }
+        return INPUT;
+    }
+
     private final int NUM_KEYS = 256;
     private final boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
@@ -16,33 +29,42 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private final boolean[] buttons = new boolean[NUM_BUTTONS];
     private boolean[] buttonsLast = new boolean[NUM_BUTTONS];
 
-    @Getter
     private int mouseX;
-    @Getter
     private int mouseY;
-    @Getter
     private int scroll;
-    @Getter
-    private boolean mouseClicked;
-    @Getter
-    private boolean mouseMoved;
-    @Getter
-    private boolean keyboardClicked;
 
-    Input(Window window)
+    private boolean mouseClicked;
+    private boolean mouseMoved;
+    private boolean mouseHeld;
+    private boolean keyboardClicked;
+    private boolean keyboardHeld;
+
+    private LinkedList<Clickable> observers;
+
+
+    private Input(Window window)
     {
-        initializeVariables();
+        initializeMouse();
+        initializeKeyboard();
         initializeListeners(window);
+        observers = new LinkedList<>();
     }
-    private void initializeVariables()
+
+    private void initializeMouse()
     {
         mouseX = 0;
         mouseY = 0;
         scroll = 0;
-        mouseClicked = false;
         mouseMoved = false;
-        keyboardClicked = false;
+        mouseHeld = false;
     }
+
+    private void initializeKeyboard()
+    {
+        keyboardClicked = false;
+        keyboardHeld = false;
+    }
+
     private void initializeListeners(Window window)
     {
         window.getCanvas().addKeyListener(this);
@@ -53,20 +75,39 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     public void update()
     {
+        if(isActionOngoing())
+            notifyObservers();
         updateMouse();
         updateKeyboard();
     }
+
     private void updateMouse()
     {
-        buttonsLast = Arrays.copyOf(buttons, NUM_BUTTONS);
-        scroll = 0;
         mouseClicked = false;
         mouseMoved = false;
+        mouseHeld = false;
+        for(int i = 0; i < NUM_BUTTONS; i++)
+        {
+            buttonsLast[i] = buttons[i];
+            mouseHeld |= buttons[i];
+        }
+        scroll = 0;
     }
+
     private void updateKeyboard()
     {
-        keysLast = Arrays.copyOf(keys, NUM_KEYS);
         keyboardClicked = false;
+        keyboardHeld = false;
+        for(int i = 0; i < NUM_BUTTONS; i++)
+        {
+            keysLast[i] = keys[i];
+            keyboardHeld |= keys[i];
+        }
+    }
+
+    public boolean isActionOngoing()
+    {
+        return mouseClicked | mouseMoved | mouseHeld | keyboardClicked | keyboardHeld;
     }
 
     public boolean isKey(int keyCode)
@@ -92,6 +133,27 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     public boolean isButtonDown(int button)
     {
         return buttons[button] && !buttonsLast[button];
+    }
+
+    @Override
+    public void attach(Observer observer)
+    {
+        observers.add(((Clickable)(observer)));
+    }
+
+    @Override
+    public void detach(Observer observer)
+    {
+        observers.remove(((Clickable)(observer)));
+    }
+
+    @Override
+    public void notifyObservers()
+    {
+        for (Clickable observer : observers) {
+            if (observer.isClickable(mouseX, mouseY))
+                observer.update();
+        }
     }
 
     @Override

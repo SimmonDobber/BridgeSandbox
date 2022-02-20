@@ -1,4 +1,4 @@
-package main.engine;
+package main.engine.structures;
 
 public class IntPair
 {

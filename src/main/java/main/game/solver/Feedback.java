@@ -1,6 +1,6 @@
 package main.game.solver;
 
-import main.engine.IntPair;
+import main.engine.structures.IntPair;
 
 import java.util.ArrayList;
 import java.util.List;
