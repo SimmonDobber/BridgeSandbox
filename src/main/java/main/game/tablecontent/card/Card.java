@@ -9,7 +9,9 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.features.Activable;
 import main.engine.structures.features.Clickable;
 import main.engine.structures.features.Hoverable;
+import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.tablecontent.Table;
@@ -35,17 +37,17 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
 
     public Card(Card card)
     {
-        super(card.x, card.y, card.w, card.h, card.parent);
+        super(card.pos, card.dim, card.parent);
         initializeCard(card.figure, card.color);
     }
 
-    public Card(int x, int y, GameObject parent, CardFigure figure, CardColor color) {
-        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, parent);
+    public Card(Position pos, GameObject parent, CardFigure figure, CardColor color) {
+        super(pos, new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), parent);
         initializeCard(figure, color);
     }
 
-    public Card(int x, int y, int w, int h, GameObject parent, CardFigure figure, CardColor color) {
-        super(x, y, w, h, parent);
+    public Card(Position pos, Dimensions dim, GameObject parent, CardFigure figure, CardColor color) {
+        super(pos, dim, parent);
         initializeCard(figure, color);
     }
 
@@ -62,11 +64,11 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
 
     private void initializeSpriteList()
     {
-        spriteList.add(new Rectangle(0, 0, w, h, SILVER, color.getCardColor(), 1));
-        spriteList.add(new Text(figure.getAsciiString(), 3, 2, DEFAULT_FONT_SIZE, color.getCardColor(), 1));
-        spriteList.add(new Text(color.getAsciiString(), -1, DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE, color.getCardColor(),1));
-        spriteList.add(new Text(figure.getAsciiString(), w - DEFAULT_FONT_SIZE / 2 - 8, h - DEFAULT_FONT_SIZE, DEFAULT_FONT_SIZE, color.getCardColor(),1));
-        spriteList.add(new Text(color.getAsciiString(), w - DEFAULT_FONT_SIZE / 2 - 11, h - DEFAULT_FONT_SIZE * 2 + 6, DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+        spriteList.add(new Rectangle(new Position(), dim, SILVER, color.getCardColor(), 1));
+        spriteList.add(new Text(figure.getAsciiString(), new Position(3, 2), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+        spriteList.add(new Text(color.getAsciiString(), new Position(-1, DEFAULT_FONT_SIZE), DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(figure.getAsciiString(), new Position(dim.getW() - DEFAULT_FONT_SIZE / 2 - 8, dim.getH() - DEFAULT_FONT_SIZE), DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(color.getAsciiString(), new Position(dim.getW() - DEFAULT_FONT_SIZE / 2 - 11, dim.getH() - DEFAULT_FONT_SIZE * 2 + 6), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
     }
 
     @Override
@@ -92,20 +94,14 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
     {
         spriteRender(r);
         childrenRender(r);
-        hoverRender(r);
+        hoverRender(r, hovered, id);
         inactiveRender(r);
-    }
-
-    private void hoverRender(Renderer r)
-    {
-        if(hovered)
-            r.drawRectangle(x, y, w, h, HIGHLIGHT_COLOR, 1, id);
     }
 
     private void inactiveRender(Renderer r)
     {
         if(!active)
-            r.drawRectangle(x, y, w, h, INACTIVE_COLOR, 1, id);
+            r.drawRectangle(pos, dim, INACTIVE_COLOR, 1, id);
     }
 
     @Override

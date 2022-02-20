@@ -2,60 +2,57 @@ package main.engine.structures.drawable;
 
 import lombok.Getter;
 import main.engine.display.Renderer;
+import main.engine.structures.gameObject.Dimensions;
+import main.engine.structures.gameObject.Position;
 
 @Getter
 public class Rectangle implements Drawable
 {
     private static final int DEFAULT_FRAME_THICKNESS = 2;
-    private int x;
-    private int y;
-    private int w;
-    private int h;
+    private Position pos;
+    private Dimensions dim;
     private int fixed;
     private int color;
     private int frameColor;
 
-    public Rectangle(int x, int y, int w, int h, int color, int frameColor, int fixed)
+    public Rectangle(Position pos, Dimensions dim, int color, int frameColor, int fixed)
     {
-        initializeRectangle(x, y, w, h, color, frameColor, fixed);
+        initializeRectangle(pos, dim, color, frameColor, fixed);
     }
 
-    public Rectangle(int x, int y, int w, int h, int color, int fixed)
+    public Rectangle(Position pos, Dimensions dim, int color, int fixed)
     {
-        initializeRectangle(x, y, w, h, color, color, fixed);
+        initializeRectangle(pos, dim, color, color, fixed);
     }
-    private void initializeRectangle(int x, int y,int w, int h, int color, int frameColor, int fixed)
+    private void initializeRectangle(Position pos, Dimensions dim, int color, int frameColor, int fixed)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.pos = pos;
+        this.dim = dim;
         this.fixed = fixed;
         this.color = color;
         this.frameColor = frameColor;
     }
 
     @Override
-    public void render(Renderer r, int x, int y, int id) {
-        r.drawRectangle(getAbsoluteX(x), getAbsoluteY(y), w, h, color, fixed, id);
+    public void render(Renderer r, Position pos, int id) {
+        r.drawRectangle(getAbsolutePos(pos), dim, color, fixed, id);
         if(color != frameColor)
-            renderFrame(r, getAbsoluteX(x), getAbsoluteY(y), id);
+            renderFrame(r, getAbsolutePos(pos), id);
     }
 
-    private void renderFrame(Renderer r, int absX, int absY, int id)
+    private void renderFrame(Renderer r, Position absPos, int id)
     {
-        r.drawRectangle(absX, absY, w, DEFAULT_FRAME_THICKNESS, frameColor, fixed, id);
-        r.drawRectangle(absX, absY, DEFAULT_FRAME_THICKNESS, h, frameColor, fixed, id);
-        r.drawRectangle(absX + w - DEFAULT_FRAME_THICKNESS, absY, DEFAULT_FRAME_THICKNESS, h, frameColor, fixed, id);
-        r.drawRectangle(absX, absY + h - DEFAULT_FRAME_THICKNESS, w, DEFAULT_FRAME_THICKNESS, frameColor, fixed, id);
+        Position framePosition;
+        r.drawRectangle(absPos, new Dimensions(dim.getW(), DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
+        r.drawRectangle(absPos, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.getH()), frameColor, fixed, id);
+        framePosition = new Position(absPos.getX() + dim.getW() - DEFAULT_FRAME_THICKNESS, absPos.getY());
+        r.drawRectangle(framePosition, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.getH()), frameColor, fixed, id);
+        framePosition = new Position(absPos.getX(), absPos.getY() + dim.getH() - DEFAULT_FRAME_THICKNESS);
+        r.drawRectangle(framePosition, new Dimensions(dim.getW(), DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
     }
 
-    private int getAbsoluteX(int x)
+    private Position getAbsolutePos(Position pos)
     {
-        return this.x + x;
-    }
-    private int getAbsoluteY(int y)
-    {
-        return this.y + y;
+        return new Position(this.pos.getX() + pos.getX(), this.pos.getY() + pos.getY());
     }
 }

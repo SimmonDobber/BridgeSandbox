@@ -3,50 +3,47 @@ package main.engine.structures.drawable;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.display.Renderer;
+import main.engine.structures.gameObject.Dimensions;
+import main.engine.structures.gameObject.Position;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.PipedInputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
 public class Image implements Drawable
 {
-    private int x;
-    private int y;
-    private int w;
-    private int h;
-    private int fixed;
+    private Position pos;
+    private Dimensions dim;
+    private final int fixed;
     private int[] p;
 
-    public Image(String path, int x, int y, int w, int h, int fixed)
+    public Image(String path, Position pos, Dimensions dim, int fixed)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.pos = pos;
+        this.dim = dim;
         this.fixed = fixed;
         BufferedImage image = loadImage(path);
-        p = image.getRGB(0, 0, w, h, null, 0, w);
-        rescale(w, h);
+        p = image.getRGB(0, 0, dim.getW(), dim.getH(), null, 0, dim.getW());
+        rescale(dim.getW(), dim.getH());
         image.flush();
     }
 
-    public Image(int x, int y, int w, int h, int fixed)
+    public Image(Position pos, Dimensions dim, int fixed)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.pos = pos;
+        this.dim = dim;
         this.fixed = fixed;
-        p = new int[w * h];
+        p = new int[dim.getW() * dim.getH()];
     }
 
     @Override
-    public void render(Renderer r, int x, int y, int id)
+    public void render(Renderer r, Position pos, int id)
     {
-        r.drawImage(this, getAbsoluteX(x), getAbsoluteY(y), id);
+        r.drawImage(this, getAbsolutePos(pos), id);
     }
 
     private BufferedImage loadImage(String path)
@@ -65,11 +62,11 @@ public class Image implements Drawable
     {
         int[] r = Arrays.copyOf(p, p.length);
         p = new int[newWidth * newHeight];
-        double widthScale = ((double)(newWidth) / (double)(w));
-        double heightScale = ((double)(newHeight) / (double)(h));
+        double widthScale = ((double)(newWidth) / (double)(dim.getW()));
+        double heightScale = ((double)(newHeight) / (double)(dim.getH()));
         rescaleByPixels(r, newWidth, newHeight, widthScale, heightScale);
-        w = newWidth;
-        h = newHeight;
+        dim.setW(newWidth);
+        dim.setH(newHeight);
     }
 
     public void rotate(double angle)
@@ -78,10 +75,8 @@ public class Image implements Drawable
         while(angle >= Math.PI / 2)
         {
             int[] r = Arrays.copyOf(p, p.length);
-            p = new int[w * h];
-            imageTransposition(r);
-            dimensionSwap();
-            imageMirror();
+            p = new int[dim.getW() * dim.getH()];
+            imageRotation(r);
             angle -= Math.PI / 2;
         }
     }
@@ -92,54 +87,28 @@ public class Image implements Drawable
         {
             for(int i = 0; i < newWidth; i++)
             {
-                p[i + j * newWidth] = r[(int)((double)(i) / (widthScale)) + (int)((double)(j) / (heightScale)) * w];
+                p[i + j * newWidth] = r[(int)((double)(i) / (widthScale)) + (int)((double)(j) / (heightScale)) * dim.getW()];
             }
         }
     }
 
-    private void imageTransposition(int[] r)
+    private void imageRotation(int[] r)
     {
-        for(int i = 0; i < w; i++)
+        for(int i = 0; i < dim.getW(); i++)
         {
-            for(int j = 0; j < h; j++)
+            for(int j = 0; j < dim.getH(); j++)
             {
-                p[j + i * h] = r[i + j * w];
+                p[(dim.getH() - j - 1) + i * dim.getH()] = r[i + j * dim.getW()];
             }
         }
-    }
-    private void imageMirror()
-    {
-        for(int i = 0; i < w; i++)
-        {
-            for (int j = 0; j < h / 2; j++)
-            {   
-                pixelSwap(i, j);
-            }
-        }
-    }
-    private void dimensionSwap()
-    {
-        w = w + h;
-        h = w - h;
-        w = w - h;
-    }
-    private void pixelSwap(int i, int j)
-    {
-        p[i + j * w]  = p[i + j * w] + p[i + (h - j - 1) * w];
-        p[i + (h - j - 1) * w] = p[i + j * w] - p[i + (h - j - 1) * w];
-        p[i + j * w] = p[i + j * w] - p[i + (h - j - 1) * w];
     }
     private double normalizeAngle(double angle)
     {
         return Math.abs(angle) - 2 * Math.PI * Math.floor(Math.abs(angle) / (2 * Math.PI)) + (angle < 0 ? 2 * Math.PI : 0);
     }
 
-    private int getAbsoluteX(int x)
+    private Position getAbsolutePos(Position pos)
     {
-        return this.x + x;
-    }
-    private int getAbsoluteY(int y)
-    {
-        return this.y + y;
+        return new Position(this.pos.getX() + pos.getX(), this.pos.getY() + pos.getY());
     }
 }

@@ -2,6 +2,8 @@ package main.engine.display;
 
 import lombok.Getter;
 import main.engine.structures.drawable.Image;
+import main.engine.structures.gameObject.Dimensions;
+import main.engine.structures.gameObject.Position;
 
 public class Font
 {
@@ -22,7 +24,7 @@ public class Font
 
     public Font(String path)
     {
-        fontImage = new Image(path, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 1);
+        fontImage = new Image(path, new Position(), new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), 1);
         letters = new Image[SIZE_COUNT][CHARACTERS_COUNT];
         offsets = new int[CHARACTERS_COUNT];
         widths = new int[CHARACTERS_COUNT];
@@ -32,7 +34,7 @@ public class Font
     private void loadFontImages()
     {
         int unicodeId = 0;
-        for(int i = 0; i < fontImage.getW(); i++)
+        for(int i = 0; i < fontImage.getDim().getW(); i++)
         {
             setLetterOffset(i, unicodeId);
             if(fontImage.getP()[i] == LETTER_END_COLOR)
@@ -54,7 +56,7 @@ public class Font
 
     private void loadLetter(int size, int unicodeId)
     {
-        letters[size][unicodeId] = new Image(0, 0, widths[unicodeId], fontImage.getH(), 1);
+        letters[size][unicodeId] = new Image(new Position(), new Dimensions(widths[unicodeId], fontImage.getDim().getH()), 1);
         insertLetterIntoImage(size, unicodeId, offsets[unicodeId], widths[unicodeId]);
         rescaleLetter(size, unicodeId);
     }
@@ -74,9 +76,9 @@ public class Font
     {
         for(int j = letterOffset; j <= letterOffset + letterWidth - 1; j++)
         {
-            for(int k = 0; k < fontImage.getH(); k++)
+            for(int k = 0; k < fontImage.getDim().getH(); k++)
             {
-                letters[size][unicodeId].getP()[j - letterOffset + k * letterWidth] = fontImage.getP()[j + k * fontImage.getW()];
+                letters[size][unicodeId].getP()[j - letterOffset + k * letterWidth] = fontImage.getP()[j + k * fontImage.getDim().getW()];
             }
         }
     }

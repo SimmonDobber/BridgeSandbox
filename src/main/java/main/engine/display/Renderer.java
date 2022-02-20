@@ -3,6 +3,8 @@ package main.engine.display;
 import lombok.Getter;
 import main.engine.structures.drawable.Image;
 import main.engine.structures.drawable.Text;
+import main.engine.structures.gameObject.Dimensions;
+import main.engine.structures.gameObject.Position;
 
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
@@ -62,90 +64,91 @@ public class Renderer
         return x < 0 & y < 0 & x >= screenW & y >= screenH;
     }
 
-    public void drawRectangle(int x, int y, int w, int h, int color, int fixed, int owner)
+    public void drawRectangle(Position pos, Dimensions dim, int color, int fixed, int owner)
     {
         if(fixed == 0)
-            drawNonFixedRectangle(x, y, w, h, color, owner);
+            drawNonFixedRectangle(pos, dim, color, owner);
         else
-            drawFixedRectangle(x, y, w, h, color, owner);
+            drawFixedRectangle(pos, dim, color, owner);
 
     }
 
-    private void drawNonFixedRectangle(int x, int y, int w, int h, int color, int owner)
+    private void drawNonFixedRectangle(Position pos, Dimensions dim, int color, int owner)
     {
-        for(int i = Math.max(x, 0) + camera.offX; i < Math.min(w + x, screenW) + camera.offX; i++)
+        for(int i = Math.max(pos.getX(), 0) + camera.offX; i < Math.min(dim.getW() + pos.getX(), screenW) + camera.offX; i++)
         {
-            for(int j = Math.max(y, 0) + camera.offY; j < Math.min(h + y, screenH) + camera.offY; j++)
+            for(int j = Math.max(pos.getY(), 0) + camera.offY; j < Math.min(dim.getH() + pos.getY(), screenH) + camera.offY; j++)
             {
                 drawPixel(i, j, color, owner);
             }
         }
     }
 
-    private void drawFixedRectangle(int x, int y, int w, int h, int color, int owner)
+    private void drawFixedRectangle(Position pos, Dimensions dim, int color, int owner)
     {
-        for(int i = Math.max(x, 0); i < Math.min(w + x, screenW); i++)
+        for(int i = Math.max(pos.getX(), 0); i < Math.min(pos.getX() + dim.getW(), screenW); i++)
         {
-            for(int j = Math.max(y, 0); j < Math.min(h + y, screenH); j++)
+            for(int j = Math.max(pos.getY(), 0); j < Math.min(pos.getY() + dim.getH(), screenH); j++)
             {
                 drawPixel(i, j, color, owner);
             }
         }
     }
 
-    public void drawImage(Image image, int x, int y, int owner)
+    public void drawImage(Image image, Position pos, int owner)
     {
-        int newW = Math.max(0, Math.min(image.getW(), screenW - x - camera.offX * (1 - image.getFixed())));
-        int newH = Math.max(0, Math.min(image.getH(), screenH - y - camera.offY * (1 - image.getFixed())));
-        drawImagePixels(image, x, y, newW, newH, owner);
+        int newW = Math.max(0, Math.min(image.getDim().getW(), screenW - pos.getX() - camera.offX * (1 - image.getFixed())));
+        int newH = Math.max(0, Math.min(image.getDim().getH(), screenH - pos.getY() - camera.offY * (1 - image.getFixed())));
+        drawImagePixels(image, pos, new Dimensions(newW, newH), owner);
     }
 
-    private void drawImagePixels(Image image, int x, int y, int newW, int newH, int owner)
+    private void drawImagePixels(Image image, Position pos, Dimensions dim, int owner)
     {
-        for(int j = y; j < y + newH; j++)
+        for(int j = pos.getY(); j < pos.getY() + dim.getH(); j++)
         {
-            for(int i = x; i < x + newW; i++)
+            for(int i = pos.getX(); i < pos.getX() + dim.getW(); i++)
             {
-                drawPixel(i, j, image.getP()[(i - x) + (j - y) * image.getW()], owner);
+                drawPixel(i, j, image.getP()[(i - pos.getX()) + (j - pos.getY()) * image.getDim().getW()], owner);
             }
         }
     }
 
-    public void drawText(Text text, int textOffsetX, int textOffsetY, int owner)
+    public void drawText(Text text, Position textOffset, int owner)
     {
-        int symbolOffsetX = 0;
-        int symbolOffsetY = 0;
+        Position symbolOffset = new Position();
         for(int i = 0; i < text.getText().length(); i++)
         {
             int unicodeId = text.getText().codePointAt(i) - UNICODE_OFFSET;
             if(text.getText().codePointAt(i) == '\n')
             {
-                symbolOffsetX = 0;
-                symbolOffsetY += font.getLetters()[text.getSize() / 2][0].getH();
+                int newLineYPos = symbolOffset.getY() + font.getLetters()[text.getSize() / 2][0].getDim().getH();
+                symbolOffset = new Position(0, newLineYPos);
                 continue;
             }
-            drawSymbol(unicodeId, text, symbolOffsetX + textOffsetX, symbolOffsetY + textOffsetY, owner);
-            symbolOffsetX += font.getLetters()[text.getSize() / 2][unicodeId].getW();
+            int absoluteXOffset = symbolOffset.getX() + textOffset.getX();
+            int absoluteYOffset = symbolOffset.getY() + textOffset.getY();
+            drawSymbol(unicodeId, text, new Position(absoluteXOffset, absoluteYOffset), owner);
+            symbolOffset.incX(font.getLetters()[text.getSize() / 2][unicodeId].getDim().getW());
         }
     }
-    private void drawSymbol(int unicodeId, Text text, int offsetX, int offsetY, int owner)
+    private void drawSymbol(int unicodeId, Text text, Position offset, int owner)
     {
-        for(int y = 0; y < font.getLetters()[text.getSize() / 2][unicodeId].getH(); y++)
+        for(int y = 0; y < font.getLetters()[text.getSize() / 2][unicodeId].getDim().getH(); y++)
         {
-            for(int x = 0; x < font.getLetters()[text.getSize() / 2][unicodeId].getW(); x++)
+            for(int x = 0; x < font.getLetters()[text.getSize() / 2][unicodeId].getDim().getW(); x++)
             {
-                if(isPixelInSymbol(unicodeId, text.getSize(), x, y))
+                if(isPixelInSymbol(unicodeId, text.getSize(), new Position(x, y)))
                 {
-                    int absoluteX = x + offsetX + camera.offX * (1 - text.getFixed());
-                    int absoluteY = y + offsetY + camera.offY * (1 - text.getFixed());
+                    int absoluteX = x + offset.getX() + camera.offX * (1 - text.getFixed());
+                    int absoluteY = y + offset.getY() + camera.offY * (1 - text.getFixed());
                     drawPixel(absoluteX, absoluteY, text.getColor(), owner);
                 }
             }
         }
     }
-    private boolean isPixelInSymbol(int unicodeId, int size, int x, int y)
+    private boolean isPixelInSymbol(int unicodeId, int size, Position pos)
     {
         Image letter = font.getLetters()[size / 2][unicodeId];
-        return letter.getP()[x + y * letter.getW()] == 0xFF000000;
+        return letter.getP()[pos.getX() + pos.getY() * letter.getDim().getW()] == 0xFF000000;
     }
 }

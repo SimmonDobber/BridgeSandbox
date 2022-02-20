@@ -1,7 +1,9 @@
 package main.game.tablecontent;
 
 import lombok.Getter;
+import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.tablecontent.card.Card;
@@ -23,7 +25,7 @@ public class Hand extends GameObject
 
     public Hand(int[] id, int cardAmount, int playerId, GameObject parent)
     {
-        super(OWNER_X[playerId], OWNER_Y[playerId], 0, 0, parent);
+        super(new Position(OWNER_X[playerId], OWNER_Y[playerId]), new Dimensions(), parent);
         initializeCards(id, cardAmount);
     }
 
@@ -34,7 +36,7 @@ public class Hand extends GameObject
         {
             CardFigure cardFigure = CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT];
             CardColor cardColor = CardColor.values()[id[i] / GameConstants.FIGURE_COUNT];
-            card.add(new Card(x + i * CARD_SPACE, y, this, cardFigure, cardColor));
+            card.add(new Card(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, cardFigure, cardColor));
             children.add(card.get(card.size() - 1));
         }
     }
@@ -54,7 +56,7 @@ public class Hand extends GameObject
 
     private void repositionCards() {
         for (int i = 0; i < card.size(); i++) {
-            card.get(i).setX(x + i * Hand.CARD_SPACE);
+            card.get(i).getPos().setX(pos.getX() + i * Hand.CARD_SPACE);
         }
     }
 

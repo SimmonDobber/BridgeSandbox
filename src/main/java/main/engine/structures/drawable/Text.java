@@ -2,39 +2,34 @@ package main.engine.structures.drawable;
 
 import lombok.Getter;
 import main.engine.display.Renderer;
+import main.engine.structures.gameObject.Position;
 
 @Getter
 public class Text implements Drawable
 {
     private String text;
-    private int x;
-    private int y;
+    private Position pos;
     private int size;
     private int color;
     private int fixed;
 
-    public Text(String text, int x, int y, int size, int color, int fixed)
+    public Text(String text, Position pos, int size, int color, int fixed)
     {
         this.text = text;
-        this.x = x;
-        this.y = y;
+        this.pos = pos;
         this.size = size;
         this.color = color;
         this.fixed = fixed;
     }
 
     @Override
-    public void render(Renderer r, int x, int y, int id)
+    public void render(Renderer r, Position pos, int id)
     {
-        r.drawText(this, getAbsoluteX(x), getAbsoluteY(y), id);
+        r.drawText(this, getAbsolutePos(pos), id);
     }
 
-    private int getAbsoluteX(int x)
+    private Position getAbsolutePos(Position pos)
     {
-        return this.x + x;
-    }
-    private int getAbsoluteY(int y)
-    {
-        return this.y + y;
+        return new Position(this.pos.getX() + pos.getX(), this.pos.getY() + pos.getY());
     }
 }

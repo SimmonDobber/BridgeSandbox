@@ -19,6 +19,7 @@ public class Window
         }
         return WINDOW;
     }
+
     public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;

@@ -1,9 +1,12 @@
 package main.game.tablecontent;
 
+import main.engine.display.Renderer;
 import main.engine.structures.Button;
+import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
+import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.tablecontent.card.CardColor;
 
@@ -17,16 +20,17 @@ public class ContractButton extends Button
 
     public ContractButton(GameObject parent, int contractId)
     {
-        super(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y, DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT, parent);
+        super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
+                new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
         initializeSpriteList(contractId);
         observers = new LinkedList<>();
     }
 
     private void initializeSpriteList(int contractId)
     {
-        spriteList.add(new Rectangle(0, 0, w, h, CYAN, BROWN, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId / 5) + '1')), 7, 4, DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId % 5) + '[')), 26, 4, DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
+        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId / 5) + '1')), new Position(7, 4), DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId % 5) + '[')), new Position(26, 4), DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
     }
 
     @Override

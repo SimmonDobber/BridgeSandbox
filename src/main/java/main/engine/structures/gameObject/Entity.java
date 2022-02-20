@@ -8,15 +8,12 @@ import main.engine.structures.features.Measurable;
 @Setter
 public class Entity implements Measurable
 {
-    protected int x;
-    protected int y;
-    protected int w;
-    protected int h;
-    public Entity(int x, int y, int w, int h)
+    protected Position pos;
+    protected Dimensions dim;
+
+    public Entity(Position pos, Dimensions dim)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.pos = pos;
+        this.dim = dim;
     }
 }

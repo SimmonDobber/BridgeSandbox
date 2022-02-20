@@ -39,7 +39,7 @@ public class Table implements State {
 
     public Table()
     {
-        super(0, 0, Window.WIDTH, Window.HEIGHT, null);
+        super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeTable();
         initializeGame();
         initializeSpriteList();
@@ -72,16 +72,16 @@ public class Table implements State {
 
     private void initializeSpriteList()
     {
-        spriteList.add(new Rectangle(0, 0, w, h, GREEN, 1));
-        spriteList.add(new Rectangle(410, 166, 377, 343, CYAN, BROWN, 1));
+        spriteList.add(new Rectangle(new Position(), dim, GREEN, 1));
+        spriteList.add(new Rectangle(new Position(410, 166), new Dimensions(377, 343), CYAN, BROWN, 1));
         loadTextSprites();
     }
 
     private void loadTextSprites()
     {
-        spriteList.add(new Text("Contract; ", 10, 25, DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text("Current player; " + currentPlayer.getAsciiString(), 10, 65, DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text("Taken; N/S - " + taken.x + " | W/E - " + taken.y, 10, 105,  DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text("Contract; ", new Position(10, 25), DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text("Current player; " + currentPlayer.getAsciiString(), new Position(10, 65), DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text("Taken; N/S - " + taken.x + " | W/E - " + taken.y, new Position(10, 105),  DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
     private void removeTextSprites()
@@ -186,8 +186,7 @@ public class Table implements State {
 
     private void moveCardToCenter(Card card, int handId)
     {
-        card.setX(Hand.OWNER_CENTER_X[handId]);
-        card.setY(Hand.OWNER_CENTER_Y[handId]);
+        card.setPos(new Position(Hand.OWNER_CENTER_X[handId], Hand.OWNER_CENTER_Y[handId]));
     }
 
     private int getCardsHandId(Card card)
