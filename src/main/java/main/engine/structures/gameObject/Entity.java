@@ -2,6 +2,7 @@ package main.engine.structures.gameObject;
 
 import lombok.Getter;
 import lombok.Setter;
+import main.engine.structures.features.Measurable;
 
 @Getter
 @Setter

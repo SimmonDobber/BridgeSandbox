@@ -2,6 +2,7 @@ package main.game.tablecontent;
 
 import lombok.Getter;
 import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.tablecontent.card.Card;
 import main.game.tablecontent.card.CardColor;
@@ -35,6 +36,13 @@ public class Hand extends GameObject
             CardColor cardColor = CardColor.values()[id[i] / GameConstants.FIGURE_COUNT];
             card.add(new Card(x + i * CARD_SPACE, y, this, cardFigure, cardColor));
             children.add(card.get(card.size() - 1));
+        }
+    }
+    public void attachObserversToCards(Table table)
+    {
+        for(int i = 0; i < card.size(); i++)
+        {
+            card.get(i).attach(table);
         }
     }
 

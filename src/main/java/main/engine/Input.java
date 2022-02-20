@@ -39,7 +39,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private boolean keyboardClicked;
     private boolean keyboardHeld;
 
-    private LinkedList<Clickable> observers;
+    private LinkedList<Observer> observers;
 
 
     private Input(Window window)
@@ -138,22 +138,19 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     @Override
     public void attach(Observer observer)
     {
-        observers.add(((Clickable)(observer)));
+        observers.add(observer);
     }
 
     @Override
     public void detach(Observer observer)
     {
-        observers.remove(((Clickable)(observer)));
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers()
     {
-        for (Clickable observer : observers) {
-            if (observer.isClickable(mouseX, mouseY))
-                observer.update();
-        }
+        observers.forEach(Observer::update);
     }
 
     @Override

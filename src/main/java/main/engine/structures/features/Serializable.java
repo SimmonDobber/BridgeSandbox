@@ -1,4 +1,4 @@
-package main.engine.structures.gameObject;
+package main.engine.structures.features;
 
 import main.engine.Main;
 

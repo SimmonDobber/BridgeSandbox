@@ -2,14 +2,19 @@ package main.game.tablecontent.card;
 
 import lombok.Getter;
 import lombok.Setter;
+import main.engine.Input;
+import main.engine.display.Renderer;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.features.Activable;
 import main.engine.structures.features.Clickable;
 import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.tablecontent.Table;
+
+import java.util.LinkedList;
 
 import static main.game.GameConstants.*;
 
@@ -18,12 +23,15 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
+    @Getter
+    private static int recentlyPlayed = -1;
     private CardFigure figure;
     private CardColor color;
     @Setter
     private boolean active;
     @Setter
     private boolean hovered;
+    private LinkedList<Observer> observers;
 
     public Card(Card card)
     {
@@ -47,6 +55,8 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
         this.color = color;
         this.active = true;
         this.hovered = false;
+        Input.getInput().attach(this);
+        this.observers = new LinkedList<>();
         initializeSpriteList();
     }
 
@@ -62,12 +72,62 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
     @Override
     public void update()
     {
-        ((Table)(getParent().getParent())).playCard(this);
+        if(!active)
+            return;
+        focusUpdate();
+    }
+
+    private void focusUpdate()
+    {
+        if(hasFocus(id))
+        {
+            onHover();
+            clickableUpdate();
+        }
+        else
+            nonHover();
+    }
+
+    public void render(Renderer r)
+    {
+        spriteRender(r);
+        childrenRender(r);
+        hoverRender(r);
+        inactiveRender(r);
+    }
+
+    private void hoverRender(Renderer r)
+    {
+        if(hovered)
+            r.drawRectangle(x, y, w, h, HIGHLIGHT_COLOR, 1, id);
+    }
+
+    private void inactiveRender(Renderer r)
+    {
+        if(!active)
+            r.drawRectangle(x, y, w, h, INACTIVE_COLOR, 1, id);
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers()
+    {
+        observers.forEach(Observer::update);
     }
 
     @Override
     public void onClick() {
-
+        recentlyPlayed = id;
+        notifyObservers();
     }
 
     @Override
@@ -91,7 +151,7 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
         hovered = false;
     }
 
-    public int getId()
+    public int getCardId()
     {
         return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
     }

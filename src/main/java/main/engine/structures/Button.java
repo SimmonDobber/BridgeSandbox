@@ -7,8 +7,6 @@ import main.engine.structures.features.Clickable;
 import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.GameObject;
 
-import java.awt.event.MouseEvent;
-
 @Getter
 @Setter
 public abstract class Button extends GameObject implements Clickable, Hoverable
@@ -37,17 +35,8 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
 
     public void update()
     {
-        buttonUpdate();
-    }
-
-    protected void buttonUpdate()
-    {
-        if(Input.getInput().isButtonDown(MouseEvent.BUTTON1))
-            onClick();
-        if(Input.getInput().isButtonUp(MouseEvent.BUTTON1))
-            onRelease();
-        if(Input.getInput().isButton(MouseEvent.BUTTON1))
-            onHold();
+        if(hasFocus(id))
+            clickableUpdate();
     }
 
     public void incState()

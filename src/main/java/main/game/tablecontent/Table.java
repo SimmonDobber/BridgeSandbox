@@ -2,12 +2,10 @@ package main.game.tablecontent;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.*;
-import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.State;
 import main.game.GameConstants;
-import main.game.solver.Solver;
+import main.game.tablecontent.solver.Solver;
 import main.game.tablecontent.card.Card;
 import main.game.tablecontent.card.CardColor;
 
@@ -46,7 +44,7 @@ public class Table implements State {
         initializeGame();
         initializeSpriteList();
         manageActivity();
-        solver = new Solver();
+        solver = new Solver(this);
         initializeButtons();
     }
 
@@ -65,8 +63,9 @@ public class Table implements State {
 
     private void initializeButtons()
     {
-        solverButton = new SolverButton(this, solver);
+        solverButton = new SolverButton(this);
         children.add(solverButton);
+        solverButton.attach(solver);
         contractButton = new ContractButton(this, contractId);
         children.add(contractButton);
     }
@@ -101,16 +100,9 @@ public class Table implements State {
     }
 
     @Override
-    public void update(Window window, Input input, LoopTimer loopTimer)
+    public void update()
     {
-        updateChildren(window, input, loopTimer);
-    }
-
-    @Override
-    public void render(Renderer r)
-    {
-        spriteRender(r);
-        childrenRender(r);
+        playCard(findPlayedCard());
     }
 
     private void dealRandom(int cardAmount) {
@@ -118,6 +110,7 @@ public class Table implements State {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             hand[i] = dealToHand(deck, cardAmount, i);
             children.add(hand[i]);
+            hand[i].attachObserversToCards(this);
         }
     }
 
@@ -169,11 +162,24 @@ public class Table implements State {
         return new Hand(temp, cardAmount, playerId, this);
     }
 
+    private Card findPlayedCard()
+    {
+        for(int i = 0; i < PLAYER_COUNT; i++)
+        {
+            for(int j = 0; j < hand[i].getCard().size(); j++)
+            {
+                if(hand[i].getCard().get(j).getId() == Card.getRecentlyPlayed())
+                    return hand[i].getCard().get(j);
+            }
+        }
+        return null;
+    }
+
     public void playCard(Card card)
     {
         int handId = getCardsHandId(card);
         moveCardToCenter(card, handId);
-        chosenCards[handId] = new Card(card);
+        chosenCards[handId] = card;
         children.add(chosenCards[handId]);
         nextTurn();
     }
@@ -251,7 +257,7 @@ public class Table implements State {
     }
 
     private boolean isPlayedCardMatchingTable(int cardId) {
-        return hand[currentPlayer.ordinal()].getCard().get(cardId).getId() == chosenCards[currentPlayer.ordinal()].getId();
+        return hand[currentPlayer.ordinal()].getCard().get(cardId).getCardId() == chosenCards[currentPlayer.ordinal()].getCardId();
     }
 
     private boolean hasNewAtuAdvantage(Card old, Card _new) {

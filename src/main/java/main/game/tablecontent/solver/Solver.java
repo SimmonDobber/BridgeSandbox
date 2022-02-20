@@ -1,18 +1,24 @@
-package main.game.solver;
+package main.game.tablecontent.solver;
 
 import main.engine.structures.IntPair;
+import main.engine.structures.observer.Observer;
 import main.game.tablecontent.card.CardFigure;
 import main.game.GameConstants;
 import main.game.tablecontent.Table;
 
-public class Solver
+public class Solver implements Observer
 {
+    private final Table table;
     private int atu;
     private GameState initialState;
     private Feedback feedback;
-    public Solver()
+    public Solver(Table table)
     {
-
+        this.table = table;
+    }
+    @Override
+    public void update() {
+        initialize();
     }
     private int chooseWinner(GameState g)
     {
@@ -90,7 +96,7 @@ public class Solver
         feedback.moves = moves + 1;
         return feedback;
     }
-    public void initialize(Table table)
+    public void initialize()
     {
         atu = table.getContractId() % 5;
         initialState = new GameState(table);

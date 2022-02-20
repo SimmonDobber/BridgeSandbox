@@ -1,10 +1,10 @@
 package main.engine.structures.features;
 
-import main.engine.structures.gameObject.Measurable;
+import main.engine.Input;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
-import main.engine.structures.gameObject.Serializable;
-import main.engine.display.Window;
+
+import java.awt.event.MouseEvent;
 
 public interface Clickable extends Measurable, Serializable, Observer, Observable
 {
@@ -12,19 +12,14 @@ public interface Clickable extends Measurable, Serializable, Observer, Observabl
     void onRelease();
     void onHold();
 
-    default boolean hasToBeNotified(int mouseX, int mouseY)
+    default void clickableUpdate()
     {
-        return onSurface(mouseX, mouseY) && inBorders(mouseX, mouseY);
+        if(Input.getInput().isButtonDown(MouseEvent.BUTTON1))
+            onClick();
+        if(Input.getInput().isButtonUp(MouseEvent.BUTTON1))
+            onRelease();
+        if(Input.getInput().isButton(MouseEvent.BUTTON1))
+            onHold();
     }
 
-    default boolean onSurface(int mouseX, int mouseY)
-    {
-        int pixelId = mouseX + mouseY * Window.WIDTH;
-        return Window.getWindow().getRenderer().getPOwner()[pixelId] == getId();
-    }
-
-    default boolean inBorders(int mouseX, int mouseY)
-    {
-        return mouseX >= getX() && mouseX < getX() + getW() && mouseY >= getY() && mouseY < getY() + getH();
-    }
 }

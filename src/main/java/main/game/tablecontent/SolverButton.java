@@ -5,7 +5,9 @@ import main.engine.structures.Button;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
-import main.game.solver.Solver;
+import main.engine.structures.observer.Observer;
+
+import java.util.LinkedList;
 
 import static main.game.GameConstants.*;
 
@@ -14,13 +16,13 @@ public class SolverButton extends Button {
     public static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
     public static final int DEFAULT_SOLVER_BUTTON_X = Hand.CARD_SPACE;
     public static final int DEFAULT_SOLVER_BUTTON_Y = Window.HEIGHT - Hand.CARD_SPACE - DEFAULT_SOLVER_BUTTON_HEIGHT;
-    private Solver solver;
+    private LinkedList<Observer> observers;
 
-    public SolverButton(GameObject parent, Solver solver) {
+    public SolverButton(GameObject parent) {
         super(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y,
                 DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT, parent);
         initializeSpriteList();
-        this.solver = solver;
+        observers = new LinkedList<>();
     }
 
     private void initializeSpriteList()
@@ -30,9 +32,24 @@ public class SolverButton extends Button {
     }
 
     @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(Observer::update);
+    }
+
+    @Override
     public void onClick()
     {
-        solver.initialize((Table)(getParent()));
+        notifyObservers();
     }
 
     @Override
