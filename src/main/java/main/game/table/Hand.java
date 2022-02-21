@@ -1,14 +1,13 @@
-package main.game.tablecontent;
+package main.game.table;
 
 import lombok.Getter;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
-import main.game.tablecontent.card.Card;
-import main.game.tablecontent.card.CardColor;
-import main.game.tablecontent.card.CardFigure;
+import main.game.table.card.Card;
+import main.game.table.card.CardColor;
+import main.game.table.card.CardFigure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,8 @@ import java.util.List;
 public class Hand extends GameObject
 {
     public static final int CARD_SPACE = 24;
-    public static final int[] OWNER_X = {412, 803, 412, 24};
-    public static final int[] OWNER_Y = {24, 277, 531, 277};
+    private static final int[] OWNER_X = {412, 803, 412, 24};
+    private static final int[] OWNER_Y = {24, 277, 531, 277};
     public static final int[] OWNER_CENTER_X = {556, 676, 556, 436};
     public static final int[] OWNER_CENTER_Y = {192, 277, 363, 277};
     @Getter

@@ -7,7 +7,7 @@ import main.engine.display.Window;
 
 public interface Scene {
 
-    void update(Window window, Input input, LoopTimer loopTimer);
+    void update(double dt);
     void render(Renderer r);
 
 }

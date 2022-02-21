@@ -15,9 +15,8 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private static Input INPUT = null;
 
     public static Input getInput() {
-        if(INPUT == null) {
+        if(INPUT == null)
             INPUT = new Input(Window.getWindow());
-        }
         return INPUT;
     }
 

@@ -9,6 +9,8 @@ public class LoopTimer
     private double absoluteTime;
     private double unprocessedTime;
     @Getter
+    private double passedTime;
+    @Getter
     private double elapsedTime;
     private double frameTime;
     private double frames;
@@ -50,7 +52,7 @@ public class LoopTimer
     private void updateTime()
     {
         double currTime = System.nanoTime() / 1000000000.0;
-        double passedTime = currTime - prevTime;
+        passedTime = currTime - prevTime;
         prevTime = currTime;
         unprocessedTime += passedTime;
         frameTime += passedTime;

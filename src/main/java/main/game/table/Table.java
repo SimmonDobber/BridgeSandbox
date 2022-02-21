@@ -1,7 +1,8 @@
-package main.game.tablecontent;
+package main.game.table;
 
 import lombok.Getter;
 import lombok.Setter;
+import main.engine.ProgramContainer;
 import main.engine.display.Window;
 import main.engine.structures.IntPair;
 import main.engine.structures.gameObject.Dimensions;
@@ -12,9 +13,11 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
-import main.game.tablecontent.solver.Solver;
-import main.game.tablecontent.card.Card;
-import main.game.tablecontent.card.CardColor;
+import main.game.contractChoosePanel.ContractChooseButton;
+import main.game.contractChoosePanel.ContractChoosePanel;
+import main.game.table.solver.Solver;
+import main.game.table.card.Card;
+import main.game.table.card.CardColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +68,7 @@ public class Table extends GameObject implements Scene, Observer
     private void initializeGame() {
         this.lastWinner = PlayerSide.N;
         this.currentPlayer = PlayerSide.N;
-        dealRandom(5);
+        dealRandom(13);
         setContractId(18);
     }
 
@@ -81,7 +84,7 @@ public class Table extends GameObject implements Scene, Observer
     private void initializeSpriteList()
     {
         spriteList.add(new Rectangle(new Position(), dim, GREEN, 1));
-        spriteList.add(new Rectangle(new Position(410, 166), new Dimensions(377, 343), CYAN, BROWN, 1));
+        spriteList.add(new Rectangle(new Position(411, 166), new Dimensions(375, 343), CYAN, BROWN, 1));
         loadTextSprites();
     }
 
@@ -110,7 +113,28 @@ public class Table extends GameObject implements Scene, Observer
     @Override
     public void update()
     {
-        playCard(findPlayedCard());
+        updateCards();
+        updateContractButton();
+    }
+
+    private void updateCards()
+    {
+        if(Card.getRecentlyPlayed() >= 0)
+        {
+            playCard(findPlayedCard());
+            Card.setRecentlyPlayed(-1);
+        }
+    }
+
+    private void updateContractButton()
+    {
+        if(ContractChooseButton.getRecentlyChosen() >= 0)
+        {
+            setContractId(ContractChooseButton.getRecentlyChosen());
+            contractButton.reLoadTextSprites(contractId);
+            ContractChooseButton.setRecentlyChosen(-1);
+            ProgramContainer.getProgramContainer().switchSceneToTable();
+        }
     }
 
     private void dealRandom(int cardAmount) {

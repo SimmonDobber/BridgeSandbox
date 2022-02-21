@@ -1,6 +1,7 @@
 package main.engine.display;
 
 import lombok.Getter;
+import lombok.Setter;
 import main.engine.MainLoop;
 import main.engine.structures.Button;
 
@@ -13,10 +14,10 @@ public class Window
 {
     private static Window WINDOW = null;
 
-    public static Window getWindow() {
-        if(WINDOW == null) {
+    public static Window getWindow()
+    {
+        if(WINDOW == null)
             WINDOW = new Window();
-        }
         return WINDOW;
     }
 
@@ -31,6 +32,7 @@ public class Window
     @Getter
     private Graphics2D g;
     @Getter
+    @Setter
     private Renderer renderer;
     @Getter
     private Camera camera;
@@ -50,7 +52,6 @@ public class Window
     {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         camera = new Camera();
-        renderer = new Renderer(this);
         canvas = initializeCanvas();
         initializeFrame();
         bs = canvas.getBufferStrategy();
@@ -84,6 +85,5 @@ public class Window
     {
         g.drawImage(image, 0, 0, width, height, null);
         bs.show();
-        renderer.clear();
     }
 }

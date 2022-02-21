@@ -1,4 +1,4 @@
-package main.game.tablecontent.solver;
+package main.game.table.solver;
 
 import main.engine.structures.IntPair;
 

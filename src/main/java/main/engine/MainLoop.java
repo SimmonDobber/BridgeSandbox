@@ -3,16 +3,14 @@ package main.engine;
 import main.engine.display.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.Scene;
-import main.game.tablecontent.Table;
 
 public class MainLoop implements Runnable
 {
     private static MainLoop MAIN_LOOP = null;
 
     public static MainLoop getMainLoop() {
-        if(MAIN_LOOP == null) {
+        if(MAIN_LOOP == null)
             MAIN_LOOP = new MainLoop();
-        }
         return MAIN_LOOP;
     }
 
@@ -30,6 +28,7 @@ public class MainLoop implements Runnable
     {
         loopTimer = new LoopTimer(1.0 / FPS);
         window = Window.getWindow();
+        window.setRenderer(Renderer.getRenderer());
         input = Input.getInput();
         Thread thread = new Thread(this);
         thread.start();
@@ -53,7 +52,7 @@ public class MainLoop implements Runnable
     {
         //System.out.println(loopTimer.getFps());
         if (currentScene != null) {
-            currentScene.update(window, input, loopTimer);
+            currentScene.update(loopTimer.getPassedTime());
         }
         window.getCamera().cameraControl(input);
         input.update();

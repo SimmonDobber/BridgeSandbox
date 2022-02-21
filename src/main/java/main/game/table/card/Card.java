@@ -1,4 +1,4 @@
-package main.game.tablecontent.card;
+package main.game.table.card;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,6 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
-import main.game.tablecontent.Table;
 
 import java.util.LinkedList;
 
@@ -23,9 +22,10 @@ import static main.game.GameConstants.*;
 @Getter
 public class Card extends GameObject implements Clickable, Activable, Hoverable
 {
-    public static final int DEFAULT_WIDTH = 85;
-    public static final int DEFAULT_HEIGHT = 120;
+    private static final int DEFAULT_WIDTH = 85;
+    private static final int DEFAULT_HEIGHT = 120;
     @Getter
+    @Setter
     private static int recentlyPlayed = -1;
     private CardFigure figure;
     private CardColor color;

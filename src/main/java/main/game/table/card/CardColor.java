@@ -1,4 +1,4 @@
-package main.game.tablecontent.card;
+package main.game.table.card;
 
 import lombok.Getter;
 

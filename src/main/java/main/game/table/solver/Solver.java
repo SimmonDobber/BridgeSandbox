@@ -1,10 +1,10 @@
-package main.game.tablecontent.solver;
+package main.game.table.solver;
 
 import main.engine.structures.IntPair;
 import main.engine.structures.observer.Observer;
-import main.game.tablecontent.card.CardFigure;
+import main.game.table.card.CardFigure;
 import main.game.GameConstants;
-import main.game.tablecontent.Table;
+import main.game.table.Table;
 
 public class Solver implements Observer
 {

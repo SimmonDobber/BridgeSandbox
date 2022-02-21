@@ -1,6 +1,6 @@
-package main.game.tablecontent;
+package main.game.table;
 
-import main.engine.display.Renderer;
+import main.engine.display.Window;
 import main.engine.structures.Button;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
@@ -8,33 +8,31 @@ import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
-import main.game.tablecontent.card.CardColor;
 
 import java.util.LinkedList;
 
 import static main.game.GameConstants.*;
 
-public class ContractButton extends Button
+public class SolverButton extends Button
 {
-    public static final int DEFAULT_SOLVER_BUTTON_WIDTH = 55;
-    public static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 40;
-    public static final int DEFAULT_SOLVER_BUTTON_X = 150;
-    public static final int DEFAULT_SOLVER_BUTTON_Y = 22;
+    private static final int DEFAULT_SOLVER_BUTTON_WIDTH = 150;
+    private static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
+    private static final int DEFAULT_SOLVER_BUTTON_X = Hand.CARD_SPACE;
+    private static final int DEFAULT_SOLVER_BUTTON_Y = Window.HEIGHT - Hand.CARD_SPACE - DEFAULT_SOLVER_BUTTON_HEIGHT;
     private LinkedList<Observer> observers;
 
-    public ContractButton(GameObject parent, int contractId)
-    {
+    public SolverButton(GameObject parent) {
         super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
                 new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
-        initializeSpriteList(contractId);
+        initializeSpriteList();
         observers = new LinkedList<>();
+        hovered = false;
     }
 
-    private void initializeSpriteList(int contractId)
+    private void initializeSpriteList()
     {
         spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId / 5) + '1')), new Position(7, 4), DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId % 5) + '[')), new Position(26, 4), DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
+        spriteList.add(new Text("calculate", new Position(16, 22), DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
     @Override
@@ -44,7 +42,7 @@ public class ContractButton extends Button
 
     @Override
     public void detach(Observer observer) {
-        observers.remove(observers);
+        observers.remove(observer);
     }
 
     @Override
@@ -53,8 +51,9 @@ public class ContractButton extends Button
     }
 
     @Override
-    public void onClick() {
-
+    public void onClick()
+    {
+        notifyObservers();
     }
 
     @Override

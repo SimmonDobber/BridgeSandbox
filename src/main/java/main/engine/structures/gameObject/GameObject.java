@@ -2,10 +2,7 @@ package main.engine.structures.gameObject;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.Input;
-import main.engine.LoopTimer;
 import main.engine.display.Renderer;
-import main.engine.display.Window;
 import main.engine.structures.drawable.Drawable;
 import main.engine.structures.features.Serializable;
 
@@ -36,15 +33,15 @@ public abstract class GameObject extends Entity implements Serializable
         this.children = new ArrayList<>();
     }
 
-    public void update(Window window, Input input, LoopTimer loopTimer)
+    public void update(double dt)
     {
-        updateChildren(window, input, loopTimer);
+        updateChildren(dt);
     }
 
-    public void updateChildren(Window window, Input input, LoopTimer loopTimer)
+    public void updateChildren(double dt)
     {
         for (int i = 0; i < children.size(); i++)
-            children.get(i).update(window, input, loopTimer);
+            children.get(i).update(dt);
     }
 
     public void render(Renderer r)

@@ -11,6 +11,15 @@ import java.util.Arrays;
 
 public class Renderer
 {
+    private static Renderer RENDERER = null;
+
+    public static Renderer getRenderer()
+    {
+        if(RENDERER == null)
+            RENDERER = new Renderer(Window.getWindow());
+        return RENDERER;
+    }
+
     public static final int DEFAULT_COLOR = 0xFF000001;
     public static final int UNICODE_OFFSET = 32;
     private final int screenW;
@@ -21,7 +30,7 @@ public class Renderer
     @Getter
     private final int[] pOwner;
 
-    public Renderer(Window window)
+    private Renderer(Window window)
     {
         screenW = (int)(window.getWidth() * Window.SCALE);
         screenH = (int)(window.getHeight() * Window.SCALE);
@@ -29,11 +38,6 @@ public class Renderer
         pOwner = new int[window.getWidth() * window.getHeight()];
         font = new Font("/sansBoldplus.png");
         camera = window.getCamera();
-    }
-
-    public void clear()
-    {
-        Arrays.fill(p, 0xFF000001);
     }
 
     private int alphaCompose(int color2, int color1)

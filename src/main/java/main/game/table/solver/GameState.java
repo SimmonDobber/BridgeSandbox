@@ -1,8 +1,8 @@
-package main.game.tablecontent.solver;
+package main.game.table.solver;
 
 import main.engine.structures.IntPair;
 import main.game.GameConstants;
-import main.game.tablecontent.Table;
+import main.game.table.Table;
 
 import java.util.ArrayList;
 import java.util.List;
