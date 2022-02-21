@@ -3,7 +3,14 @@ package main.game.tablecontent;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.display.Window;
-import main.engine.structures.State;
+import main.engine.structures.IntPair;
+import main.engine.structures.gameObject.Dimensions;
+import main.engine.structures.gameObject.GameObject;
+import main.engine.structures.Scene;
+import main.engine.structures.drawable.Rectangle;
+import main.engine.structures.drawable.Text;
+import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.tablecontent.solver.Solver;
 import main.game.tablecontent.card.Card;
@@ -16,7 +23,8 @@ import java.util.List;
 
 import static main.game.GameConstants.*;
 
-public class Table implements State {
+public class Table extends GameObject implements Scene, Observer
+{
     public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
     @Getter
     @Setter

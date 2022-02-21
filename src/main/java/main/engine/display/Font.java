@@ -85,6 +85,8 @@ public class Font
 
     private void rescaleLetter(int size, int unicodeId)
     {
-        letters[size][unicodeId].rescale((int)((double)letters[size][unicodeId].getW() * ((double)(size * 2) / (double)letters[size][unicodeId].getH())), size * 2);
+        double scaleRatio = ((double)(size * 2) / (double)letters[size][unicodeId].getDim().getH());
+        int newWidth = (int)((double)letters[size][unicodeId].getDim().getW() * scaleRatio);
+        letters[size][unicodeId].rescale(newWidth, size * 2);
     }
 }

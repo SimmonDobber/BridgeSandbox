@@ -10,6 +10,10 @@ import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.tablecontent.card.CardColor;
 
+import java.util.LinkedList;
+
+import static main.game.GameConstants.*;
+
 public class ContractButton extends Button
 {
     public static final int DEFAULT_SOLVER_BUTTON_WIDTH = 55;
