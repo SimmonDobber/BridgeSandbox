@@ -24,8 +24,7 @@ public class MainLoop implements Runnable
     private final Input input;
     private Scene currentScene;
 
-    private MainLoop()
-    {
+    private MainLoop() {
         loopTimer = new LoopTimer(1.0 / FPS);
         window = Window.getWindow();
         window.setRenderer(Renderer.getRenderer());
@@ -35,11 +34,9 @@ public class MainLoop implements Runnable
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         boolean running = true;
-        while(running)
-        {
+        while(running) {
             loopTimer.update();
             if(loopTimer.isToUpdate())
                 update();
@@ -48,21 +45,23 @@ public class MainLoop implements Runnable
         }
     }
 
-    private void update()
-    {
+    private void update() {
         //System.out.println(loopTimer.getFps());
         if (currentScene != null) {
             currentScene.update(loopTimer.getPassedTime());
         }
-        window.getCamera().cameraControl(input);
+        window.getCamera().cameraMove(input);
         input.update();
     }
 
-    private void render(Renderer r)
-    {
+    private void render(Renderer r) {
         if(currentScene != null) {
             currentScene.render(r);
         }
         window.render();
+    }
+
+    public String getCurrentSceneName() {
+        return currentScene.getName();
     }
 }

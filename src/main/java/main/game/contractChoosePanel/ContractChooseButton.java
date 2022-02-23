@@ -4,42 +4,44 @@ import lombok.Getter;
 import lombok.Setter;
 import main.engine.structures.Button;
 import main.engine.structures.drawable.Rectangle;
+import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
+import main.game.table.card.CardColor;
 
 import java.util.LinkedList;
 
-import static main.game.GameConstants.COLOR_COUNT;
+import static main.game.GameConstants.*;
 
 public class ContractChooseButton extends Button
 {
-    private final static int DEFAULT_WIDTH = 75;
-    private final static int DEFAULT_HEIGHT = 49;
-    @Getter
+    public final static int DEFAULT_WIDTH = 75;
+    public final static int DEFAULT_HEIGHT = 49;
     @Setter
-    private static int recentlyChosen = -1;
+    private static Integer RECENTLY_CHOSEN = null;
     private LinkedList<Observer> observers;
     @Getter
-    private int id;
-    public ContractChooseButton(Position pos, GameObject parent) {
-        super(new Position(pos.getX() * DEFAULT_WIDTH, pos.getY() * DEFAULT_HEIGHT),
+    private int contractId;
+    public ContractChooseButton(Position pos, GameObject parent, int contractId) {
+        super(pos,
                 new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), parent);
-        this.id = pos.getX() + pos.getY() * (COLOR_COUNT + 1);
+        this.contractId = contractId;
         observers = new LinkedList<>();
         initializeSpriteList();
     }
 
-    private void initializeSpriteList()
-    {
-        spriteList.add(new Rectangle(new Position(), dim, 0xFFFFFFFF, 1));
+    private void initializeSpriteList() {
+        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId / (COLOR_COUNT + 1)) + '1')), new Position(7, 4), DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text(Character.toString((char)((contractId % (COLOR_COUNT + 1)) + '[')), new Position(26, 4), DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
     }
 
     @Override
     public void onClick()
     {
-        recentlyChosen = id;
+        RECENTLY_CHOSEN = contractId;
         notifyObservers();
     }
 
@@ -76,5 +78,12 @@ public class ContractChooseButton extends Button
     @Override
     public void notifyObservers() {
         observers.forEach(Observer::update);
+    }
+
+    public static Integer getRecentlyChosen()
+    {
+        Integer recentlyChosen = RECENTLY_CHOSEN;
+        RECENTLY_CHOSEN = null;
+        return recentlyChosen;
     }
 }

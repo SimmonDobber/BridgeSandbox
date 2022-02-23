@@ -1,4 +1,4 @@
-package main.game.table;
+package main.game.table.buttons;
 
 import main.engine.display.Window;
 import main.engine.structures.Button;
@@ -8,6 +8,7 @@ import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
+import main.game.table.Hand;
 
 import java.util.LinkedList;
 
@@ -17,8 +18,8 @@ public class SolverButton extends Button
 {
     private static final int DEFAULT_SOLVER_BUTTON_WIDTH = 150;
     private static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
-    private static final int DEFAULT_SOLVER_BUTTON_X = Hand.CARD_SPACE;
-    private static final int DEFAULT_SOLVER_BUTTON_Y = Window.HEIGHT - Hand.CARD_SPACE - DEFAULT_SOLVER_BUTTON_HEIGHT;
+    private static final int DEFAULT_SOLVER_BUTTON_X = 24;
+    private static final int DEFAULT_SOLVER_BUTTON_Y = 546;
     private LinkedList<Observer> observers;
 
     public SolverButton(GameObject parent) {
@@ -64,15 +65,5 @@ public class SolverButton extends Button
     @Override
     public void onHold() {
 
-    }
-
-    @Override
-    public void onHover() {
-        hovered = true;
-    }
-
-    @Override
-    public void nonHover() {
-        hovered = false;
     }
 }

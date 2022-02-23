@@ -34,10 +34,10 @@ public class Rectangle implements Drawable
     }
 
     @Override
-    public void render(Renderer r, Position pos, int id) {
-        r.drawRectangle(getAbsolutePos(pos), dim, color, fixed, id);
+    public void render(Renderer r, Position absolutePos, int id) {
+        r.drawRectangle(getAbsolutePos(absolutePos), dim, color, fixed, id);
         if(color != frameColor)
-            renderFrame(r, getAbsolutePos(pos), id);
+            renderFrame(r, getAbsolutePos(absolutePos), id);
     }
 
     private void renderFrame(Renderer r, Position absPos, int id)
@@ -51,8 +51,8 @@ public class Rectangle implements Drawable
         r.drawRectangle(framePosition, new Dimensions(dim.getW(), DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
     }
 
-    private Position getAbsolutePos(Position pos)
+    private Position getAbsolutePos(Position absolutePos)
     {
-        return new Position(this.pos.getX() + pos.getX(), this.pos.getY() + pos.getY());
+        return new Position(this.pos.getX() + absolutePos.getX(), this.pos.getY() + absolutePos.getY());
     }
 }

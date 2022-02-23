@@ -1,4 +1,4 @@
-package main.game.table;
+package main.game.table.buttons;
 
 import main.engine.ProgramContainer;
 import main.engine.structures.Button;
@@ -16,16 +16,16 @@ import static main.game.GameConstants.*;
 
 public class ContractButton extends Button
 {
-    private static final int DEFAULT_SOLVER_BUTTON_WIDTH = 55;
-    private static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 40;
-    private static final int DEFAULT_SOLVER_BUTTON_X = 150;
-    private static final int DEFAULT_SOLVER_BUTTON_Y = 22;
+    private static final int DEFAULT_CONTRACT_BUTTON_WIDTH = 55;
+    private static final int DEFAULT_CONTRACT_BUTTON_HEIGHT = 40;
+    private static final int DEFAULT_CONTRACT_BUTTON_X = 150;
+    private static final int DEFAULT_CONTRACT_BUTTON_Y = 22;
     private LinkedList<Observer> observers;
 
     public ContractButton(GameObject parent, int contractId)
     {
-        super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
-                new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
+        super(new Position(DEFAULT_CONTRACT_BUTTON_X, DEFAULT_CONTRACT_BUTTON_Y),
+                new Dimensions(DEFAULT_CONTRACT_BUTTON_WIDTH, DEFAULT_CONTRACT_BUTTON_HEIGHT), parent);
         initializeSpriteList(contractId);
         observers = new LinkedList<>();
     }
@@ -85,15 +85,5 @@ public class ContractButton extends Button
     @Override
     public void onHold() {
 
-    }
-
-    @Override
-    public void onHover() {
-        hovered = true;
-    }
-
-    @Override
-    public void nonHover() {
-        hovered = false;
     }
 }

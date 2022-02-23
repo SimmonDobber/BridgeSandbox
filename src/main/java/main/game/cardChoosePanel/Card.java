@@ -1,4 +1,4 @@
-package main.game.table.card;
+package main.game.cardChoosePanel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,17 +14,19 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
+import main.game.table.card.CardColor;
+import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
 
-import static main.game.GameConstants.*;
+import static main.game.GameConstants.DEFAULT_FONT_SIZE;
+import static main.game.GameConstants.SILVER;
 
 @Getter
 public class Card extends GameObject implements Clickable, Activable, Hoverable
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
-    private static Integer recentlyPlayed;
 
     private CardFigure figure;
     private CardColor color;
@@ -54,7 +56,7 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
     {
         this.figure = figure;
         this.color = color;
-        this.active = true;
+        this.active = false;
         this.hovered = false;
         Input.getInput().attach(this);
         this.observers = new LinkedList<>();
@@ -73,8 +75,6 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
     @Override
     public void update()
     {
-        if(!active)
-            return;
         focusUpdate();
     }
 
@@ -94,12 +94,12 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
         spriteRender(r);
         childrenRender(r);
         hoverRender(r, hovered, id);
-        inactiveRender(r);
+        activeRender(r);
     }
 
-    private void inactiveRender(Renderer r)
+    private void activeRender(Renderer r)
     {
-        if(!active)
+        if(active)
             r.drawRectangle(pos, dim, INACTIVE_COLOR, 1, id);
     }
 
@@ -121,8 +121,7 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
 
     @Override
     public void onClick() {
-        recentlyPlayed = id;
-        notifyObservers();
+        active = !active;
     }
 
     @Override
@@ -149,11 +148,5 @@ public class Card extends GameObject implements Clickable, Activable, Hoverable
     public int getCardId()
     {
         return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
-    }
-
-    public static Integer getRecentlyPlayed() {
-        Integer recentlyPlayed = Card.recentlyPlayed;
-        Card.recentlyPlayed = null;
-        return recentlyPlayed;
     }
 }

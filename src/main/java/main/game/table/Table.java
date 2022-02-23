@@ -13,8 +13,13 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
+import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChooseButton;
-import main.game.contractChoosePanel.ContractChoosePanel;
+import main.game.table.buttons.CardChooseButton;
+import main.game.table.buttons.ContractButton;
+import main.game.table.buttons.ShuffleButton;
+import main.game.table.buttons.SolverButton;
+import main.game.table.buttons.cardAmountChangeButton.CardAmountChangeButton;
 import main.game.table.solver.Solver;
 import main.game.table.card.Card;
 import main.game.table.card.CardColor;
@@ -26,50 +31,63 @@ import java.util.List;
 
 import static main.game.GameConstants.*;
 
+@Getter
 public class Table extends GameObject implements Scene, Observer
 {
+    private final String name = "Table";
     public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
     @Getter
+    private static int cardAmount;
     @Setter
     private int contractId;
-    @Getter
     @Setter
     private PlayerSide currentPlayer;
-    @Getter
     private PlayerSide lastWinner;
-    @Getter
     private IntPair taken;
-    @Getter
     private Hand[] hand;
-    @Getter
     private Card[] chosenCards;
-    @Getter
     private Solver solver;
     private SolverButton solverButton;
     private ContractButton contractButton;
+    private ShuffleButton shuffleButton;
+    private CardAmountChangeButton cardAmountChangeButton;
+    private CardChooseButton cardChooseButton;
 
     public Table()
     {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeTable();
-        initializeGame();
+        initializeRandomGame();
         initializeSpriteList();
-        manageActivity();
         solver = new Solver(this);
         initializeButtons();
     }
 
     private void initializeTable() {
-        taken = new IntPair();
-        hand = new Hand[GameConstants.PLAYER_COUNT];
-        chosenCards = new Card[GameConstants.PLAYER_COUNT];
+        hand = new Hand[PLAYER_COUNT];
+        this.cardAmount = 13;
+        this.contractId = 0;
     }
 
-    private void initializeGame() {
+    private void initializeRandomGame() {
+        resetGame();
+        dealRandom();
+        manageActivity();
+        reLoadTextSprites();
+    }
+
+    private void initializeSetGame(List<Integer> cardsId) {
+        resetGame();
+        dealSetCards(cardsId);
+        manageActivity();
+        reLoadTextSprites();
+    }
+
+    private void resetGame() {
+        taken = new IntPair();
+        chosenCards = new Card[PLAYER_COUNT];
         this.lastWinner = PlayerSide.N;
         this.currentPlayer = PlayerSide.N;
-        dealRandom(13);
-        setContractId(18);
     }
 
     private void initializeButtons()
@@ -77,8 +95,16 @@ public class Table extends GameObject implements Scene, Observer
         solverButton = new SolverButton(this);
         children.add(solverButton);
         solverButton.attach(solver);
+        shuffleButton = new ShuffleButton(this);
+        children.add(shuffleButton);
+        shuffleButton.attach(this);
         contractButton = new ContractButton(this, contractId);
         children.add(contractButton);
+        cardAmountChangeButton = new CardAmountChangeButton(this);
+        children.add(cardAmountChangeButton);
+        cardAmountChangeButton.attach(this);
+        cardChooseButton = new CardChooseButton(this);
+        children.add(cardChooseButton);
     }
 
     private void initializeSpriteList()
@@ -115,34 +141,89 @@ public class Table extends GameObject implements Scene, Observer
     {
         updateCards();
         updateContractButton();
+        updateShuffleButton();
+        updateCardAmountChangeButton();
+        updateCardChoose();
+    }
+
+    private void updateCardChoose()
+    {
+        List<Integer> chosenCards = CardChoosePanel.getChosenCards();
+        if(chosenCards != null)
+        {
+            initializeSetGame(chosenCards);
+            ProgramContainer.getProgramContainer().switchSceneToTable();
+        }
     }
 
     private void updateCards()
     {
-        if(Card.getRecentlyPlayed() >= 0)
+        Integer cardId = Card.getRecentlyPlayed();
+        if(cardId != null)
         {
-            playCard(findPlayedCard());
-            Card.setRecentlyPlayed(-1);
+            playCard(findPlayedCard(cardId));
         }
     }
 
     private void updateContractButton()
     {
-        if(ContractChooseButton.getRecentlyChosen() >= 0)
+        Integer recentlyChosen = ContractChooseButton.getRecentlyChosen();
+        if(recentlyChosen != null)
         {
-            setContractId(ContractChooseButton.getRecentlyChosen());
+            setContractId(recentlyChosen);
             contractButton.reLoadTextSprites(contractId);
-            ContractChooseButton.setRecentlyChosen(-1);
             ProgramContainer.getProgramContainer().switchSceneToTable();
         }
     }
 
-    private void dealRandom(int cardAmount) {
+    private void updateShuffleButton()
+    {
+        Boolean shuffle = ShuffleButton.isShuffle();
+        if(shuffle)
+            initializeRandomGame();
+    }
+
+    private void updateCardAmountChangeButton()
+    {
+        Integer clickValue = CardAmountChangeButton.getClickValue();
+        if(clickValue != null && isCardAmountAbleToModify(clickValue))
+        {
+            cardAmount += clickValue;
+            initializeRandomGame();
+        }
+    }
+
+    private boolean isCardAmountAbleToModify(int clickValue)
+    {
+        return cardAmount + clickValue <= FIGURE_COUNT && cardAmount + clickValue >= 0;
+    }
+
+    private void dealRandom() {
+        detachPreviousDeal();
         List<Integer> deck = createDeck();
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             hand[i] = dealToHand(deck, cardAmount, i);
             children.add(hand[i]);
             hand[i].attachObserversToCards(this);
+        }
+    }
+
+    private void dealSetCards(List<Integer> cardsId)
+    {
+        detachPreviousDeal();
+        for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
+            hand[i] = dealToHand(cardsId, cardAmount, i);
+            children.add(hand[i]);
+            hand[i].attachObserversToCards(this);
+        }
+    }
+
+    private void detachPreviousDeal()
+    {
+        for(int i = 0; i < children.size(); i++)
+        {
+            if(children.get(i).getClass() == Hand.class || children.get(i).getClass() == Card.class)
+                children.remove(i--);
         }
     }
 
@@ -194,13 +275,13 @@ public class Table extends GameObject implements Scene, Observer
         return new Hand(temp, cardAmount, playerId, this);
     }
 
-    private Card findPlayedCard()
+    private Card findPlayedCard(int cardId)
     {
         for(int i = 0; i < PLAYER_COUNT; i++)
         {
             for(int j = 0; j < hand[i].getCard().size(); j++)
             {
-                if(hand[i].getCard().get(j).getId() == Card.getRecentlyPlayed())
+                if(hand[i].getCard().get(j).getId() == cardId)
                     return hand[i].getCard().get(j);
             }
         }
@@ -334,5 +415,4 @@ public class Table extends GameObject implements Scene, Observer
     {
         return CardColor.values()[contractId % (GameConstants.COLOR_COUNT + 1)];
     }
-
 }

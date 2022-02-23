@@ -7,32 +7,24 @@ import java.awt.event.KeyEvent;
 public class Camera
 {
     public final static int DEFAULT_CAMERA_SPEED = 5;
-    public int offX;
-    public int offY;
+    public int offsetX;
+    public int offsetY;
     public int speed;
     public Camera()
     {
-        offX = 0;
-        offY = 0;
+        offsetX = 0;
+        offsetY = 0;
         speed = DEFAULT_CAMERA_SPEED;
     }
-    public void cameraControl(Input input)
+    public void cameraMove(Input input)
     {
         if(input.isKey(KeyEvent.VK_A))
-        {
-            offX += speed;
-        }
+            offsetX += speed;
         if(input.isKey(KeyEvent.VK_D))
-        {
-            offX -= speed;
-        }
+            offsetX -= speed;
         if(input.isKey(KeyEvent.VK_W))
-        {
-            offY += speed;
-        }
+            offsetY += speed;
         if(input.isKey(KeyEvent.VK_S))
-        {
-            offY -= speed;
-        }
+            offsetY -= speed;
     }
 }

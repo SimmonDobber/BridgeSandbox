@@ -2,12 +2,16 @@ package main.engine.structures.gameObject;
 
 import lombok.Getter;
 import lombok.Setter;
+import main.engine.MainLoop;
+import main.engine.ProgramContainer;
 import main.engine.display.Renderer;
+import main.engine.structures.Scene;
 import main.engine.structures.drawable.Drawable;
 import main.engine.structures.features.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 public abstract class GameObject extends Entity implements Serializable
@@ -60,5 +64,18 @@ public abstract class GameObject extends Entity implements Serializable
     {
         for(int i = 0; i < children.size(); i++)
             children.get(i).render(r);
+    }
+
+    public String getSceneName()
+    {
+        GameObject g = this;
+        while (g.getParent() != null)
+            g = g.getParent();
+        return ((Scene)(g)).getName();
+    }
+
+    public boolean belongsToCurrentScene()
+    {
+        return Objects.equals(getSceneName(), MainLoop.getMainLoop().getCurrentSceneName());
     }
 }

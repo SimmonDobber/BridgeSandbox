@@ -72,7 +72,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
         window.getCanvas().addMouseWheelListener(this);
     }
 
-    public void update()
+    void update()
     {
         if(isActionOngoing())
             notifyObservers();
@@ -135,21 +135,20 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     }
 
     @Override
-    public void attach(Observer observer)
-    {
+    public void attach(Observer observer) {
         observers.add(observer);
     }
 
     @Override
-    public void detach(Observer observer)
-    {
+    public void detach(Observer observer) {
         observers.remove(observer);
     }
 
     @Override
-    public void notifyObservers()
-    {
-        observers.forEach(Observer::update);
+    public void notifyObservers() {
+        for(int i = 0; i < observers.size(); i++) {
+            observers.get(i).update();
+        }
     }
 
     @Override

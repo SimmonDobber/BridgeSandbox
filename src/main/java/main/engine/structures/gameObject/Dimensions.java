@@ -16,6 +16,12 @@ public class Dimensions
         this.h = 0;
     }
 
+    public Dimensions(Dimensions dimensions)
+    {
+        this.w = dimensions.getW();
+        this.h = dimensions.getH();
+    }
+
     public Dimensions(int w, int h)
     {
         this.w = w;

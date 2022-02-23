@@ -16,10 +16,18 @@ import java.util.Objects;
 @Getter
 public class Image implements Drawable
 {
-    private Position pos;
-    private Dimensions dim;
-    private final int fixed;
-    private int[] p;
+    protected Position pos;
+    protected Dimensions dim;
+    protected final int fixed;
+    protected int[] p;
+
+    public Image(Image image)
+    {
+        this.pos = new Position(image.getPos());
+        this.dim = new Dimensions(image.getDim());
+        this.fixed = image.getFixed();
+        this.p = Arrays.copyOf(image.getP(), image.getP().length);
+    }
 
     public Image(String path, Position pos, Dimensions dim, int fixed)
     {
@@ -28,7 +36,7 @@ public class Image implements Drawable
         this.fixed = fixed;
         BufferedImage image = loadImage(path);
         p = image.getRGB(0, 0, dim.getW(), dim.getH(), null, 0, dim.getW());
-        rescale(dim.getW(), dim.getH());
+        rescale(dim);
         image.flush();
     }
 
@@ -58,15 +66,15 @@ public class Image implements Drawable
         return image;
     }
 
-    public void rescale(int newWidth, int newHeight)
+    public void rescale(Dimensions newDimensions)
     {
         int[] r = Arrays.copyOf(p, p.length);
-        p = new int[newWidth * newHeight];
-        double widthScale = ((double)(newWidth) / (double)(dim.getW()));
-        double heightScale = ((double)(newHeight) / (double)(dim.getH()));
-        rescaleByPixels(r, newWidth, newHeight, widthScale, heightScale);
-        dim.setW(newWidth);
-        dim.setH(newHeight);
+        p = new int[newDimensions.getW() * newDimensions.getH()];
+        double widthScale = ((double)(newDimensions.getW()) / (double)(dim.getW()));
+        double heightScale = ((double)(newDimensions.getH()) / (double)(dim.getH()));
+        p = rescaleByPixels(r, newDimensions, widthScale, heightScale);
+        dim.setW(newDimensions.getW());
+        dim.setH(newDimensions.getH());
     }
 
     public void rotate(double angle)
@@ -81,15 +89,15 @@ public class Image implements Drawable
         }
     }
 
-    private void rescaleByPixels(int[] r, int newWidth, int newHeight, double widthScale, double heightScale)
-    {
-        for(int j = 0; j < newHeight; j++)
-        {
-            for(int i = 0; i < newWidth; i++)
-            {
-                p[i + j * newWidth] = r[(int)((double)(i) / (widthScale)) + (int)((double)(j) / (heightScale)) * dim.getW()];
+    private int[] rescaleByPixels(int[] r, Dimensions newDimendions, double widthScale, double heightScale) {
+        int[] pixelArray = new int[newDimendions.getW() * newDimendions.getH()];
+        for(int j = 0; j < newDimendions.getH(); j++) {
+            for(int i = 0; i < newDimendions.getW(); i++) {
+                int rescaledId = (int)((double)(i) / (widthScale)) + (int)((double)(j) / (heightScale)) * dim.getW();
+                pixelArray[i + j * newDimendions.getW()] = r[rescaledId];
             }
         }
+        return pixelArray;
     }
 
     private void imageRotation(int[] r)

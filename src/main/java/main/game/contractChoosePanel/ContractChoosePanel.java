@@ -1,5 +1,6 @@
 package main.game.contractChoosePanel;
 
+import lombok.Getter;
 import main.engine.ProgramContainer;
 import main.engine.display.Window;
 import main.engine.structures.Scene;
@@ -13,10 +14,12 @@ import static main.game.GameConstants.*;
 
 public class ContractChoosePanel extends GameObject implements Scene
 {
+    @Getter
+    public final String name = "ContractChoosePanel";
     private ContractChooseButton[][] buttons;
-    public ContractChoosePanel()
+    public ContractChoosePanel(Position pos)
     {
-        super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
+        super(pos, new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeSpriteList();
         initializeButtons();
     }
@@ -36,14 +39,15 @@ public class ContractChoosePanel extends GameObject implements Scene
 
     private void initializeButton(int i, int j)
     {
-        buttons[i][j] = new ContractChooseButton(new Position(i, j), this);
+        Position buttonPosition = new Position(i * ContractChooseButton.DEFAULT_WIDTH + pos.getX() + 2,
+                                                  j * ContractChooseButton.DEFAULT_HEIGHT + pos.getY() + 2);
+        buttons[i][j] = new ContractChooseButton(buttonPosition,this, (i + j * (COLOR_COUNT + 1)));
         children.add(buttons[i][j]);
         buttons[i][j].attach((Observer)(ProgramContainer.getProgramContainer().getTable()));
     }
 
     private void initializeSpriteList()
     {
-        spriteList.add(new Rectangle(new Position(411, 166), new Dimensions(375, 343), GREEN, 1));
-        spriteList.add(new Rectangle(new Position(411, 166), new Dimensions(375, 343), CYAN, BROWN, 1));
+        spriteList.add(new Rectangle(new Position(), new Dimensions(379, 347), GREEN, BROWN, 1));
     }
 }

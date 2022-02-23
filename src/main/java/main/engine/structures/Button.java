@@ -38,7 +38,7 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
 
     public void update()
     {
-        if(hasFocus(id))
+        if(hasFocus(id) && belongsToCurrentScene())
         {
             onHover();
             clickableUpdate();
@@ -52,6 +52,16 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
         spriteRender(r);
         childrenRender(r);
         hoverRender(r, hovered, id);
+    }
+
+    @Override
+    public void onHover() {
+        hovered = true;
+    }
+
+    @Override
+    public void nonHover() {
+        hovered = false;
     }
 
     public void incState()

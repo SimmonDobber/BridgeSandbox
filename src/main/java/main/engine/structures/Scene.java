@@ -9,5 +9,5 @@ public interface Scene {
 
     void update(double dt);
     void render(Renderer r);
-
+    String getName();
 }
