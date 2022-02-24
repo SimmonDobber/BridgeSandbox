@@ -1,6 +1,6 @@
 package main.engine.structures.features;
 
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.observer.Observer;
 
 public interface Hoverable extends Observer, Measurable

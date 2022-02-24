@@ -1,7 +1,9 @@
 package main.engine;
 
 import lombok.Getter;
+import main.engine.display.font.Font;
 import main.engine.structures.Scene;
+import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChoosePanel;

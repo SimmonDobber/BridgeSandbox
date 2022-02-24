@@ -1,7 +1,7 @@
 package main.engine.structures.drawable;
 
 import lombok.Getter;
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 

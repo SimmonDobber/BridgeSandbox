@@ -19,7 +19,7 @@ public interface Measurable
     }
 
     default boolean isOnSurface(Position mousePos, int id) {
-        int pixelId = mousePos.getX() + mousePos.getY() * (int)(Window.WIDTH * Window.SCALE);
+        int pixelId = mousePos.getX() + mousePos.getY() * Window.WIDTH;
         return Window.getWindow().getRenderer().getPOwner()[pixelId] == id;
     }
 

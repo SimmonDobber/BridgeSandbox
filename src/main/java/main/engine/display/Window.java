@@ -2,8 +2,7 @@ package main.engine.display;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.MainLoop;
-import main.engine.structures.Button;
+import main.engine.display.renderer.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,15 +12,6 @@ import java.awt.image.BufferedImage;
 public class Window
 {
     private static Window WINDOW = null;
-
-    public static Window getWindow()
-    {
-        if(WINDOW == null)
-            WINDOW = new Window();
-        return WINDOW;
-    }
-
-    public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
     @Getter
@@ -36,21 +26,13 @@ public class Window
     private Renderer renderer;
     @Getter
     private Camera camera;
-    @Getter
-    private final int width;
-    @Getter
-    private final int height;
 
-    private Window()
-    {
-        this.width = WIDTH;
-        this.height = HEIGHT;
-        initializeObjects();
+    private Window() {
+        initializeWindowObjects();
     }
 
-    private void initializeObjects()
-    {
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    private void initializeWindowObjects() {
+        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         camera = new Camera();
         canvas = initializeCanvas();
         initializeFrame();
@@ -58,19 +40,23 @@ public class Window
         g = (Graphics2D)bs.getDrawGraphics();
     }
 
-    private Canvas initializeCanvas()
-    {
-        Dimension s = new Dimension((int)(width * SCALE), (int)(height * SCALE));
+    private Canvas initializeCanvas() {
+
         Canvas canvas = new Canvas();
-        canvas.setPreferredSize(s);
-        canvas.setMaximumSize(s);
-        canvas.setMinimumSize(s);
+        initializeCanvasSize(canvas);
         canvas.createBufferStrategy(1);
         return canvas;
     }
 
-    private void initializeFrame()
+    private void initializeCanvasSize(Canvas canvas)
     {
+        Dimension s = new Dimension(WIDTH, HEIGHT);
+        canvas.setPreferredSize(s);
+        canvas.setMaximumSize(s);
+        canvas.setMinimumSize(s);
+    }
+
+    private void initializeFrame() {
         JFrame frame = new JFrame("");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -81,9 +67,15 @@ public class Window
         frame.setVisible(true);
     }
 
-    public void render()
-    {
-        g.drawImage(image, 0, 0, width, height, null);
+    public void render() {
+        g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
         bs.show();
+    }
+
+    public static Window getWindow()
+    {
+        if(WINDOW == null)
+            WINDOW = new Window();
+        return WINDOW;
     }
 }

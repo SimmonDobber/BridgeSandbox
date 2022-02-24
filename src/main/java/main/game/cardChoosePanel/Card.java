@@ -3,7 +3,7 @@ package main.game.cardChoosePanel;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.features.Activable;

@@ -1,6 +1,6 @@
 package main.engine;
 
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.display.Window;
 import main.engine.structures.Scene;
 

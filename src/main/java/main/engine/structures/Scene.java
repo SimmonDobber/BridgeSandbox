@@ -1,9 +1,6 @@
 package main.engine.structures;
 
-import main.engine.Input;
-import main.engine.LoopTimer;
-import main.engine.display.Renderer;
-import main.engine.display.Window;
+import main.engine.display.renderer.Renderer;
 
 public interface Scene {
 

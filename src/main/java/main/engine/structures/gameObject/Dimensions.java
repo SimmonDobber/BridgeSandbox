@@ -27,4 +27,9 @@ public class Dimensions
         this.w = w;
         this.h = h;
     }
+
+    public int getSize()
+    {
+        return w * h;
+    }
 }

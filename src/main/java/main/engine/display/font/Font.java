@@ -12,37 +12,33 @@ public class Font
     private final FontImage fontImage;
     private final Image[][] symbols;
 
-    public Font(String path, Dimensions dim)
-    {
+    public Font(String path, Dimensions dim) {
         fontImage = new FontImage(path, dim, SYMBOL_COUNT);
         symbols = new Image[SYMBOL_SIZE_VARIETY][SYMBOL_COUNT];
         loadAllSymbols();
     }
 
-    private void loadAllSymbols()
-    {
+    private void loadAllSymbols() {
         Image[] originalSymbols = fontImage.getSymbolsImageArray();
-        for(int i = 0; i < SYMBOL_SIZE_VARIETY; i++) {
-            for(int j = 0; j < SYMBOL_COUNT; j++){
-                symbols[i][j] = rescaleSymbol(originalSymbols[j], 2 * i);
+        for(int size = 0; size < SYMBOL_SIZE_VARIETY; size++) {
+            for(int i = 0; i < SYMBOL_COUNT; i++){
+                symbols[size][i] = rescaleSymbol(originalSymbols[i], 2 * size);
             }
         }
     }
 
-    private Image rescaleSymbol(Image source, int size)
-    {
+    private Image rescaleSymbol(Image source, int size) {
         Image symbol = new Image(source);
-        symbol.rescale(getScaledImageDimensions(symbol.getDim(), getSymbolToOriginalRatio(size)));
+        Dimensions scaledDimensions = getScaledImageDimensions(symbol.getDim(), getSymbolToOriginalRatio(size));
+        symbol.rescale(scaledDimensions);
         return symbol;
     }
 
-    private double getSymbolToOriginalRatio(int size)
-    {
-        return size / (double)fontImage.getDim().getH();
+    private Dimensions getScaledImageDimensions(Dimensions dim, double ratio) {
+        return new Dimensions((int)(dim.getW() * ratio), (int)(dim.getH() * ratio));
     }
 
-    private Dimensions getScaledImageDimensions(Dimensions dim, double ratio)
-    {
-        return new Dimensions((int)(dim.getW() * ratio), (int)(dim.getH() * ratio));
+    private double getSymbolToOriginalRatio(int size) {
+        return size / (double)fontImage.getDim().getH();
     }
 }

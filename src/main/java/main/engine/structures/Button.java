@@ -3,7 +3,7 @@ package main.engine.structures;
 import lombok.Getter;
 import lombok.Setter;
 import main.engine.Input;
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.features.Clickable;
 import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.Dimensions;

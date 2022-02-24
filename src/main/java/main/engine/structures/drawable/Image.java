@@ -1,15 +1,13 @@
 package main.engine.structures.drawable;
 
 import lombok.Getter;
-import lombok.Setter;
-import main.engine.display.Renderer;
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.PipedInputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
