@@ -36,17 +36,17 @@ public class FontImage extends Image {
     }
 
     private Image extractSymbolImage(int symbolOffset, int symbolWidth) {
-        Image symbol = new Image(new Position(), new Dimensions(symbolWidth, dim.getH()), 1);
+        Image symbol = new Image(new Position(), new Dimensions(symbolWidth, dim.h), 1);
         for(int x = 0; x < symbolWidth; x++) {
-            for(int y = 0; y < dim.getH(); y++) {
-                symbol.getP()[x + y * symbolWidth] = extractSymbolPixel(new Position(x, y), symbolOffset);
+            for(int y = 0; y < dim.h; y++) {
+                symbol.setP(Position.getPositionId(x, y, symbolWidth), extractSymbolPixelValue(new Position(x, y), symbolOffset));
             }
         }
         return symbol;
     }
 
-    private int extractSymbolPixel(Position pos, int symbolOffset) {
-        return p[pos.getX() + symbolOffset + pos.getY() * dim.getW()];
+    private int extractSymbolPixelValue(Position pos, int symbolOffset) {
+        return p[pos.getPositionId(dim.w) + symbolOffset];
     }
 
     private int getCurrentSymbolWidth(int symbolOffset) {
@@ -56,7 +56,7 @@ public class FontImage extends Image {
     private void movePixelLocationPointer() {
         do {
             currentPixelLocationPointer++;
-        } while(!isCurrentPixelSpecial() && currentPixelLocationPointer < dim.getW());
+        } while(!isCurrentPixelSpecial() && currentPixelLocationPointer < dim.w);
     }
 
     private boolean isCurrentPixelSpecial() {

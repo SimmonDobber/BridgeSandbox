@@ -8,8 +8,8 @@ import main.engine.structures.features.Measurable;
 @Setter
 public class Entity implements Measurable
 {
-    protected Position pos;
-    protected Dimensions dim;
+    public Position pos;
+    public Dimensions dim;
 
     public Entity(Position pos, Dimensions dim)
     {

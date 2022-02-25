@@ -4,14 +4,14 @@ import main.engine.display.font.Font;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 
-public class TextRenderer
+public class TextRenderManager
 {
     private static final int UNICODE_OFFSET = 32;
     private Font font;
     private Renderer renderer;
     private Position currentPos;
 
-    public TextRenderer(Renderer renderer, Font font)
+    public TextRenderManager(Renderer renderer, Font font)
     {
         this.renderer = renderer;
         this.font = font;
@@ -20,7 +20,7 @@ public class TextRenderer
     public void drawText(Text text, Position textPos, int owner)
     {
         currentPos = new Position();
-        for(int i = 0; i < text.getText().length(); i++) {
+        for(int i = 0; i < text.getTextLength(); i++) {
             processSymbol(text, textPos, owner, i);
         }
     }
@@ -42,19 +42,19 @@ public class TextRenderer
 
     private void moveCursor(Text text, int unicodeId)
     {
-        currentPos.incX(font.getSymbols()[text.getSize() / 2][unicodeId].getDim().getW());
+        currentPos.incX(font.getSymbols()[text.getSize() / 2][unicodeId].getDim().w);
     }
 
     private Position getNewLinePosition(Text text)
     {
-        int newLineYPos = currentPos.getY() + font.getSymbols()[text.getSize() / 2][0].getDim().getH();
+        int newLineYPos = currentPos.y + font.getSymbols()[text.getSize() / 2][0].getDim().h;
         return new Position(0, newLineYPos);
     }
 
     private Position getSymbolAbsolutePosition(Position textPos)
     {
-        int absoluteXPos = currentPos.getX() + textPos.getX();
-        int absoluteYPos = currentPos.getY() + textPos.getY();
+        int absoluteXPos = currentPos.x + textPos.x;
+        int absoluteYPos = currentPos.y + textPos.y;
         return new Position(absoluteXPos, absoluteYPos);
     }
 

@@ -6,49 +6,54 @@ import main.engine.Input;
 
 @Getter
 @Setter
-public class Position
-{
-    protected int x;
-    protected int y;
+public class Position {
+    public int x;
+    public int y;
 
-    public Position()
-    {
+    public Position() {
         this.x = 0;
         this.y = 0;
     }
 
-    public Position(Position position)
-    {
+    public Position(Position position) {
         this.x = position.getX();
         this.y = position.getY();
     }
 
-    public Position(int x, int y)
-    {
+    public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public static Position cursorPosition()
-    {
+    public static Position cursorPosition() {
         return new Position(Input.getInput().getMouseX(), Input.getInput().getMouseY());
     }
 
-    @Override
-    public String toString() {
-        return "Position{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+    public static int getPositionId(int x, int y, int width) {
+        return x + y * width;
     }
 
-    public void incX(int x)
-    {
+    public int getPositionId(int width) {
+        return x + y * width;
+    }
+
+    public Position getRescaledPosition(Scale scale) {
+        int rescaledX = (int)(x * scale.x);
+        int rescaledY = (int)(y * scale.y);
+        return new Position(rescaledX, rescaledY);
+    }
+
+    public static Position getRescaledPosition(Position pos, Scale scale) {
+        int rescaledX = (int)(pos.x * scale.x);
+        int rescaledY = (int)(pos.y * scale.y);
+        return new Position(rescaledX, rescaledY);
+    }
+
+    public void incX(int x) {
         this.x += x;
     }
 
-    public void incY(int y)
-    {
+    public void incY(int y) {
         this.y += y;
     }
 }

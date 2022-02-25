@@ -1,7 +1,6 @@
 package main.engine.display.renderer;
 
 import lombok.Getter;
-import main.engine.ProgramContainer;
 import main.engine.display.Camera;
 import main.engine.display.Window;
 import main.engine.display.font.Font;
@@ -10,15 +9,17 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 
+import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.image.WritableRaster;
 
 public class Renderer
 {
     private static Renderer RENDERER = null;
-    private TextRenderer textRenderer;
-    private Dimensions dim;
-    private Camera camera;
-    private Font font;
+    private final TextRenderManager textRenderer;
+    private final Dimensions dim;
+    private final Camera camera;
+    private final Font font;
     private int[] p;
     @Getter
     private int[] pOwner;
@@ -27,15 +28,21 @@ public class Renderer
         dim = new Dimensions(Window.WIDTH, Window.HEIGHT);
         font = new Font("/sansBoldplus.png", new Dimensions(2410, 40));
         camera = window.getCamera();
-        textRenderer = new TextRenderer(this, font);
+        textRenderer = new TextRenderManager(this, font);
         initializePixelMatrices(window);
+    }
+
+    public static Renderer getRenderer() {
+        if(RENDERER == null)
+            RENDERER = new Renderer(Window.getWindow());
+        return RENDERER;
     }
 
     public void drawRectangle(Position rectanglePos, Dimensions rectangleDim, int color, int fixed, int owner) {
         Position startPos = getDrawRectangleStartingPosition(rectanglePos, fixed);
         Position endPos = getDrawRectangleEndPosition(rectanglePos, rectangleDim, fixed);
-        for(int x = startPos.getX(); x < endPos.getX(); x++) {
-            for(int y = startPos.getY(); y < endPos.getY(); y++) {
+        for(int x = startPos.x; x < endPos.x; x++) {
+            for(int y = startPos.y; y < endPos.y; y++) {
                 setPixel(getRendererPositionId(new Position(x, y)), color, owner);
             }
         }
@@ -51,8 +58,8 @@ public class Renderer
     }
 
     void drawSymbol(int unicodeId, Text text, Position symbolPos, int owner) {
-        for(int y = 0; y < font.getSymbols()[text.getSize() / 2][unicodeId].getDim().getH(); y++) {
-            for(int x = 0; x < font.getSymbols()[text.getSize() / 2][unicodeId].getDim().getW(); x++) {
+        for(int y = 0; y < font.getSymbols()[text.getSize() / 2][unicodeId].getDim().h; y++) {
+            for(int x = 0; x < font.getSymbols()[text.getSize() / 2][unicodeId].getDim().w; x++) {
                 drawSymbolPixel(unicodeId, text, symbolPos, new Position(x, y), owner);
             }
         }
@@ -76,8 +83,8 @@ public class Renderer
 
     private void drawImagePixels(Image image, Position startingPos, Dimensions dim, int owner) {
         Position endingPos = getImageDrawEndingPos(startingPos, dim);
-        for(int y = startingPos.getY(); y < endingPos.getY(); y++) {
-            for(int x = startingPos.getX(); x < endingPos.getX(); x++) {
+        for(int y = startingPos.y; y < endingPos.y; y++) {
+            for(int x = startingPos.x; x < endingPos.x; x++) {
                 int pixelValue = getImagePixelValue(image, startingPos, new Position(x, y));
                 setPixel(getRendererPositionId(new Position(x, y)), pixelValue, owner);
             }
@@ -85,8 +92,16 @@ public class Renderer
     }
 
     private void initializePixelMatrices(Window window) {
-        p = ((DataBufferInt)window.getImage().getRaster().getDataBuffer()).getData();
+        p = bufferedImageToPixelArray(window);
         pOwner = new int[Window.WIDTH * Window.HEIGHT];
+    }
+
+    private int[] bufferedImageToPixelArray(Window window)
+    {
+        BufferedImage windowImage = window.getImage();
+        WritableRaster windowRaster = windowImage.getRaster();
+        DataBufferInt windowImageDataBuffer = (DataBufferInt)(windowRaster.getDataBuffer());
+        return windowImageDataBuffer.getData();
     }
 
     private boolean isNotTransparent(int id, int value) {
@@ -99,54 +114,54 @@ public class Renderer
 
     private boolean isPixelInSymbol(int unicodeId, int size, Position pos) {
         Image letter = font.getSymbols()[size / 2][unicodeId];
-        return letter.getP()[pos.getX() + pos.getY() * letter.getDim().getW()] == 0xFF000000;
+        return letter.getP()[pos.getPositionId(letter.getDim().w)] == 0xFF000000;
     }
 
     private Position getDrawRectangleStartingPosition(Position rectanglePos, int fixed)
     {
-        int startingX = Math.max(rectanglePos.getX(), 0) + camera.offsetX * (1 - fixed);
-        int startingY = Math.max(rectanglePos.getY(), 0) + camera.offsetY * (1 - fixed);
+        int startingX = Math.max(rectanglePos.x, 0) + camera.offsetX * (1 - fixed);
+        int startingY = Math.max(rectanglePos.y, 0) + camera.offsetY * (1 - fixed);
         return new Position(startingX, startingY);
     }
 
     private Position getDrawRectangleEndPosition(Position rectanglePos, Dimensions rectangleDim, int fixed)
     {
-        int endingX = Math.min(rectangleDim.getW() + rectanglePos.getX(), dim.getW()) + camera.offsetX * (1 - fixed);
-        int endingY = Math.min(rectangleDim.getH() + rectanglePos.getY(), dim.getH()) + camera.offsetY * (1 - fixed);
+        int endingX = Math.min(rectangleDim.w + rectanglePos.getX(), dim.w) + camera.offsetX * (1 - fixed);
+        int endingY = Math.min(rectangleDim.h + rectanglePos.getY(), dim.h) + camera.offsetY * (1 - fixed);
         return new Position(endingX, endingY);
     }
 
     private Dimensions getDrawImageCroppedDimensions(Image image, Position pos)
     {
-        int croppedWidth = Math.min(image.getDim().getW(), dim.getW() - pos.getX() - camera.offsetX * (1 - image.getFixed()));
-        int croppedHeight = Math.min(image.getDim().getH(), dim.getH() - pos.getY() - camera.offsetY * (1 - image.getFixed()));
+        int croppedWidth = Math.min(image.getDim().w, dim.w - pos.x - camera.offsetX * (1 - image.getFixed()));
+        int croppedHeight = Math.min(image.getDim().h, dim.h - pos.y - camera.offsetY * (1 - image.getFixed()));
         return new Dimensions(Math.max(croppedWidth, 0), Math.max(croppedHeight, 0));
     }
 
     private int getImagePixelValue(Image image, Position imagePos, Position pixelPosInRelationToImage)
     {
-        int absolutePixelPosX = pixelPosInRelationToImage.getX() - imagePos.getX();
-        int absolutePixelPosY = pixelPosInRelationToImage.getY() - imagePos.getY();
-        int absolutePixelId = absolutePixelPosX + absolutePixelPosY * image.getDim().getW();
+        int absolutePixelPosX = pixelPosInRelationToImage.x - imagePos.x;
+        int absolutePixelPosY = pixelPosInRelationToImage.y - imagePos.y;
+        int absolutePixelId = Position.getPositionId(absolutePixelPosX, absolutePixelPosY, image.getDim().w);
         return image.getP()[absolutePixelId];
     }
 
     private Position getImageDrawEndingPos(Position startingPos, Dimensions dim)
     {
-        int endingX = startingPos.getX() + dim.getW();
-        int endingY = startingPos.getY() + dim.getH();
+        int endingX = startingPos.x + dim.w;
+        int endingY = startingPos.y + dim.h;
         return new Position(endingX, endingY);
     }
 
     private Position getDrawSymbolAbsolutePixelPosition(Text text, Position symbolPos, Position pixelPosRelativeToSymbol)
     {
-        int absoluteXPos = pixelPosRelativeToSymbol.getX() + symbolPos.getX() + camera.offsetX * (1 - text.getFixed());
-        int absoluteYPos = pixelPosRelativeToSymbol.getY() + symbolPos.getY() + camera.offsetY * (1 - text.getFixed());
+        int absoluteXPos = pixelPosRelativeToSymbol.x + symbolPos.x + camera.offsetX * (1 - text.getFixed());
+        int absoluteYPos = pixelPosRelativeToSymbol.y + symbolPos.y + camera.offsetY * (1 - text.getFixed());
         return new Position(absoluteXPos, absoluteYPos);
     }
 
     private int getRendererPositionId(Position pos) {
-        return pos.getX() + pos.getY() * dim.getW();
+        return pos.getPositionId(dim.w);
     }
 
     private void setPixel(int pixelId, int value, int owner) {
@@ -162,11 +177,5 @@ public class Renderer
 
     private void setPixelColor(int id, int value) {
         p[id] = (isNotTransparent(id, value) ? value : alphaCompose(p[id], value));
-    }
-
-    public static Renderer getRenderer() {
-        if(RENDERER == null)
-            RENDERER = new Renderer(Window.getWindow());
-        return RENDERER;
     }
 }

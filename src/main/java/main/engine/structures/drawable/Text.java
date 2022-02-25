@@ -32,4 +32,9 @@ public class Text implements Drawable
     {
         return new Position(this.pos.getX() + pos.getX(), this.pos.getY() + pos.getY());
     }
+
+    public int getTextLength()
+    {
+        return text.length();
+    }
 }

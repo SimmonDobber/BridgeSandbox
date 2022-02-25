@@ -6,6 +6,21 @@ import main.game.table.card.CardFigure;
 import main.game.GameConstants;
 import main.game.table.Table;
 
+/*
+_7C
+_4H
+_8H
+AC
+JD
+_9H
+_4S
+_8C
+JH
+_7S
+QC
+AD
+ */
+
 public class Solver implements Observer
 {
     private final Table table;

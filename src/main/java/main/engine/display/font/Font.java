@@ -35,10 +35,10 @@ public class Font
     }
 
     private Dimensions getScaledImageDimensions(Dimensions dim, double ratio) {
-        return new Dimensions((int)(dim.getW() * ratio), (int)(dim.getH() * ratio));
+        return new Dimensions((int)(dim.w * ratio), (int)(dim.h * ratio));
     }
 
     private double getSymbolToOriginalRatio(int size) {
-        return size / (double)fontImage.getDim().getH();
+        return size / (double)fontImage.getDim().h;
     }
 }

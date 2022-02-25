@@ -293,6 +293,7 @@ public class Table extends GameObject implements Scene, Observer
         int handId = getCardsHandId(card);
         moveCardToCenter(card, handId);
         chosenCards[handId] = card;
+        card.setActive(false);
         children.add(chosenCards[handId]);
         nextTurn();
     }

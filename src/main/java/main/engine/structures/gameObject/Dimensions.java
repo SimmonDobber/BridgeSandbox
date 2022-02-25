@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class Dimensions
 {
-    protected int w;
-    protected int h;
+    public int w;
+    public int h;
 
     public Dimensions()
     {
