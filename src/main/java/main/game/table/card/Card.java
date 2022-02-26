@@ -6,7 +6,7 @@ import main.engine.Input;
 import main.engine.display.renderer.Renderer;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
-import main.engine.structures.features.Activable;
+import main.engine.structures.features.Activatable;
 import main.engine.structures.features.Clickable;
 import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.Dimensions;
@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import static main.game.GameConstants.*;
 
 @Getter
-public class Card extends GameObject implements Clickable, Activable, Hoverable
+public class Card extends GameObject implements Clickable, Activatable, Hoverable
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;

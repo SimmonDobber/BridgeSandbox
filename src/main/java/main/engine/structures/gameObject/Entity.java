@@ -6,7 +6,7 @@ import main.engine.structures.features.Measurable;
 
 @Getter
 @Setter
-public class Entity implements Measurable
+public abstract class Entity implements Measurable
 {
     public Position pos;
     public Dimensions dim;

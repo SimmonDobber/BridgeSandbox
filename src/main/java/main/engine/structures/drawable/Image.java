@@ -13,32 +13,27 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
-public class Image implements Drawable
+public class Image extends DrawableEntity
 {
     private static double TAU = Math.PI * 2;
-    protected Position pos;
     protected Dimensions dim;
-    protected int fixed;
     protected int[] p;
 
     public Image(Image image) {
-        this.pos = new Position(image.getPos());
+        super(image.getPos(), image.getFixed());
         this.dim = new Dimensions(image.getDim());
-        this.fixed = image.getFixed();
         this.p = Arrays.copyOf(image.getP(), image.getP().length);
     }
 
     public Image(String path, Position pos, Dimensions dim, int fixed) {
-        this.pos = pos;
+        super(pos, fixed);
         this.dim = dim;
-        this.fixed = fixed;
         loadImageFromFile(path);
     }
 
     public Image(Position pos, Dimensions dim, int fixed) {
-        this.pos = pos;
+        super(pos, fixed);
         this.dim = dim;
-        this.fixed = fixed;
         p = new int[dim.w * dim.h];
     }
 
@@ -120,10 +115,6 @@ public class Image implements Drawable
 
     private double makeAnglePositive(double angle) {
         return angle < 0 ? TAU : 0;
-    }
-
-    private Position getAbsolutePos(Position relativePos) {
-        return new Position(pos.x + relativePos.x, pos.y + relativePos.y);
     }
 
     private Scale getDimensionsScale(Dimensions newDimensions) {

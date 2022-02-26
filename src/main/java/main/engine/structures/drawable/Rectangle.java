@@ -6,53 +6,67 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 
 @Getter
-public class Rectangle implements Drawable
+public class Rectangle extends DrawableEntity
 {
     private static final int DEFAULT_FRAME_THICKNESS = 2;
-    private Position pos;
     private Dimensions dim;
-    private int fixed;
     private int color;
     private int frameColor;
 
-    public Rectangle(Position pos, Dimensions dim, int color, int frameColor, int fixed)
-    {
-        initializeRectangle(pos, dim, color, frameColor, fixed);
+    public Rectangle(Position pos, Dimensions dim, int color, int frameColor, int fixed) {
+        super(pos, fixed);
+        initializeRectangle(dim, color, frameColor);
     }
 
-    public Rectangle(Position pos, Dimensions dim, int color, int fixed)
-    {
-        initializeRectangle(pos, dim, color, color, fixed);
+    public Rectangle(Position pos, Dimensions dim, int color, int fixed) {
+        super(pos, fixed);
+        initializeRectangle(dim, color, color);
     }
-    private void initializeRectangle(Position pos, Dimensions dim, int color, int frameColor, int fixed)
-    {
-        this.pos = pos;
+    private void initializeRectangle(Dimensions dim, int color, int frameColor) {
         this.dim = dim;
-        this.fixed = fixed;
         this.color = color;
         this.frameColor = frameColor;
     }
 
     @Override
-    public void render(Renderer r, Position absolutePos, int id) {
-        r.drawRectangle(getAbsolutePos(absolutePos), dim, color, fixed, id);
+    public void render(Renderer r, Position relativePos, int id) {
+        r.drawRectangle(getAbsolutePos(relativePos), dim, color, fixed, id);
         if(color != frameColor)
-            renderFrame(r, getAbsolutePos(absolutePos), id);
+            renderFrame(r, getAbsolutePos(relativePos), id);
     }
 
-    private void renderFrame(Renderer r, Position absPos, int id)
-    {
-        Position framePosition;
-        r.drawRectangle(absPos, new Dimensions(dim.getW(), DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
-        r.drawRectangle(absPos, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.getH()), frameColor, fixed, id);
-        framePosition = new Position(absPos.getX() + dim.getW() - DEFAULT_FRAME_THICKNESS, absPos.getY());
-        r.drawRectangle(framePosition, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.getH()), frameColor, fixed, id);
-        framePosition = new Position(absPos.getX(), absPos.getY() + dim.getH() - DEFAULT_FRAME_THICKNESS);
-        r.drawRectangle(framePosition, new Dimensions(dim.getW(), DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
+    private void renderFrame(Renderer r, Position relativePos, int id) {
+        renderTopFrame(r, relativePos, id);
+        renderBottomFrame(r, relativePos, id);
+        renderLeftFrame(r, relativePos, id);
+        renderRightFrame(r, relativePos, id);
     }
 
-    private Position getAbsolutePos(Position absolutePos)
-    {
-        return new Position(this.pos.getX() + absolutePos.getX(), this.pos.getY() + absolutePos.getY());
+    private void renderTopFrame(Renderer r, Position relativePos, int id) {
+        int frameX = relativePos.x;
+        int frameY = relativePos.y;
+        Position framePos = new Position(frameX, frameY);
+        r.drawRectangle(framePos, new Dimensions(dim.w, DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
+    }
+
+    private void renderBottomFrame(Renderer r, Position relativePos, int id){
+        int frameX = relativePos.x;
+        int frameY = relativePos.y + dim.h - DEFAULT_FRAME_THICKNESS;
+        Position framePos = new Position(frameX, frameY);
+        r.drawRectangle(framePos, new Dimensions(dim.w, DEFAULT_FRAME_THICKNESS), frameColor, fixed, id);
+    }
+
+    private void renderLeftFrame(Renderer r, Position relativePos, int id){
+        int frameX = relativePos.x;
+        int frameY = relativePos.y;
+        Position framePos = new Position(frameX, frameY);
+        r.drawRectangle(framePos, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.h), frameColor, fixed, id);
+    }
+
+    private void renderRightFrame(Renderer r, Position relativePos, int id){
+        int frameX = relativePos.x + dim.w - DEFAULT_FRAME_THICKNESS;
+        int frameY = relativePos.y;
+        Position framePos = new Position(frameX, frameY);
+        r.drawRectangle(framePos, new Dimensions(DEFAULT_FRAME_THICKNESS, dim.h), frameColor, fixed, id);
     }
 }
