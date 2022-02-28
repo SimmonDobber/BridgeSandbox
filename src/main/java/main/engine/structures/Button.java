@@ -14,13 +14,14 @@ import main.engine.structures.gameObject.Position;
 @Setter
 public abstract class Button extends GameObject implements Clickable, Hoverable
 {
+    private static final int DEFAULT_STATE_COUNT = 1;
     protected int stateCount;
     protected int state;
     protected boolean hovered;
 
     public Button(Position pos, Dimensions dim, GameObject parent) {
         super(pos, dim, parent);
-        initializeButton(1);
+        initializeButton(DEFAULT_STATE_COUNT);
     }
 
     public Button(Position pos, Dimensions dim, GameObject parent, int stateCount) {
@@ -31,7 +32,7 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
     private void initializeButton(int stateCount)
     {
         Input.getInput().attach(this);
-        state = 0;
+        this.state = 0;
         this.stateCount = stateCount;
         this.hovered = false;
     }

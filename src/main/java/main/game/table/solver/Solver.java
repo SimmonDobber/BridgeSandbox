@@ -2,24 +2,10 @@ package main.game.table.solver;
 
 import main.engine.structures.IntPair;
 import main.engine.structures.observer.Observer;
+import main.game.table.card.CardColor;
 import main.game.table.card.CardFigure;
 import main.game.GameConstants;
 import main.game.table.Table;
-
-/*
-_7C
-_4H
-_8H
-AC
-JD
-_9H
-_4S
-_8C
-JH
-_7S
-QC
-AD
- */
 
 public class Solver implements Observer
 {
@@ -49,10 +35,18 @@ public class Solver implements Observer
             if(i == g.lastWinner)
                 continue;
             if(lastCards[currentWinner].x != atu && lastCards[i].x == atu)
+            {
                 currentWinner = i;
-            else if((lastCards[i].x != currentAtu) || (lastCards[i].x != atu && lastCards[currentWinner].x == atu));
+            }
+            else if((lastCards[i].x != atu) && ((lastCards[i].x != currentAtu) || (lastCards[currentWinner].x == atu)))
+            {
+                ;
+            }
             else if(lastCards[currentWinner].y < lastCards[i].y)
+            {
                 currentWinner = i;
+            }
+
         }
         return currentWinner;
     }
@@ -118,7 +112,7 @@ public class Solver implements Observer
         feedback = initialMove(initialState);
         for(int i = 0; i < feedback.trace.size(); i++)
         {
-            System.out.println(CardFigure.values()[feedback.trace.get(i).y] + "" + Table.WRITTEN_COLORS[feedback.trace.get(i).x]);
+            System.out.println(CardFigure.values()[feedback.trace.get(i).y] + " " + CardColor.values()[feedback.trace.get(i).x]);
         }
         System.out.println(feedback.moves + " " + feedback.amount);
     }

@@ -14,12 +14,6 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 {
     private static Input INPUT = null;
 
-    public static Input getInput() {
-        if(INPUT == null)
-            INPUT = new Input(Window.getWindow());
-        return INPUT;
-    }
-
     private final int NUM_KEYS = 256;
     private final boolean[] keys = new boolean[NUM_KEYS];
     private boolean[] keysLast = new boolean[NUM_KEYS];
@@ -223,5 +217,11 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     public void mouseWheelMoved(MouseWheelEvent e)
     {
         scroll = e.getWheelRotation();
+    }
+
+    public static Input getInput() {
+        if(INPUT == null)
+            INPUT = new Input(Window.getWindow());
+        return INPUT;
     }
 }

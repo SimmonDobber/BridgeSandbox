@@ -1,9 +1,7 @@
 package main.engine;
 
 import lombok.Getter;
-import main.engine.display.font.Font;
 import main.engine.structures.Scene;
-import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChoosePanel;
@@ -12,13 +10,6 @@ import main.game.table.Table;
 public class ProgramContainer
 {
     private static ProgramContainer PROGRAM_CONTAINER = null;
-
-    public static ProgramContainer getProgramContainer()
-    {
-        if(PROGRAM_CONTAINER == null)
-            PROGRAM_CONTAINER = new ProgramContainer();
-        return PROGRAM_CONTAINER;
-    }
     private MainLoop mainLoop;
     @Getter
     private Scene table;
@@ -47,5 +38,12 @@ public class ProgramContainer
 
     public void switchSceneToCardChoosePanel() {
         mainLoop.setCurrentScene(cardChoosePanel);
+    }
+
+    public static ProgramContainer getProgramContainer()
+    {
+        if(PROGRAM_CONTAINER == null)
+            PROGRAM_CONTAINER = new ProgramContainer();
+        return PROGRAM_CONTAINER;
     }
 }

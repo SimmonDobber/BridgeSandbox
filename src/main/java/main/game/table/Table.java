@@ -65,7 +65,7 @@ public class Table extends GameObject implements Scene, Observer
 
     private void initializeTable() {
         hand = new Hand[PLAYER_COUNT];
-        this.cardAmount = 13;
+        this.cardAmount = 5;
         this.contractId = 0;
     }
 
@@ -378,7 +378,7 @@ public class Table extends GameObject implements Scene, Observer
     }
 
     private boolean hasNewColorAdvantage(Card old, Card _new, CardColor currentAtu) {
-        return ((_new.getColor() == currentAtu) && (_new.getColor() == getAtu() || old.getColor() != getAtu()));
+        return ((_new.getColor() == getAtu()) || (_new.getColor() == currentAtu && old.getColor() != getAtu()));
     }
 
     private boolean hasNewFigureAdvantage(Card old, Card _new) {
