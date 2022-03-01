@@ -36,8 +36,6 @@ public class AcceptChoiceButton extends Button
 
     @Override
     public void onClick() {
-        ((CardChoosePanel)(parent)).groupChosenCards();
-        ((CardChoosePanel)(parent)).clearCardChoices();
         notifyObservers();
     }
 
@@ -63,6 +61,7 @@ public class AcceptChoiceButton extends Button
 
     @Override
     public void notifyObservers() {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, ((CardChoosePanel)(parent)).groupChosenCards());
     }
 }

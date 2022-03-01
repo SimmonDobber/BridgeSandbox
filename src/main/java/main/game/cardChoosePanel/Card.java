@@ -12,6 +12,7 @@ import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.table.card.CardColor;
@@ -73,7 +74,7 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     }
 
     @Override
-    public void update()
+    public void update(Observable o, Object arg)
     {
         focusUpdate();
     }
@@ -116,7 +117,10 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     @Override
     public void notifyObservers()
     {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+        {
+            observers.get(i).update(this, null);
+        }
     }
 
     @Override

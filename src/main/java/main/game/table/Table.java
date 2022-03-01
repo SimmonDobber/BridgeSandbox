@@ -11,8 +11,10 @@ import main.engine.structures.Scene;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
+import main.game.cardChoosePanel.AcceptChoiceButton;
 import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChooseButton;
 import main.game.table.buttons.CardChooseButton;
@@ -34,7 +36,6 @@ import static main.game.GameConstants.*;
 @Getter
 public class Table extends GameObject implements Scene, Observer
 {
-    private final String name = "Table";
     public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
     @Getter
     private static int cardAmount;
@@ -137,56 +138,44 @@ public class Table extends GameObject implements Scene, Observer
     }
 
     @Override
-    public void update()
+    public void update(Observable o, Object arg)
     {
-        updateCards();
-        updateContractButton();
-        updateShuffleButton();
-        updateCardAmountChangeButton();
-        updateCardChoose();
+        if(o instanceof Card)
+            updateCards((Card)o);
+        if(o instanceof ContractChooseButton)
+        updateContractButton((Integer)arg);
+        if(o instanceof ShuffleButton)
+            updateShuffleButton();
+        if(o instanceof CardAmountChangeButton)
+            updateCardAmountChangeButton((Integer)arg);
+        if(o instanceof AcceptChoiceButton)
+            updateCardChoose((List<Integer>)arg);
     }
 
-    private void updateCardChoose()
+    private void updateCardChoose(List<Integer> chosenCards)
     {
-        List<Integer> chosenCards = CardChoosePanel.getChosenCards();
-        if(chosenCards != null)
-        {
-            initializeSetGame(chosenCards);
-            ProgramContainer.getProgramContainer().switchSceneToTable();
-        }
+        initializeSetGame(chosenCards);
     }
 
-    private void updateCards()
+    private void updateCards(Card playedCard)
     {
-        Integer cardId = Card.getRecentlyPlayed();
-        if(cardId != null)
-        {
-            playCard(findPlayedCard(cardId));
-        }
+        playCard(playedCard);
     }
 
-    private void updateContractButton()
+    private void updateContractButton(Integer recentlyChosen)
     {
-        Integer recentlyChosen = ContractChooseButton.getRecentlyChosen();
-        if(recentlyChosen != null)
-        {
-            setContractId(recentlyChosen);
-            contractButton.reLoadTextSprites(contractId);
-            ProgramContainer.getProgramContainer().switchSceneToTable();
-        }
+        setContractId(recentlyChosen);
+        contractButton.reLoadTextSprites(contractId);
     }
 
     private void updateShuffleButton()
     {
-        Boolean shuffle = ShuffleButton.isShuffle();
-        if(shuffle)
-            initializeRandomGame();
+        initializeRandomGame();
     }
 
-    private void updateCardAmountChangeButton()
+    private void updateCardAmountChangeButton(Integer clickValue)
     {
-        Integer clickValue = CardAmountChangeButton.getClickValue();
-        if(clickValue != null && isCardAmountAbleToModify(clickValue))
+        if(isCardAmountAbleToModify(clickValue))
         {
             cardAmount += clickValue;
             initializeRandomGame();
@@ -273,19 +262,6 @@ public class Table extends GameObject implements Scene, Observer
         }
         Arrays.sort(temp);
         return new Hand(temp, cardAmount, playerId, this);
-    }
-
-    private Card findPlayedCard(int cardId)
-    {
-        for(int i = 0; i < PLAYER_COUNT; i++)
-        {
-            for(int j = 0; j < hand[i].getCard().size(); j++)
-            {
-                if(hand[i].getCard().get(j).getId() == cardId)
-                    return hand[i].getCard().get(j);
-            }
-        }
-        return null;
     }
 
     public void playCard(Card card)
@@ -415,5 +391,10 @@ public class Table extends GameObject implements Scene, Observer
     private CardColor getAtu()
     {
         return CardColor.values()[contractId % (GameConstants.COLOR_COUNT + 1)];
+    }
+
+    public String getName()
+    {
+        return "Table";
     }
 }

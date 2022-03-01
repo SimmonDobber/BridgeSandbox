@@ -14,8 +14,6 @@ import static main.game.GameConstants.*;
 
 public class ContractChoosePanel extends GameObject implements Scene
 {
-    @Getter
-    public final String name = "ContractChoosePanel";
     private ContractChooseButton[][] buttons;
     public ContractChoosePanel(Position pos)
     {
@@ -44,10 +42,17 @@ public class ContractChoosePanel extends GameObject implements Scene
         buttons[i][j] = new ContractChooseButton(buttonPosition,this, (i + j * (COLOR_COUNT + 1)));
         children.add(buttons[i][j]);
         buttons[i][j].attach((Observer)(ProgramContainer.getProgramContainer().getTable()));
+        buttons[i][j].attach(ProgramContainer.getProgramContainer());
+
     }
 
     private void initializeSpriteList()
     {
         spriteList.add(new Rectangle(new Position(), new Dimensions(379, 347), GREEN, BROWN, 1));
+    }
+
+    public String getName()
+    {
+        return "ContractChoosePanel";
     }
 }

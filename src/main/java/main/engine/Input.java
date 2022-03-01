@@ -141,7 +141,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     @Override
     public void notifyObservers() {
         for(int i = 0; i < observers.size(); i++) {
-            observers.get(i).update();
+            observers.get(i).update(null, null);
         }
     }
 

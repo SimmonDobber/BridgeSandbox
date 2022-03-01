@@ -12,6 +12,7 @@ import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 
@@ -24,8 +25,6 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
-    private static Integer recentlyPlayed;
-
     private CardFigure figure;
     private CardColor color;
     @Setter
@@ -71,7 +70,7 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     }
 
     @Override
-    public void update()
+    public void update(Observable o, Object arg)
     {
         if(!active)
             return;
@@ -116,12 +115,12 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     @Override
     public void notifyObservers()
     {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, null);
     }
 
     @Override
     public void onClick() {
-        recentlyPlayed = id;
         notifyObservers();
     }
 
@@ -149,11 +148,5 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     public int getCardId()
     {
         return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
-    }
-
-    public static Integer getRecentlyPlayed() {
-        Integer recentlyPlayed = Card.recentlyPlayed;
-        Card.recentlyPlayed = null;
-        return recentlyPlayed;
     }
 }

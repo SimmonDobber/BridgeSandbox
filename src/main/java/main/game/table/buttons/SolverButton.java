@@ -47,8 +47,10 @@ public class SolverButton extends Button
     }
 
     @Override
-    public void notifyObservers() {
-        observers.forEach(Observer::update);
+    public void notifyObservers()
+    {
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(null, null);
     }
 
     @Override

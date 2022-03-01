@@ -1,6 +1,7 @@
 package main.game.table.solver;
 
 import main.engine.structures.IntPair;
+import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.table.card.CardColor;
 import main.game.table.card.CardFigure;
@@ -18,7 +19,7 @@ public class Solver implements Observer
         this.table = table;
     }
     @Override
-    public void update() {
+    public void update(Observable o, Object arg) {
         initialize();
     }
     private int chooseWinner(GameState g)

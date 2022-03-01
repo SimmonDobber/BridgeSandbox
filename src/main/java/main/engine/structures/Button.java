@@ -9,6 +9,7 @@ import main.engine.structures.features.Hoverable;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
 
 @Getter
 @Setter
@@ -37,7 +38,7 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
         this.hovered = false;
     }
 
-    public void update()
+    public void update(Observable o, Object arg)
     {
         if(hasFocus(id) && belongsToCurrentScene())
         {

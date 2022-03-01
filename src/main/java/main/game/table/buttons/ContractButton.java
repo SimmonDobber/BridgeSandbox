@@ -28,6 +28,7 @@ public class ContractButton extends Button
                 new Dimensions(DEFAULT_CONTRACT_BUTTON_WIDTH, DEFAULT_CONTRACT_BUTTON_HEIGHT), parent);
         initializeSpriteList(contractId);
         observers = new LinkedList<>();
+        attach(ProgramContainer.getProgramContainer());
     }
 
     private void initializeSpriteList(int contractId)
@@ -64,17 +65,18 @@ public class ContractButton extends Button
 
     @Override
     public void detach(Observer observer) {
-        observers.remove(observers);
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers() {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, null);
     }
 
     @Override
     public void onClick() {
-        ProgramContainer.getProgramContainer().switchSceneToContractChoosePanel();
+        notifyObservers();
     }
 
     @Override

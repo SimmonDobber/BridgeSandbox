@@ -7,13 +7,14 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 
 import java.util.LinkedList;
 
 import static main.game.GameConstants.*;
 
-public class CardChooseButton extends Button
+public class CardChooseButton extends Button implements Observable
 {
     private static final int DEFAULT_CARD_CHOOSE_BUTTON_WIDTH = 150;
     private static final int DEFAULT_CARD_CHOOSE_BUTTON_HEIGHT = 80;
@@ -27,6 +28,7 @@ public class CardChooseButton extends Button
                 new Dimensions(DEFAULT_CARD_CHOOSE_BUTTON_WIDTH, DEFAULT_CARD_CHOOSE_BUTTON_HEIGHT), parent);
         initializeSpriteList();
         observers = new LinkedList<>();
+        attach(ProgramContainer.getProgramContainer());
     }
 
     private void initializeSpriteList()
@@ -42,17 +44,18 @@ public class CardChooseButton extends Button
 
     @Override
     public void detach(Observer observer) {
-        observers.remove(observers);
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers() {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, null);
     }
 
     @Override
     public void onClick() {
-        ProgramContainer.getProgramContainer().switchSceneToCardChoosePanel();
+        notifyObservers();
     }
 
     @Override

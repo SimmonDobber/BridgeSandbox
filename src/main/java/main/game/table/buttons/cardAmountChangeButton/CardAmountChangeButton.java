@@ -25,6 +25,7 @@ public class CardAmountChangeButton extends Button
     private static final int DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_X = 24;
     private static final int DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_Y = 442;
     private static Integer CLICK_VALUE = null;
+    private static Integer clickValue;
     private LinkedList<Observer> observers;
 
     public CardAmountChangeButton(GameObject parent)
@@ -54,9 +55,9 @@ public class CardAmountChangeButton extends Button
     @Override
     public void onClick() {
         if(Input.getInput().isButtonDown(MouseEvent.BUTTON1))
-            CLICK_VALUE = 1;
+            clickValue = 1;
         else
-            CLICK_VALUE = -1;
+            clickValue = -1;
         notifyObservers();
     }
 
@@ -82,13 +83,8 @@ public class CardAmountChangeButton extends Button
 
     @Override
     public void notifyObservers() {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, clickValue);
     }
 
-    public static Integer getClickValue()
-    {
-        Integer clickValue = CLICK_VALUE;
-        CLICK_VALUE = null;
-        return clickValue;
-    }
 }

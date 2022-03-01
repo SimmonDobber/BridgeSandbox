@@ -19,7 +19,6 @@ import static main.game.GameConstants.*;
 
 public class CardChoosePanel extends GameObject implements Scene
 {
-    public static LinkedList<Integer> CHOSEN_CARDS = null;
     private static int CARD_SPACE = 20;
     private static int CARD_ROW_OFFSET = 96;
     private Card[][] card;
@@ -51,6 +50,7 @@ public class CardChoosePanel extends GameObject implements Scene
         acceptChoiceButton = new AcceptChoiceButton(this);
         children.add(acceptChoiceButton);
         acceptChoiceButton.attach((Observer)((ProgramContainer.getProgramContainer().getTable())));
+        acceptChoiceButton.attach(ProgramContainer.getProgramContainer());
     }
 
     public void clearCardChoices()
@@ -62,19 +62,15 @@ public class CardChoosePanel extends GameObject implements Scene
         }
     }
 
-    public void groupChosenCards() {
-        CHOSEN_CARDS = new LinkedList<>();
+    public LinkedList<Integer> groupChosenCards() {
+        LinkedList<Integer> cards = new LinkedList<>();
         for(int i = 0; i < PLAYER_COUNT; i++) {
             for(int j = 0; j < DECK_SIZE; j++) {
                 if(card[i][j].isActive())
-                    CHOSEN_CARDS.add(card[i][j].getCardId());
+                    cards.add(card[i][j].getCardId());
             }
         }
-        if(CHOSEN_CARDS.isEmpty())
-        {
-            CHOSEN_CARDS = null;
-            ProgramContainer.getProgramContainer().switchSceneToTable();
-        }
+        return cards;
     }
 
     private void initializePlayerCards(int playerId)
@@ -107,10 +103,5 @@ public class CardChoosePanel extends GameObject implements Scene
     @Override
     public String getName() {
         return "CardChoosePanel";
-    }
-    public static LinkedList<Integer> getChosenCards() {
-        LinkedList<Integer> chosenCards = CHOSEN_CARDS;
-        CHOSEN_CARDS = null;
-        return chosenCards;
     }
 }

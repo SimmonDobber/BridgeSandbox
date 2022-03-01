@@ -41,7 +41,6 @@ public class ContractChooseButton extends Button
     @Override
     public void onClick()
     {
-        RECENTLY_CHOSEN = contractId;
         notifyObservers();
     }
 
@@ -77,13 +76,8 @@ public class ContractChooseButton extends Button
 
     @Override
     public void notifyObservers() {
-        observers.forEach(Observer::update);
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(this, contractId);
     }
 
-    public static Integer getRecentlyChosen()
-    {
-        Integer recentlyChosen = RECENTLY_CHOSEN;
-        RECENTLY_CHOSEN = null;
-        return recentlyChosen;
-    }
 }
