@@ -9,6 +9,7 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
+import main.game.table.Table;
 
 import static main.game.GameConstants.*;
 
@@ -41,7 +42,7 @@ public class ContractChoosePanel extends GameObject implements Scene
                                                   j * ContractChooseButton.DEFAULT_HEIGHT + pos.getY() + 2);
         buttons[i][j] = new ContractChooseButton(buttonPosition,this, (i + j * (COLOR_COUNT + 1)));
         children.add(buttons[i][j]);
-        buttons[i][j].attach((Observer)(ProgramContainer.getProgramContainer().getTable()));
+        buttons[i][j].attach(((Table)(ProgramContainer.getProgramContainer().getTable())).getGameManager());
         buttons[i][j].attach(ProgramContainer.getProgramContainer());
 
     }

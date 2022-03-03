@@ -38,11 +38,11 @@ public class Hand extends GameObject
             children.add(tableCard.get(tableCard.size() - 1));
         }
     }
-    public void attachObserversToCards(Table table)
+    public void attachObserversToCards(GameManager gameManager)
     {
         for(int i = 0; i < tableCard.size(); i++)
         {
-            tableCard.get(i).attach(table);
+            tableCard.get(i).attach(gameManager);
         }
     }
 

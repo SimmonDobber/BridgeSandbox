@@ -15,9 +15,9 @@ public class TableButtonManager extends ButtonManager
 
     protected void loadButtons() {
         addButton(new SolverButton(table), table.getSolver());
-        addButton(new ShuffleButton(table), table);
-        addButton(new CardAmountChangeButton(table), table);
-        addButton(new ContractButton(table, table.getContractId()));
+        addButton(new ShuffleButton(table), table.getGameManager());
+        addButton(new CardAmountChangeButton(table), table.getGameManager());
+        addButton(new ContractButton(table, table.getGameManager().getContractId()));
         addButton(new CardChooseButton(table));
     }
 

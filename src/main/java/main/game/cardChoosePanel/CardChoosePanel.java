@@ -9,6 +9,7 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
+import main.game.table.Table;
 import main.game.table.card.CardColor;
 import main.game.table.card.CardFigure;
 
@@ -50,7 +51,7 @@ public class CardChoosePanel extends GameObject implements Scene
     {
         acceptChoiceButton = new AcceptChoiceButton(this);
         children.add(acceptChoiceButton);
-        acceptChoiceButton.attach((Observer)((ProgramContainer.getProgramContainer().getTable())));
+        acceptChoiceButton.attach(((Table)(ProgramContainer.getProgramContainer().getTable())).getGameManager());
         acceptChoiceButton.attach(ProgramContainer.getProgramContainer());
     }
 

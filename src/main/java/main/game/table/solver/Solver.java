@@ -108,8 +108,8 @@ public class Solver implements Observer
     }
     public void initialize()
     {
-        atu = table.getContractId() % 5;
-        initialState = new GameState(table);
+        atu = table.getGameManager().getContractId() % 5;
+        initialState = new GameState(table.getGameManager());
         feedback = initialMove(initialState);
         for(int i = 0; i < feedback.trace.size(); i++)
         {
