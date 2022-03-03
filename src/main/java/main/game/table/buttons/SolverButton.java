@@ -1,14 +1,12 @@
 package main.game.table.buttons;
 
-import main.engine.display.Window;
-import main.engine.structures.Button;
+import main.engine.structures.button.Button;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
-import main.game.table.Hand;
 
 import java.util.LinkedList;
 
@@ -20,13 +18,11 @@ public class SolverButton extends Button
     private static final int DEFAULT_SOLVER_BUTTON_HEIGHT = 80;
     private static final int DEFAULT_SOLVER_BUTTON_X = 24;
     private static final int DEFAULT_SOLVER_BUTTON_Y = 546;
-    private LinkedList<Observer> observers;
 
     public SolverButton(GameObject parent) {
         super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
                 new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
         initializeSpriteList();
-        observers = new LinkedList<>();
         hovered = false;
     }
 
@@ -34,16 +30,6 @@ public class SolverButton extends Button
     {
         spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
         spriteList.add(new Text("calculate", new Position(16, 22), DEFAULT_FONT_SIZE, GRAY, 1));
-    }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
     }
 
     @Override

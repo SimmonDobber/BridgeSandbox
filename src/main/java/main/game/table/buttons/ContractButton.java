@@ -1,16 +1,13 @@
 package main.game.table.buttons;
 
 import main.engine.ProgramContainer;
-import main.engine.structures.Button;
+import main.engine.structures.button.Button;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
-import main.engine.structures.observer.Observer;
 import main.game.table.card.CardColor;
-
-import java.util.LinkedList;
 
 import static main.game.GameConstants.*;
 
@@ -20,14 +17,12 @@ public class ContractButton extends Button
     private static final int DEFAULT_CONTRACT_BUTTON_HEIGHT = 40;
     private static final int DEFAULT_CONTRACT_BUTTON_X = 150;
     private static final int DEFAULT_CONTRACT_BUTTON_Y = 22;
-    private LinkedList<Observer> observers;
 
     public ContractButton(GameObject parent, int contractId)
     {
         super(new Position(DEFAULT_CONTRACT_BUTTON_X, DEFAULT_CONTRACT_BUTTON_Y),
                 new Dimensions(DEFAULT_CONTRACT_BUTTON_WIDTH, DEFAULT_CONTRACT_BUTTON_HEIGHT), parent);
         initializeSpriteList(contractId);
-        observers = new LinkedList<>();
         attach(ProgramContainer.getProgramContainer());
     }
 
@@ -56,16 +51,6 @@ public class ContractButton extends Button
     {
         removeTextSprites();
         loadTextSprites(contractId);
-    }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
     }
 
     @Override

@@ -22,6 +22,12 @@ public abstract class GameObject extends Entity implements Serializable
     protected List<GameObject> children;
     protected int id;
 
+    protected GameObject(GameObject parent)
+    {
+        super(new Position(), new Dimensions());
+        initializeGameObject(parent);
+    }
+
     protected GameObject(Position pos, Dimensions dim, GameObject parent)
     {
         super(pos, dim);

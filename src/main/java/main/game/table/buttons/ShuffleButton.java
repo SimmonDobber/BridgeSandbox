@@ -1,6 +1,6 @@
 package main.game.table.buttons;
 
-import main.engine.structures.Button;
+import main.engine.structures.button.Button;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
@@ -19,11 +19,9 @@ public class ShuffleButton extends Button
     private static final int DEFAULT_SHUFFLE_BUTTON_HEIGHT = 80;
     private static final int DEFAULT_SHUFFLE_BUTTON_X = 198;
     private static final int DEFAULT_SHUFFLE_BUTTON_Y = 546;
-    private LinkedList<Observer> observers;
     public ShuffleButton(GameObject parent) {
         super(new Position(DEFAULT_SHUFFLE_BUTTON_X, DEFAULT_SHUFFLE_BUTTON_Y),
                 new Dimensions(DEFAULT_SHUFFLE_BUTTON_WIDTH, DEFAULT_SHUFFLE_BUTTON_HEIGHT), parent);
-        observers = new LinkedList<>();
         initializeSpriteList();
     }
 
@@ -46,16 +44,6 @@ public class ShuffleButton extends Button
     @Override
     public void onHold() {
 
-    }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
     }
 
     @Override

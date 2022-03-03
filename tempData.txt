@@ -165,7 +165,7 @@ void print(GameState g, int id)
 	cout<<"Current Player: "<<sides[g.currPlayer]<<"\n";
 	cout<<"Current Player In Turn: "<<g.currPlayerInTurn<<"\n";
 	cout<<"Current Color: "<<colors[(g.currColor == -1 ? 4 : g.currColor)]<<"\n";
-	cout<<"Current card: "<<figures[g.cards[g.currPlayer][id].y]<<colors[g.cards[g.currPlayer][id].x]<<"\n";
+	cout<<"Current tableCard: "<<figures[g.cards[g.currPlayer][id].y]<<colors[g.cards[g.currPlayer][id].x]<<"\n";
 	cout<<"Atu: "<<colors[g.atu]<<"\n";
 	f(i, 4)
 	{
@@ -223,9 +223,9 @@ bool valid(GameState g, int id)
 	}
 	return true;
 }
-Feedback move(GameState g, pi card, int id)
+Feedback move(GameState g, pi tableCard, int id)
 {
-	g.trace.pb(card);
+	g.trace.pb(tableCard);
 	g.cards[g.currPlayer].erase(g.cards[g.currPlayer].begin() + id);
 	if(g.currPlayerInTurn == 3)
 	{
@@ -237,7 +237,7 @@ Feedback move(GameState g, pi card, int id)
 	{
 		if(g.currPlayerInTurn == 0)
 		{
-			g.currColor = card.x;
+			g.currColor = tableCard.x;
 		}
 		g.currPlayerInTurn++;
 		g.currPlayer = (g.currPlayer + 1) % 4;

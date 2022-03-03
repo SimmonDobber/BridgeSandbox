@@ -6,7 +6,7 @@ import main.engine.structures.observer.Observer;
 
 import java.awt.event.MouseEvent;
 
-public interface Clickable extends Measurable, Serializable, Observer, Observable
+public interface Clickable extends Measurable, Observer, Observable
 {
     void onClick();
     void onRelease();

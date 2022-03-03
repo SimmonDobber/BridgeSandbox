@@ -19,20 +19,20 @@ public class GameState
     {
         currPlayer = table.getCurrentPlayer().ordinal();
         lastWinner = table.getLastWinner().ordinal();
-        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChosenCards()[table.getLastWinner().ordinal()].getColor().ordinal());
+        currColor = (table.getLastWinner() == table.getCurrentPlayer() ? -1 : table.getChosenTableCards()[table.getLastWinner().ordinal()].getColor().ordinal());
         taken = new IntPair(table.getTaken());
         cards = new List[GameConstants.PLAYER_COUNT];
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             cards[i] = new ArrayList<>();
-            for(int j = 0; j < table.getHand()[i].getCard().size(); j++)
-                cards[i].add(new IntPair(table.getHand()[i].getCard().get(j).getColor().ordinal(), table.getHand()[i].getCard().get(j).getFigure().ordinal()));
+            for(int j = 0; j < table.getHand()[i].getTableCard().size(); j++)
+                cards[i].add(new IntPair(table.getHand()[i].getTableCard().get(j).getColor().ordinal(), table.getHand()[i].getTableCard().get(j).getFigure().ordinal()));
         }
         trace = new ArrayList<>();
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
-            if(table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT] != null)
-              trace.add(new IntPair(table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getColor().ordinal(), table.getChosenCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getFigure().ordinal()));
+            if(table.getChosenTableCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT] != null)
+              trace.add(new IntPair(table.getChosenTableCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getColor().ordinal(), table.getChosenTableCards()[(table.getCurrentPlayer().ordinal() + i) % GameConstants.PLAYER_COUNT].getFigure().ordinal()));
         }
     }
     public GameState(GameState g)

@@ -1,4 +1,4 @@
-package main.engine.structures;
+package main.engine.structures.button;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,10 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
+import main.engine.structures.observer.Observer;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,10 +23,12 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
     protected int stateCount;
     protected int state;
     protected boolean hovered;
+    protected List<Observer> observers;
 
     public Button(Position pos, Dimensions dim, GameObject parent) {
         super(pos, dim, parent);
         initializeButton(DEFAULT_STATE_COUNT);
+        observers = new LinkedList<>();
     }
 
     public Button(Position pos, Dimensions dim, GameObject parent, int stateCount) {
@@ -40,13 +46,15 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
 
     public void update(Observable o, Object arg)
     {
-        if(hasFocus(id) && belongsToCurrentScene())
+        if(canBeChosen(id) && belongsToCurrentScene())
         {
             onHover();
             clickableUpdate();
         }
         else
+        {
             nonHover();
+        }
     }
 
     public void render(Renderer r)
@@ -64,6 +72,16 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
     @Override
     public void nonHover() {
         hovered = false;
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
     }
 
     public void incState()

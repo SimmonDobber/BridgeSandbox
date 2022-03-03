@@ -1,4 +1,4 @@
-package main.game.cardChoosePanel;
+package main.game;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,28 +14,29 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
-import main.game.GameConstants;
 import main.game.table.card.CardColor;
 import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
 
-import static main.game.GameConstants.DEFAULT_FONT_SIZE;
-import static main.game.GameConstants.SILVER;
+import static main.game.GameConstants.*;
 
 @Getter
-public class Card extends GameObject implements Clickable, Activatable, Hoverable
+public abstract class Card extends GameObject implements Clickable, Activatable, Hoverable
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
-
-    private CardFigure figure;
-    private CardColor color;
+    public static final int STATE_AMOUNT = 2;
+    protected CardFigure figure;
+    protected CardColor color;
     @Setter
-    private boolean active;
+    protected boolean active;
     @Setter
-    private boolean hovered;
-    private LinkedList<Observer> observers;
+    protected boolean hovered;
+    protected int stateCount;
+    @Setter
+    protected int currentState;
+    protected LinkedList<Observer> observers;
 
     public Card(Card card)
     {
@@ -53,18 +54,20 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
         initializeCard(figure, color);
     }
 
-    private void initializeCard(CardFigure figure, CardColor color)
+    protected void initializeCard(CardFigure figure, CardColor color)
     {
         this.figure = figure;
         this.color = color;
-        this.active = false;
+        this.active = true;
         this.hovered = false;
-        Input.getInput().attach(this);
+        this.stateCount = STATE_AMOUNT;
+        this.currentState = 0;
         this.observers = new LinkedList<>();
+        Input.getInput().attach(this);
         initializeSpriteList();
     }
 
-    private void initializeSpriteList()
+    protected void initializeSpriteList()
     {
         spriteList.add(new Rectangle(new Position(), dim, SILVER, color.getCardColor(), 1));
         spriteList.add(new Text(figure.getAsciiString(), new Position(3, 2), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
@@ -76,12 +79,7 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     @Override
     public void update(Observable o, Object arg)
     {
-        focusUpdate();
-    }
-
-    private void focusUpdate()
-    {
-        if(hasFocus(id) && belongsToCurrentScene())
+        if(canBeChosen(id) && belongsToCurrentScene() && active)
         {
             onHover();
             clickableUpdate();
@@ -95,13 +93,6 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
         spriteRender(r);
         childrenRender(r);
         hoverRender(r, hovered, id);
-        activeRender(r);
-    }
-
-    private void activeRender(Renderer r)
-    {
-        if(active)
-            r.drawRectangle(pos, dim, INACTIVE_COLOR, 1, id);
     }
 
     @Override
@@ -118,14 +109,12 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     public void notifyObservers()
     {
         for(int i = 0; i < observers.size(); i++)
-        {
             observers.get(i).update(this, null);
-        }
     }
 
     @Override
     public void onClick() {
-        active = !active;
+
     }
 
     @Override
@@ -152,5 +141,10 @@ public class Card extends GameObject implements Clickable, Activatable, Hoverabl
     public int getCardId()
     {
         return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
+    }
+
+    public void incState()
+    {
+        currentState = (currentState + 1) % stateCount;
     }
 }

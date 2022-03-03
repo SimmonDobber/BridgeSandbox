@@ -1,8 +1,7 @@
 package main.game.contractChoosePanel;
 
 import lombok.Getter;
-import lombok.Setter;
-import main.engine.structures.Button;
+import main.engine.structures.button.Button;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
@@ -19,8 +18,6 @@ public class ContractChooseButton extends Button
 {
     public final static int DEFAULT_WIDTH = 75;
     public final static int DEFAULT_HEIGHT = 49;
-    @Setter
-    private static Integer RECENTLY_CHOSEN = null;
     private LinkedList<Observer> observers;
     @Getter
     private int contractId;

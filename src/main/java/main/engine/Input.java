@@ -224,4 +224,14 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
             INPUT = new Input(Window.getWindow());
         return INPUT;
     }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public int giveId() {
+        return Observable.super.giveId();
+    }
 }

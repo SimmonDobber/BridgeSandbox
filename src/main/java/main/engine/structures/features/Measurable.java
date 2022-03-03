@@ -9,7 +9,7 @@ public interface Measurable
     Position getPos();
     Dimensions getDim();
 
-    default boolean hasFocus(int id) {
+    default boolean canBeChosen(int id) {
         return isOnSurface(Position.cursorPosition(), id) && isInBorders(Position.cursorPosition());
     }
 
@@ -19,7 +19,7 @@ public interface Measurable
     }
 
     default boolean isOnSurface(Position mousePos, int id) {
-        int pixelId = mousePos.getX() + mousePos.getY() * Window.WIDTH;
+        int pixelId = mousePos.getPositionId(Window.WIDTH);
         return Window.getWindow().getRenderer().getPOwner()[pixelId] == id;
     }
 

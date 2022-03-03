@@ -1,16 +1,14 @@
-package main.game.table.buttons.cardAmountChangeButton;
+package main.game.table.buttons;
 
 
 import main.engine.Input;
-import main.engine.display.Window;
-import main.engine.structures.Button;
+import main.engine.structures.button.Button;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
-import main.game.table.Hand;
 
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -26,14 +24,12 @@ public class CardAmountChangeButton extends Button
     private static final int DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_Y = 442;
     private static Integer CLICK_VALUE = null;
     private static Integer clickValue;
-    private LinkedList<Observer> observers;
 
     public CardAmountChangeButton(GameObject parent)
     {
         super(new Position(DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_X, DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_Y),
                 new Dimensions(DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_WIDTH, DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_HEIGHT), parent);
         initializeSpriteList();
-        observers = new LinkedList<>();
     }
 
     private void initializeSpriteList()
@@ -70,17 +66,6 @@ public class CardAmountChangeButton extends Button
     public void onHold() {
 
     }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
-    }
-
     @Override
     public void notifyObservers() {
         for(int i = 0; i < observers.size(); i++)

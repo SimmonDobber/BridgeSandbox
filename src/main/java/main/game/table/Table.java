@@ -2,7 +2,6 @@ package main.game.table;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.ProgramContainer;
 import main.engine.display.Window;
 import main.engine.structures.IntPair;
 import main.engine.structures.gameObject.Dimensions;
@@ -15,15 +14,9 @@ import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
 import main.game.cardChoosePanel.AcceptChoiceButton;
-import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChooseButton;
-import main.game.table.buttons.CardChooseButton;
-import main.game.table.buttons.ContractButton;
-import main.game.table.buttons.ShuffleButton;
-import main.game.table.buttons.SolverButton;
-import main.game.table.buttons.cardAmountChangeButton.CardAmountChangeButton;
+import main.game.table.buttons.*;
 import main.game.table.solver.Solver;
-import main.game.table.card.Card;
 import main.game.table.card.CardColor;
 
 import java.util.ArrayList;
@@ -36,7 +29,6 @@ import static main.game.GameConstants.*;
 @Getter
 public class Table extends GameObject implements Scene, Observer
 {
-    public static final char[] WRITTEN_COLORS = {'C', 'D', 'H', 'S', 'N'};//temporary
     @Getter
     private static int cardAmount;
     @Setter
@@ -46,13 +38,9 @@ public class Table extends GameObject implements Scene, Observer
     private PlayerSide lastWinner;
     private IntPair taken;
     private Hand[] hand;
-    private Card[] chosenCards;
+    private TableCard[] chosenTableCards;
     private Solver solver;
-    private SolverButton solverButton;
-    private ContractButton contractButton;
-    private ShuffleButton shuffleButton;
-    private CardAmountChangeButton cardAmountChangeButton;
-    private CardChooseButton cardChooseButton;
+    private TableButtonManager buttonManager;
 
     public Table()
     {
@@ -61,7 +49,8 @@ public class Table extends GameObject implements Scene, Observer
         initializeRandomGame();
         initializeSpriteList();
         solver = new Solver(this);
-        initializeButtons();
+        buttonManager = new TableButtonManager(this);
+        children.add(buttonManager);
     }
 
     private void initializeTable() {
@@ -86,26 +75,9 @@ public class Table extends GameObject implements Scene, Observer
 
     private void resetGame() {
         taken = new IntPair();
-        chosenCards = new Card[PLAYER_COUNT];
+        chosenTableCards = new TableCard[PLAYER_COUNT];
         this.lastWinner = PlayerSide.N;
         this.currentPlayer = PlayerSide.N;
-    }
-
-    private void initializeButtons()
-    {
-        solverButton = new SolverButton(this);
-        children.add(solverButton);
-        solverButton.attach(solver);
-        shuffleButton = new ShuffleButton(this);
-        children.add(shuffleButton);
-        shuffleButton.attach(this);
-        contractButton = new ContractButton(this, contractId);
-        children.add(contractButton);
-        cardAmountChangeButton = new CardAmountChangeButton(this);
-        children.add(cardAmountChangeButton);
-        cardAmountChangeButton.attach(this);
-        cardChooseButton = new CardChooseButton(this);
-        children.add(cardChooseButton);
     }
 
     private void initializeSpriteList()
@@ -140,8 +112,8 @@ public class Table extends GameObject implements Scene, Observer
     @Override
     public void update(Observable o, Object arg)
     {
-        if(o instanceof Card)
-            updateCards((Card)o);
+        if(o instanceof TableCard)
+            updateCards((TableCard)o);
         if(o instanceof ContractChooseButton)
         updateContractButton((Integer)arg);
         if(o instanceof ShuffleButton)
@@ -157,15 +129,15 @@ public class Table extends GameObject implements Scene, Observer
         initializeSetGame(chosenCards);
     }
 
-    private void updateCards(Card playedCard)
+    private void updateCards(TableCard playedTableCard)
     {
-        playCard(playedCard);
+        playCard(playedTableCard);
     }
 
     private void updateContractButton(Integer recentlyChosen)
     {
         setContractId(recentlyChosen);
-        contractButton.reLoadTextSprites(contractId);
+        //contractButton.reLoadTextSprites(contractId);
     }
 
     private void updateShuffleButton()
@@ -211,7 +183,7 @@ public class Table extends GameObject implements Scene, Observer
     {
         for(int i = 0; i < children.size(); i++)
         {
-            if(children.get(i).getClass() == Hand.class || children.get(i).getClass() == Card.class)
+            if(children.get(i).getClass() == Hand.class || children.get(i).getClass() == TableCard.class)
                 children.remove(i--);
         }
     }
@@ -227,14 +199,14 @@ public class Table extends GameObject implements Scene, Observer
 
     private PlayerSide selectWinner() {
         PlayerSide currentWinner = currentPlayer;
-        CardColor currentAtu = chosenCards[currentPlayer.ordinal()].getColor();
+        CardColor currentAtu = chosenTableCards[currentPlayer.ordinal()].getColor();
         return compareCards(currentWinner, currentAtu);
     }
 
     private PlayerSide compareCards(PlayerSide currentWinner, CardColor currentAtu) {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             if (i == currentPlayer.ordinal()) continue;
-            if (isNewWinning(chosenCards[currentWinner.ordinal()], chosenCards[i], currentAtu))
+            if (isNewWinning(chosenTableCards[currentWinner.ordinal()], chosenTableCards[i], currentAtu))
                 currentWinner = PlayerSide.values()[i];
         }
         return currentWinner;
@@ -264,26 +236,26 @@ public class Table extends GameObject implements Scene, Observer
         return new Hand(temp, cardAmount, playerId, this);
     }
 
-    public void playCard(Card card)
+    public void playCard(TableCard tableCard)
     {
-        int handId = getCardsHandId(card);
-        moveCardToCenter(card, handId);
-        chosenCards[handId] = card;
-        card.setActive(false);
-        children.add(chosenCards[handId]);
+        int handId = getCardsHandId(tableCard);
+        moveCardToCenter(tableCard, handId);
+        chosenTableCards[handId] = tableCard;
+        tableCard.setActive(false);
+        children.add(chosenTableCards[handId]);
         nextTurn();
     }
 
-    private void moveCardToCenter(Card card, int handId)
+    private void moveCardToCenter(TableCard tableCard, int handId)
     {
-        card.setPos(new Position(Hand.OWNER_CENTER_X[handId], Hand.OWNER_CENTER_Y[handId]));
+        tableCard.setPos(new Position(Hand.OWNER_CENTER_X[handId], Hand.OWNER_CENTER_Y[handId]));
     }
 
-    private int getCardsHandId(Card card)
+    private int getCardsHandId(TableCard tableCard)
     {
         for(int i = 0; i < PLAYER_COUNT; i++)
         {
-            if(hand[i].getCard().contains(card))
+            if(hand[i].getTableCard().contains(tableCard))
                 return i;
         }
         return -1;
@@ -304,7 +276,7 @@ public class Table extends GameObject implements Scene, Observer
         reLoadTextSprites();
     }
 
-    private boolean isNewWinning(Card old, Card _new, CardColor currentAtu) {
+    private boolean isNewWinning(TableCard old, TableCard _new, CardColor currentAtu) {
         if (hasNewAtuAdvantage(old, _new))
             return true;
         if (!hasNewColorAdvantage(old, _new, currentAtu))
@@ -313,18 +285,18 @@ public class Table extends GameObject implements Scene, Observer
     }
 
     private void manageHandActivity(Hand hand) {
-        for (int j = 0; j < hand.getCard().size(); j++)
+        for (int j = 0; j < hand.getTableCard().size(); j++)
         {
-            hand.getCard().get(j).setActive(isCardToActivate(hand.getCard().get(j), !hand.hasColor(getFirstColorInTurn())));
+            hand.getTableCard().get(j).setActive(isCardToActivate(hand.getTableCard().get(j), !hand.hasColor(getFirstColorInTurn())));
         }
     }
 
-    private boolean isCardToActivate(Card card, boolean hasVoid) {
-        if (!isCardOwnedByCurrentPlayer(card))
+    private boolean isCardToActivate(TableCard tableCard, boolean hasVoid) {
+        if (!isCardOwnedByCurrentPlayer(tableCard))
             return false;
         if (isPlayerFirstInTurn())
             return true;
-        if(isCardColorMatchingCurrentColor(card))
+        if(isCardColorMatchingCurrentColor(tableCard))
             return true;
         return hasVoid;
     }
@@ -332,55 +304,55 @@ public class Table extends GameObject implements Scene, Observer
     private void clearTableCenter() {
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
-            children.remove(chosenCards[i]);
-            chosenCards[i] = null;
+            children.remove(chosenTableCards[i]);
+            chosenTableCards[i] = null;
         }
     }
 
-    private Card getPlayedCardId() {
-        for (int i = 0; i < hand[currentPlayer.ordinal()].getCard().size(); i++) {
+    private TableCard getPlayedCardId() {
+        for (int i = 0; i < hand[currentPlayer.ordinal()].getTableCard().size(); i++) {
             if (hasAlreadyPlayed(currentPlayer) && isPlayedCardMatchingTable(i))
-                return hand[currentPlayer.ordinal()].getCard().get(i);
+                return hand[currentPlayer.ordinal()].getTableCard().get(i);
         }
         return null;
     }
 
     private boolean isPlayedCardMatchingTable(int cardId) {
-        return hand[currentPlayer.ordinal()].getCard().get(cardId).getCardId() == chosenCards[currentPlayer.ordinal()].getCardId();
+        return hand[currentPlayer.ordinal()].getTableCard().get(cardId).getCardId() == chosenTableCards[currentPlayer.ordinal()].getCardId();
     }
 
-    private boolean hasNewAtuAdvantage(Card old, Card _new) {
+    private boolean hasNewAtuAdvantage(TableCard old, TableCard _new) {
         return old.getColor() != getAtu() && _new.getColor() == getAtu();
     }
 
-    private boolean hasNewColorAdvantage(Card old, Card _new, CardColor currentAtu) {
+    private boolean hasNewColorAdvantage(TableCard old, TableCard _new, CardColor currentAtu) {
         return ((_new.getColor() == getAtu()) || (_new.getColor() == currentAtu && old.getColor() != getAtu()));
     }
 
-    private boolean hasNewFigureAdvantage(Card old, Card _new) {
+    private boolean hasNewFigureAdvantage(TableCard old, TableCard _new) {
         return old.getFigure().ordinal() < _new.getFigure().ordinal();
     }
 
-    private boolean isCardOwnedByCurrentPlayer(Card card)
+    private boolean isCardOwnedByCurrentPlayer(TableCard tableCard)
     {
-        return hand[currentPlayer.ordinal()].getCard().contains(card);
+        return hand[currentPlayer.ordinal()].getTableCard().contains(tableCard);
     }
 
-    private boolean isCardColorMatchingCurrentColor(Card card)
+    private boolean isCardColorMatchingCurrentColor(TableCard tableCard)
     {
-        return card.getColor() == chosenCards[lastWinner.ordinal()].getColor();
+        return tableCard.getColor() == chosenTableCards[lastWinner.ordinal()].getColor();
     }
 
     private CardColor getFirstColorInTurn()
     {
-        if(chosenCards[lastWinner.ordinal()] != null)
-            return chosenCards[lastWinner.ordinal()].getColor();
+        if(chosenTableCards[lastWinner.ordinal()] != null)
+            return chosenTableCards[lastWinner.ordinal()].getColor();
         return CardColor.NO_ATU;
     }
 
     private boolean hasAlreadyPlayed(PlayerSide p)
     {
-        return chosenCards[p.ordinal()] != null;
+        return chosenTableCards[p.ordinal()] != null;
     }
 
     private boolean isPlayerFirstInTurn()
