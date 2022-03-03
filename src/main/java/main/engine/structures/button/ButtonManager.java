@@ -1,14 +1,16 @@
 package main.engine.structures.button;
 
+import lombok.Getter;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.observer.Observer;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Getter
 public abstract class ButtonManager extends GameObject
 {
-    private List<Button> buttons;
+    protected List<Button> buttons;
 
     public ButtonManager(GameObject parent) {
         super(parent);
@@ -33,4 +35,16 @@ public abstract class ButtonManager extends GameObject
         children.remove(button);
     }
 
+    protected abstract void loadButtons();
+
+    private void removeButtons() {
+        children.clear();
+        buttons.clear();
+    }
+
+    public void reloadButtons()
+    {
+        removeButtons();
+        loadButtons();
+    }
 }

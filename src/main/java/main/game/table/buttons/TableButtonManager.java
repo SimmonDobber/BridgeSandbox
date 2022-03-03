@@ -6,18 +6,20 @@ import main.game.table.Table;
 
 public class TableButtonManager extends ButtonManager
 {
-    private Table table;
+    protected Table table;
     public TableButtonManager(GameObject parent) {
         super(parent);
         table = (Table)(parent);
-        initializeButtons();
+        loadButtons();
     }
 
-    private void initializeButtons() {
+    protected void loadButtons() {
         addButton(new SolverButton(table), table.getSolver());
         addButton(new ShuffleButton(table), table);
         addButton(new CardAmountChangeButton(table), table);
         addButton(new ContractButton(table, table.getContractId()));
         addButton(new CardChooseButton(table));
     }
+
+
 }

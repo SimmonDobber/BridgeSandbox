@@ -41,16 +41,19 @@ public class Table extends GameObject implements Scene, Observer
     private TableCard[] chosenTableCards;
     private Solver solver;
     private TableButtonManager buttonManager;
+    private TableTextManager textManager;
 
     public Table()
     {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeTable();
-        initializeRandomGame();
+        initializeGame();
         initializeSpriteList();
         solver = new Solver(this);
         buttonManager = new TableButtonManager(this);
         children.add(buttonManager);
+        textManager = new TableTextManager(this);
+        children.add(textManager);
     }
 
     private void initializeTable() {
@@ -59,18 +62,19 @@ public class Table extends GameObject implements Scene, Observer
         this.contractId = 0;
     }
 
-    private void initializeRandomGame() {
+    private void initializeGame() {
         resetGame();
         dealRandom();
         manageActivity();
-        reLoadTextSprites();
+        if(textManager != null)
+            textManager.reloadTexts();
     }
 
-    private void initializeSetGame(List<Integer> cardsId) {
+    private void initializeGame(List<Integer> cardsId) {
         resetGame();
         dealSetCards(cardsId);
         manageActivity();
-        reLoadTextSprites();
+        textManager.reloadTexts();
     }
 
     private void resetGame() {
@@ -84,29 +88,6 @@ public class Table extends GameObject implements Scene, Observer
     {
         spriteList.add(new Rectangle(new Position(), dim, GREEN, 1));
         spriteList.add(new Rectangle(new Position(411, 166), new Dimensions(375, 343), CYAN, BROWN, 1));
-        loadTextSprites();
-    }
-
-    private void loadTextSprites()
-    {
-        spriteList.add(new Text("Contract; ", new Position(10, 25), DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text("Current player; " + currentPlayer.getAsciiString(), new Position(10, 65), DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text("Taken; N/S - " + taken.x + " | W/E - " + taken.y, new Position(10, 105),  DEFAULT_FONT_SIZE, GRAY, 1));
-    }
-
-    private void removeTextSprites()
-    {
-        for(int i = 0; i < spriteList.size(); i++)
-        {
-            if(spriteList.get(i).getClass().equals(Text.class))
-                spriteList.remove(i--);
-        }
-    }
-
-    private void reLoadTextSprites()
-    {
-        removeTextSprites();
-        loadTextSprites();
     }
 
     @Override
@@ -126,7 +107,7 @@ public class Table extends GameObject implements Scene, Observer
 
     private void updateCardChoose(List<Integer> chosenCards)
     {
-        initializeSetGame(chosenCards);
+        initializeGame(chosenCards);
     }
 
     private void updateCards(TableCard playedTableCard)
@@ -137,12 +118,12 @@ public class Table extends GameObject implements Scene, Observer
     private void updateContractButton(Integer recentlyChosen)
     {
         setContractId(recentlyChosen);
-        //contractButton.reLoadTextSprites(contractId);
+        buttonManager.reloadButtons();
     }
 
     private void updateShuffleButton()
     {
-        initializeRandomGame();
+        initializeGame();
     }
 
     private void updateCardAmountChangeButton(Integer clickValue)
@@ -150,7 +131,7 @@ public class Table extends GameObject implements Scene, Observer
         if(isCardAmountAbleToModify(clickValue))
         {
             cardAmount += clickValue;
-            initializeRandomGame();
+            initializeGame();
         }
     }
 
@@ -183,7 +164,7 @@ public class Table extends GameObject implements Scene, Observer
     {
         for(int i = 0; i < children.size(); i++)
         {
-            if(children.get(i).getClass() == Hand.class || children.get(i).getClass() == TableCard.class)
+            if(children.get(i) instanceof Hand || children.get(i) instanceof TableCard)
                 children.remove(i--);
         }
     }
@@ -191,7 +172,7 @@ public class Table extends GameObject implements Scene, Observer
     public void nextTurn() {
         hand[currentPlayer.ordinal()].removeCard(getPlayedCardId());
         currentPlayer = currentPlayer.nextPlayer();
-        reLoadTextSprites();
+        textManager.reloadTexts();
         if (isPlayerFirstInTurn())
             summarizeTurn();
         manageActivity();
@@ -263,7 +244,7 @@ public class Table extends GameObject implements Scene, Observer
 
     private void summarizeTurn() {
         currentPlayer = lastWinner = selectWinner();
-        reLoadTextSprites();
+        textManager.reloadTexts();
         clearTableCenter();
         addPoints();
     }
@@ -273,7 +254,7 @@ public class Table extends GameObject implements Scene, Observer
             taken.x++;
         else
             taken.y++;
-        reLoadTextSprites();
+        textManager.reloadTexts();
     }
 
     private boolean isNewWinning(TableCard old, TableCard _new, CardColor currentAtu) {
