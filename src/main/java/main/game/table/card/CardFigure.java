@@ -18,13 +18,11 @@ public enum CardFigure
 
     private final char ascii;
 
-    CardFigure(char ascii)
-    {
+    CardFigure(char ascii) {
         this.ascii = ascii;
     }
 
-    public String getAsciiString()
-    {
+    public String getAsciiString() {
         return Character.toString(ascii);
     }
 }

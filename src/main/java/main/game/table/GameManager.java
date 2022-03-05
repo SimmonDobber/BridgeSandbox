@@ -32,7 +32,7 @@ public class GameManager extends GameObject implements Observer
     @Setter
     private PlayerSide currentPlayer;
     private PlayerSide lastWinner;
-    private IntPair taken;
+    private int taken[];
     private Hand[] hand;
     private TableCard[] chosenTableCards;
     private Table table;
@@ -41,6 +41,7 @@ public class GameManager extends GameObject implements Observer
         super(parent);
         table = (Table)(parent);
         this.hand = new Hand[PLAYER_COUNT];
+        this.taken = new int [PLAYER_COUNT / 2];
         this.cardAmount = 5;
         this.contractId = 0;
         initializeGame();
@@ -58,6 +59,11 @@ public class GameManager extends GameObject implements Observer
             initializeGame((List<Integer>)arg);
         if(o instanceof ContractChooseButton)
             updateContract((Integer)arg);
+    }
+
+    public String getCurrentPlayerAsciiString()
+    {
+        return currentPlayer.getAsciiString();
     }
 
     private void updateCardAmount(Integer clickValue) {
@@ -89,10 +95,10 @@ public class GameManager extends GameObject implements Observer
     }
 
     private void resetVariables() {
-        taken = new IntPair();
+        taken = new int[2];
         chosenTableCards = new TableCard[PLAYER_COUNT];
-        this.lastWinner = PlayerSide.N;
-        this.currentPlayer = PlayerSide.N;
+        lastWinner = PlayerSide.N;
+        currentPlayer = PlayerSide.N;
     }
 
     private void dealRandom() {
@@ -197,10 +203,7 @@ public class GameManager extends GameObject implements Observer
     }
 
     private void addPoints() {
-        if (lastWinner == PlayerSide.N || lastWinner == PlayerSide.S)
-            taken.x++;
-        else
-            taken.y++;
+        taken[lastWinner.ordinal() % 2]++;
         table.getTextManager().reloadTexts();
     }
 

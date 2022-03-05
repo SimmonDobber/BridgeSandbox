@@ -17,14 +17,12 @@ public enum CardColor
     private final char ascii;
     private final int cardColor;
 
-    CardColor(char ascii, int cardColor)
-    {
+    CardColor(char ascii, int cardColor) {
         this.ascii = ascii;
         this.cardColor = cardColor;
     }
 
-    public String getAsciiString()
-    {
+    public String getAsciiString() {
         return Character.toString(ascii);
     }
 }

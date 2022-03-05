@@ -7,16 +7,13 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.Scene;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.gameObject.Position;
-import main.engine.structures.observer.Observable;
-import main.engine.structures.observer.Observer;
 import main.game.table.buttons.*;
 import main.game.table.solver.Solver;
-
 
 import static main.game.GameConstants.*;
 
 @Getter
-public class Table extends GameObject implements Scene, Observer
+public class Table extends GameObject implements Scene
 {
     private GameManager gameManager;
     private Solver solver;
@@ -32,9 +29,17 @@ public class Table extends GameObject implements Scene, Observer
         initializeTextManager();
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
+    public String getCurrentPlayerAsciiString() {
+        return gameManager.getCurrentPlayerAsciiString();
+    }
 
+    public int[] getTaken()
+    {
+        return gameManager.getTaken();
+    }
+
+    public String getName() {
+        return "Table";
     }
 
     private void initializeSpriteList() {
@@ -61,7 +66,7 @@ public class Table extends GameObject implements Scene, Observer
         children.add(textManager);
     }
 
-    public String getName() {
-        return "Table";
+    public int getContractId(){
+        return gameManager.getContractId();
     }
 }

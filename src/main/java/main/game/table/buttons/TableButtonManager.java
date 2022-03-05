@@ -6,7 +6,8 @@ import main.game.table.Table;
 
 public class TableButtonManager extends ButtonManager
 {
-    protected Table table;
+    private Table table;
+
     public TableButtonManager(GameObject parent) {
         super(parent);
         table = (Table)(parent);
@@ -17,9 +18,8 @@ public class TableButtonManager extends ButtonManager
         addButton(new SolverButton(table), table.getSolver());
         addButton(new ShuffleButton(table), table.getGameManager());
         addButton(new CardAmountChangeButton(table), table.getGameManager());
-        addButton(new ContractButton(table, table.getGameManager().getContractId()));
+        addButton(new ContractButton(table, table.getContractId()));
         addButton(new CardChooseButton(table));
     }
-
 
 }

@@ -7,6 +7,7 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observer;
 import main.game.table.card.CardColor;
 
 import static main.game.GameConstants.*;
@@ -26,37 +27,10 @@ public class ContractButton extends Button
         attach(ProgramContainer.getProgramContainer());
     }
 
-    private void initializeSpriteList(int contractId)
-    {
-        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
-        loadTextSprites(contractId);
-    }
-
-    private void loadTextSprites(int contractId)
-    {
-        spriteList.add(new Text(Character.toString((char)((contractId / 5) + '1')), new Position(7, 4), DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId % 5) + '[')), new Position(26, 4), DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
-    }
-
-    private void removeTextSprites()
-    {
-        for(int i = 0; i < spriteList.size(); i++)
-        {
-            if(spriteList.get(i).getClass().equals(Text.class))
-                spriteList.remove(i--);
-        }
-    }
-
-    public void reLoadTextSprites(int contractId)
-    {
-        removeTextSprites();
-        loadTextSprites(contractId);
-    }
-
     @Override
     public void notifyObservers() {
-        for(int i = 0; i < observers.size(); i++)
-            observers.get(i).update(this, null);
+        for (Observer observer : observers)
+            observer.update(this, null);
     }
 
     @Override
@@ -73,4 +47,29 @@ public class ContractButton extends Button
     public void onHold() {
 
     }
+
+    private void initializeSpriteList(int contractId) {
+        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+        loadTextSprites(contractId);
+    }
+
+    private void loadTextSprites(int contractId) {
+        spriteList.add(new Text(getContractFigureCharacter(contractId), new Position(7, 4),
+                DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text(getContractColorCharacter(contractId), new Position(26, 4),
+                DEFAULT_FONT_SIZE, getContractCardColor(contractId), 1));
+    }
+
+    private String getContractFigureCharacter(int contractId) {
+        return Character.toString((char)((contractId / 5) + '1'));
+    }
+
+    private String getContractColorCharacter(int contractId) {
+        return Character.toString((char)((contractId % 5) + '['));
+    }
+
+    private int getContractCardColor(int contractId) {
+        return CardColor.values()[contractId % 5].getCardColor();
+    }
+
 }

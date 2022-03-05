@@ -8,8 +8,6 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 
-import java.util.LinkedList;
-
 import static main.game.GameConstants.*;
 import static main.game.GameConstants.GRAY;
 
@@ -19,21 +17,23 @@ public class ShuffleButton extends Button
     private static final int DEFAULT_SHUFFLE_BUTTON_HEIGHT = 80;
     private static final int DEFAULT_SHUFFLE_BUTTON_X = 198;
     private static final int DEFAULT_SHUFFLE_BUTTON_Y = 546;
+
     public ShuffleButton(GameObject parent) {
         super(new Position(DEFAULT_SHUFFLE_BUTTON_X, DEFAULT_SHUFFLE_BUTTON_Y),
                 new Dimensions(DEFAULT_SHUFFLE_BUTTON_WIDTH, DEFAULT_SHUFFLE_BUTTON_HEIGHT), parent);
         initializeSpriteList();
     }
 
-    private void initializeSpriteList()
-    {
-        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
-        spriteList.add(new Text("shuffle", new Position(16, 22), DEFAULT_FONT_SIZE, GRAY, 1));
-    }
-
     @Override
     public void onClick() {
         notifyObservers();
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(this, true);
+        }
     }
 
     @Override
@@ -46,12 +46,8 @@ public class ShuffleButton extends Button
 
     }
 
-    @Override
-    public void notifyObservers()
-    {
-        for(int i = 0; i < observers.size(); i++)
-        {
-            observers.get(i).update(this, true);
-        }
+    private void initializeSpriteList() {
+        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+        spriteList.add(new Text("shuffle", new Position(16, 22), DEFAULT_FONT_SIZE, GRAY, 1));
     }
 }

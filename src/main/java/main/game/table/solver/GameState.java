@@ -21,7 +21,7 @@ public class GameState
         currPlayer = game.getCurrentPlayer().ordinal();
         lastWinner = game.getLastWinner().ordinal();
         currColor = (game.getLastWinner() == game.getCurrentPlayer() ? -1 : game.getChosenTableCards()[game.getLastWinner().ordinal()].getColor().ordinal());
-        taken = new IntPair(game.getTaken());
+        taken = new IntPair(game.getTaken()[0], game.getTaken()[1]);
         cards = new List[GameConstants.PLAYER_COUNT];
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {

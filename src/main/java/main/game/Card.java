@@ -26,70 +26,39 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
 {
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
-    public static final int STATE_AMOUNT = 2;
+    public static final int DEFAULT_STATE_AMOUNT = 2;
+
     protected CardFigure figure;
     protected CardColor color;
     @Setter
     protected boolean active;
     @Setter
     protected boolean hovered;
-    protected int stateCount;
     @Setter
     protected int currentState;
+    protected int stateCount;
     protected LinkedList<Observer> observers;
-
-    public Card(Card card)
-    {
-        super(card.pos, card.dim, card.parent);
-        initializeCard(card.figure, card.color);
-    }
 
     public Card(Position pos, GameObject parent, CardFigure figure, CardColor color) {
         super(pos, new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), parent);
-        initializeCard(figure, color);
-    }
-
-    public Card(Position pos, Dimensions dim, GameObject parent, CardFigure figure, CardColor color) {
-        super(pos, dim, parent);
-        initializeCard(figure, color);
-    }
-
-    protected void initializeCard(CardFigure figure, CardColor color)
-    {
-        this.figure = figure;
-        this.color = color;
-        this.active = true;
-        this.hovered = false;
-        this.stateCount = STATE_AMOUNT;
-        this.currentState = 0;
         this.observers = new LinkedList<>();
         Input.getInput().attach(this);
+        initializeVariables(figure, color);
         initializeSpriteList();
     }
 
-    protected void initializeSpriteList()
-    {
-        spriteList.add(new Rectangle(new Position(), dim, SILVER, color.getCardColor(), 1));
-        spriteList.add(new Text(figure.getAsciiString(), new Position(3, 2), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
-        spriteList.add(new Text(color.getAsciiString(), new Position(-1, DEFAULT_FONT_SIZE), DEFAULT_FONT_SIZE, color.getCardColor(),1));
-        spriteList.add(new Text(figure.getAsciiString(), new Position(dim.getW() - DEFAULT_FONT_SIZE / 2 - 8, dim.getH() - DEFAULT_FONT_SIZE), DEFAULT_FONT_SIZE, color.getCardColor(),1));
-        spriteList.add(new Text(color.getAsciiString(), new Position(dim.getW() - DEFAULT_FONT_SIZE / 2 - 11, dim.getH() - DEFAULT_FONT_SIZE * 2 + 6), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
-    }
-
     @Override
-    public void update(Observable o, Object arg)
-    {
-        if(canBeChosen(id) && belongsToCurrentScene() && active)
-        {
+    public void update(Observable o, Object arg) {
+        if(canBeChosen(id) && belongsToCurrentScene() && active) {
             onHover();
             clickableUpdate();
         }
-        else
+        else {
             nonHover();
+        }
     }
 
-    public void render(Renderer r)
-    {
+    public void render(Renderer r) {
         spriteRender(r);
         childrenRender(r);
         hoverRender(r, hovered, id);
@@ -106,10 +75,27 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
     }
 
     @Override
-    public void notifyObservers()
-    {
-        for(int i = 0; i < observers.size(); i++)
-            observers.get(i).update(this, null);
+    public void notifyObservers() {
+        for (Observer observer : observers)
+            observer.update(this, null);
+    }
+
+    @Override
+    public void onHover() {
+        hovered = true;
+    }
+
+    @Override
+    public void nonHover() {
+        hovered = false;
+    }
+
+    public int getCardId() {
+        return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
+    }
+
+    public void incState() {
+        currentState = (currentState + 1) % stateCount;
     }
 
     @Override
@@ -127,24 +113,48 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
 
     }
 
-    @Override
-    public void onHover()
-    {
-        hovered = true;
+    protected void initializeVariables(CardFigure figure, CardColor color) {
+        this.figure = figure;
+        this.color = color;
+        this.active = true;
+        this.hovered = false;
+        this.stateCount = DEFAULT_STATE_AMOUNT;
+        this.currentState = 0;
     }
 
-    @Override
-    public void nonHover() {
-        hovered = false;
+    private void initializeSpriteList() {
+        spriteList.add(new Rectangle(new Position(), dim, SILVER, color.getCardColor(), 1));
+        initializeFigureTextSprites();
+        initializeColorTextSprites();
     }
 
-    public int getCardId()
-    {
-        return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
+    private void initializeFigureTextSprites() {
+        spriteList.add(new Text(figure.getAsciiString(), getTopFigurePosition(), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+        spriteList.add(new Text(figure.getAsciiString(), getBottomFigurePosition(), DEFAULT_FONT_SIZE, color.getCardColor(),1));
     }
 
-    public void incState()
-    {
-        currentState = (currentState + 1) % stateCount;
+    private void initializeColorTextSprites() {
+        spriteList.add(new Text(color.getAsciiString(), getTopColorPosition(), DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(color.getAsciiString(), getBottomColorPosition(), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+    }
+
+    private Position getTopFigurePosition() {
+        return new Position(3, 2);
+    }
+
+    private Position getTopColorPosition() {
+        return new Position(-1, DEFAULT_FONT_SIZE);
+    }
+
+    private Position getBottomFigurePosition() {
+        int x = dim.getW() - DEFAULT_FONT_SIZE / 2 - 8;
+        int y = dim.getH() - DEFAULT_FONT_SIZE;
+        return new Position(x, y);
+    }
+
+    private Position getBottomColorPosition() {
+        int x = dim.getW() - DEFAULT_FONT_SIZE / 2 - 11;
+        int y = dim.getH() - DEFAULT_FONT_SIZE * 2 + 6;
+        return new Position(x, y);
     }
 }

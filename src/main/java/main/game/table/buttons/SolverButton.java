@@ -8,8 +8,6 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
 
-import java.util.LinkedList;
-
 import static main.game.GameConstants.*;
 
 public class SolverButton extends Button
@@ -23,26 +21,22 @@ public class SolverButton extends Button
         super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
                 new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
         initializeSpriteList();
-        hovered = false;
     }
 
-    private void initializeSpriteList()
-    {
+    private void initializeSpriteList() {
         spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
         spriteList.add(new Text("calculate", new Position(16, 22), DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
     @Override
-    public void notifyObservers()
-    {
-        for(int i = 0; i < observers.size(); i++)
-            observers.get(i).update(null, null);
+    public void onClick() {
+        notifyObservers();
     }
 
     @Override
-    public void onClick()
-    {
-        notifyObservers();
+    public void notifyObservers() {
+        for (Observer observer : observers)
+            observer.update(null, null);
     }
 
     @Override

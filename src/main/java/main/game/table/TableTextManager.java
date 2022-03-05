@@ -20,7 +20,15 @@ public class TableTextManager extends TextManager
     @Override
     protected void loadTexts() {
         addText(new Text("Contract; ", new Position(10, 25), DEFAULT_FONT_SIZE, GRAY, 1));
-        addText(new Text("Current player; " + table.getGameManager().getCurrentPlayer().getAsciiString(), new Position(10, 65), DEFAULT_FONT_SIZE, GRAY, 1));
-        addText(new Text("Taken; N/S - " + table.getGameManager().getTaken().x + " | W/E - " + table.getGameManager().getTaken().y, new Position(10, 105),  DEFAULT_FONT_SIZE, GRAY, 1));
+        addText(new Text(getCurrentPlayerTextString(), new Position(10, 65), DEFAULT_FONT_SIZE, GRAY, 1));
+        addText(new Text(getTakenCardsTextString(), new Position(10, 105),  DEFAULT_FONT_SIZE, GRAY, 1));
+    }
+
+    private String getCurrentPlayerTextString() {
+        return "Current player; " + table.getCurrentPlayerAsciiString();
+    }
+
+    private String getTakenCardsTextString() {
+        return "Taken; N/S - " + table.getTaken()[0] + " | W/E - " + table.getTaken()[1];
     }
 }
