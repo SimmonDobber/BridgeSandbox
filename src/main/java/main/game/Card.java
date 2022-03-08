@@ -64,6 +64,14 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
         hoverRender(r, hovered, id);
     }
 
+    public static CardColor getCardColorFromId(int id){
+        return CardColor.values()[id / FIGURE_COUNT];
+    }
+
+    public static CardFigure getCardFigureFromId(int id){
+        return CardFigure.values()[id % FIGURE_COUNT];
+    }
+
     @Override
     public void attach(Observer observer) {
         observers.add(observer);

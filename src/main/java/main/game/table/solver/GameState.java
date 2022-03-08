@@ -3,7 +3,6 @@ package main.game.table.solver;
 import main.engine.structures.IntPair;
 import main.game.GameConstants;
 import main.game.table.GameManager;
-import main.game.table.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,8 @@ public class GameState
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)
         {
             cards[i] = new ArrayList<>();
-            for(int j = 0; j < game.getHand()[i].getTableCard().size(); j++)
-                cards[i].add(new IntPair(game.getHand()[i].getTableCard().get(j).getColor().ordinal(), game.getHand()[i].getTableCard().get(j).getFigure().ordinal()));
+            for(int j = 0; j < game.getHand()[i].getCards().size(); j++)
+                cards[i].add(new IntPair(game.getHand()[i].getCards().get(j).getColor().ordinal(), game.getHand()[i].getCards().get(j).getFigure().ordinal()));
         }
         trace = new ArrayList<>();
         for(int i = 0; i < GameConstants.PLAYER_COUNT; i++)

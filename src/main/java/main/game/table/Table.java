@@ -38,6 +38,18 @@ public class Table extends GameObject implements Scene
         return gameManager.getTaken();
     }
 
+    public int getContractId(){
+        return gameManager.getContractId();
+    }
+
+    public void reloadTexts(){
+        textManager.reloadTexts();
+    }
+
+    public void reloadButtons(){
+        buttonManager.reloadButtons();
+    }
+
     public String getName() {
         return "Table";
     }
@@ -64,9 +76,5 @@ public class Table extends GameObject implements Scene
     private void initializeTextManager() {
         textManager = new TableTextManager(this);
         children.add(textManager);
-    }
-
-    public int getContractId(){
-        return gameManager.getContractId();
     }
 }
