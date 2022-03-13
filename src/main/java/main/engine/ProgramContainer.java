@@ -10,8 +10,8 @@ import main.game.cardChoosePanel.CardChoosePanel;
 import main.game.contractChoosePanel.ContractChooseButton;
 import main.game.contractChoosePanel.ContractChoosePanel;
 import main.game.table.Table;
-import main.game.table.buttons.CardChooseButton;
-import main.game.table.buttons.ContractButton;
+import main.game.buttons.CardChooseButton;
+import main.game.buttons.ContractButton;
 
 public class ProgramContainer implements Observer
 {
@@ -29,8 +29,8 @@ public class ProgramContainer implements Observer
 
     public void initializeScenes() {
         table = new Table();
-        contractChoosePanel = new ContractChoosePanel(new Position(409, 164));
-        cardChoosePanel = new CardChoosePanel();
+        contractChoosePanel = new ContractChoosePanel(((Table)(table)).getGameManager(), new Position(409, 164));
+        cardChoosePanel = new CardChoosePanel(((Table)(table)).getGameManager());
         switchSceneToTable();
     }
 

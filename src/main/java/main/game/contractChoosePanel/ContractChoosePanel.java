@@ -8,7 +8,7 @@ import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.engine.structures.observer.Observer;
+import main.game.table.GameManager;
 import main.game.table.Table;
 
 import static main.game.GameConstants.*;
@@ -16,9 +16,12 @@ import static main.game.GameConstants.*;
 public class ContractChoosePanel extends GameObject implements Scene
 {
     private ContractChooseButton[][] buttons;
-    public ContractChoosePanel(Position pos)
+    private GameManager gameManager;
+
+    public ContractChoosePanel(GameManager gameManager, Position pos)
     {
         super(pos, new Dimensions(Window.WIDTH, Window.HEIGHT), null);
+        this.gameManager = gameManager;
         initializeSpriteList();
         initializeButtons();
     }
@@ -42,7 +45,7 @@ public class ContractChoosePanel extends GameObject implements Scene
                                                   j * ContractChooseButton.DEFAULT_HEIGHT + pos.getY() + 2);
         buttons[i][j] = new ContractChooseButton(buttonPosition,this, (i + j * (COLOR_COUNT + 1)));
         children.add(buttons[i][j]);
-        buttons[i][j].attach(((Table)(ProgramContainer.getProgramContainer().getTable())).getGameManager());
+        buttons[i][j].attach(gameManager);
         buttons[i][j].attach(ProgramContainer.getProgramContainer());
 
     }

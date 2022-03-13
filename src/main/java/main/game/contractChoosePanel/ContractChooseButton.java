@@ -29,16 +29,16 @@ public class ContractChooseButton extends Button
         initializeSpriteList();
     }
 
-    private void initializeSpriteList() {
-        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId / (COLOR_COUNT + 1)) + '1')), new Position(7, 4), DEFAULT_FONT_SIZE, GRAY, 1));
-        spriteList.add(new Text(Character.toString((char)((contractId % (COLOR_COUNT + 1)) + '[')), new Position(26, 4), DEFAULT_FONT_SIZE, CardColor.values()[contractId % 5].getCardColor(), 1));
-    }
-
     @Override
     public void onClick()
     {
         notifyObservers();
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) 
+            observer.update(this, contractId);
     }
 
     @Override
@@ -71,10 +71,23 @@ public class ContractChooseButton extends Button
         observers.remove(observer);
     }
 
-    @Override
-    public void notifyObservers() {
-        for(int i = 0; i < observers.size(); i++)
-            observers.get(i).update(this, contractId);
+    private void initializeSpriteList() {
+        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+        spriteList.add(new Text(getFigureCharacter(contractId), new Position(7, 4),
+                DEFAULT_FONT_SIZE, GRAY, 1));
+        spriteList.add(new Text(getColorCharacter(contractId), new Position(26, 4),
+                DEFAULT_FONT_SIZE, getContractColor(contractId), 1));
     }
 
+    private String getFigureCharacter(int contractId){
+        return Character.toString((char)((contractId / (COLOR_COUNT + 1)) + '1'));
+    }
+
+    private String getColorCharacter(int contractId){
+        return Character.toString((char)((contractId % (COLOR_COUNT + 1)) + '['));
+    }
+
+    private int getContractColor(int contractId){
+        return CardColor.values()[contractId % 5].getCardColor();
+    }
 }

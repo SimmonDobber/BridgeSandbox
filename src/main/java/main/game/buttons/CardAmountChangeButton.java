@@ -1,4 +1,4 @@
-package main.game.table.buttons;
+package main.game.buttons;
 
 
 import main.engine.Input;
@@ -27,6 +27,11 @@ public class CardAmountChangeButton extends Button
     public CardAmountChangeButton(GameObject parent) {
         super(new Position(DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_X, DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_Y),
                 new Dimensions(DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_WIDTH, DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_HEIGHT), parent);
+        initializeSpriteList();
+    }
+
+    public CardAmountChangeButton(Position pos, GameObject parent) {
+        super(pos, new Dimensions(DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_WIDTH, DEFAULT_CARD_AMOUNT_CHANGE_BUTTON_HEIGHT), parent);
         initializeSpriteList();
     }
 

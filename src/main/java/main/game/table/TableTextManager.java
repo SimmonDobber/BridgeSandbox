@@ -14,7 +14,8 @@ public class TableTextManager extends TextManager
     public TableTextManager(GameObject parent) {
         super(parent);
         table = (Table)(parent);
-        loadTexts();
+        if(table.getGameManager() != null)
+            loadTexts();
     }
 
     @Override

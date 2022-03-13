@@ -1,4 +1,4 @@
-package main.game.table.buttons;
+package main.game.buttons;
 
 import main.engine.ProgramContainer;
 import main.engine.structures.button.Button;
@@ -9,6 +9,7 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
+import main.game.cardChoosePanel.CardChoosePanel;
 
 import static main.game.GameConstants.*;
 
@@ -29,6 +30,7 @@ public class CardChooseButton extends Button implements Observable
     @Override
     public void onClick() {
         notifyObservers();
+        ((CardChoosePanel)(ProgramContainer.getProgramContainer().getCardChoosePanel())).reloadTextSprites();
     }
 
     @Override

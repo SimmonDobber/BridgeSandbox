@@ -1,5 +1,6 @@
 package main.game.cardChoosePanel;
 
+import lombok.Getter;
 import main.engine.ProgramContainer;
 import main.engine.display.Window;
 import main.engine.structures.Scene;
@@ -9,11 +10,14 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
+import main.game.buttons.CardAmountChangeButton;
+import main.game.table.GameManager;
 import main.game.table.Table;
 import main.game.table.card.CardColor;
 import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static main.game.GameConstants.*;
 
@@ -22,20 +26,32 @@ public class CardChoosePanel extends GameObject implements Scene
     private static final int CARD_SPACE = 20;
     private static final int CARD_ROW_OFFSET = 96;
     private static final int PLAYER_SIGNATURE_SIZE = 80;
+    @Getter
     private ChoiceCard[][] card;
     private AcceptChoiceButton acceptChoiceButton;
+    private CardAmountChangeButton cardAmountChangeButton;
+    @Getter
+    private CardChoosePanelTextManager cardChoosePanelTextManager;
+    private GameManager gameManager;
 
-    public CardChoosePanel() {
+    public CardChoosePanel(GameManager gameManager) {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
-        card = new ChoiceCard[PLAYER_COUNT][DECK_SIZE];
+        this.gameManager = gameManager;
+        initializeTextManager();
         initializeSprites();
         initializeCards();
         initializeButtons();
     }
 
     private void initializeCards() {
+        card = new ChoiceCard[PLAYER_COUNT][DECK_SIZE];
         for(int i = 0; i < PLAYER_COUNT; i++)
             initializePlayerCards(i);
+    }
+
+    private void initializeTextManager(){
+        this.cardChoosePanelTextManager = new CardChoosePanelTextManager(gameManager, this);
+        children.add(cardChoosePanelTextManager);
     }
 
     private void initializeSprites()
@@ -49,10 +65,22 @@ public class CardChoosePanel extends GameObject implements Scene
 
     private void initializeButtons()
     {
+        initializeAcceptChoiceButton();
+        initializeCardAmountChangeButton();
+    }
+
+    private void initializeAcceptChoiceButton(){
         acceptChoiceButton = new AcceptChoiceButton(this);
         children.add(acceptChoiceButton);
-        acceptChoiceButton.attach(((Table)(ProgramContainer.getProgramContainer().getTable())).getGameManager());
+        acceptChoiceButton.attach(gameManager);
         acceptChoiceButton.attach(ProgramContainer.getProgramContainer());
+    }
+
+    private void initializeCardAmountChangeButton(){
+        cardAmountChangeButton = new CardAmountChangeButton(new Position(852, 571), this);
+        children.add(cardAmountChangeButton);
+        cardAmountChangeButton.attach(gameManager);
+        cardAmountChangeButton.attach(cardChoosePanelTextManager);
     }
 
     public void clearCardChoices()
@@ -60,8 +88,13 @@ public class CardChoosePanel extends GameObject implements Scene
         for(int i = 0; i < PLAYER_COUNT; i++) {
             for(int j = 0; j < DECK_SIZE; j++) {
                 card[i][j].setCurrentState(0);
+                card[i][j].attach(acceptChoiceButton);
             }
         }
+    }
+
+    public void reloadTextSprites(){
+        cardChoosePanelTextManager.reloadTexts();
     }
 
     public LinkedList<Integer> groupChosenCards() {
@@ -73,6 +106,22 @@ public class CardChoosePanel extends GameObject implements Scene
             }
         }
         return cards;
+    }
+
+    public LinkedList<Integer>[] groupChosenCardsByPlayer() {
+        LinkedList[] cards = new LinkedList[PLAYER_COUNT];
+        for(int i = 0; i < PLAYER_COUNT; i++) {
+            cards[i] = new LinkedList<Integer>();
+            for(int j = 0; j < DECK_SIZE; j++) {
+                if(card[i][j].getCurrentState() == 1)
+                    cards[i].add(card[i][j].getCardId());
+            }
+        }
+        return cards;
+    }
+
+    public int getCardAmount(){
+        return gameManager.getCardAmount();
     }
 
     private void initializePlayerCards(int playerId)

@@ -2,12 +2,14 @@ package main.game.table;
 
 import lombok.Getter;
 import main.engine.display.Window;
+import main.engine.structures.TextManager;
+import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.Scene;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.gameObject.Position;
-import main.game.table.buttons.*;
+import main.game.buttons.*;
 import main.game.table.solver.Solver;
 
 import static main.game.GameConstants.*;
@@ -22,11 +24,12 @@ public class Table extends GameObject implements Scene
 
     public Table() {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
+        initializeTextManager();
         initializeSpriteList();
         initializeGameManager();
         initializeSolver();
         initializeButtonManager();
-        initializeTextManager();
+        startGame();
     }
 
     public String getCurrentPlayerAsciiString() {
@@ -52,6 +55,11 @@ public class Table extends GameObject implements Scene
 
     public String getName() {
         return "Table";
+    }
+
+    private void startGame(){
+        textManager.loadTexts();
+        gameManager.initializeGame();
     }
 
     private void initializeSpriteList() {

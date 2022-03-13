@@ -36,29 +36,24 @@ public abstract class Button extends GameObject implements Clickable, Hoverable
         initializeButton(stateCount);
     }
 
-    private void initializeButton(int stateCount)
-    {
+    private void initializeButton(int stateCount) {
         Input.getInput().attach(this);
         this.state = 0;
         this.stateCount = stateCount;
         this.hovered = false;
     }
 
-    public void update(Observable o, Object arg)
-    {
-        if(canBeChosen(id) && belongsToCurrentScene())
-        {
+    public void update(Observable o, Object arg) {
+        if(canBeChosen(id) && belongsToCurrentScene()) {
             onHover();
             clickableUpdate();
         }
-        else
-        {
+        else {
             nonHover();
         }
     }
 
-    public void render(Renderer r)
-    {
+    public void render(Renderer r) {
         spriteRender(r);
         childrenRender(r);
         hoverRender(r, hovered, id);

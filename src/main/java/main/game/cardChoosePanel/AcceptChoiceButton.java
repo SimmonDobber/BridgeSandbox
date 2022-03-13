@@ -1,11 +1,20 @@
 package main.game.cardChoosePanel;
 
+import main.engine.display.renderer.Renderer;
 import main.engine.structures.button.Button;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
+import main.engine.structures.observer.Observable;
+
+import java.awt.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
 import static main.game.GameConstants.*;
 import static main.game.GameConstants.GRAY;
 
@@ -15,11 +24,13 @@ public class AcceptChoiceButton extends Button
     private static final int DEFAULT_ACCEPT_CHOICE_BUTTON_HEIGHT = 80;
     private static final int DEFAULT_ACCEPT_CHOICE_BUTTON_X = 1026;
     private static final int DEFAULT_ACCEPT_CHOICE_BUTTON_Y = 571;
+    private boolean active;
 
     public AcceptChoiceButton(GameObject parent) {
         super(new Position(DEFAULT_ACCEPT_CHOICE_BUTTON_X, DEFAULT_ACCEPT_CHOICE_BUTTON_Y),
                 new Dimensions(DEFAULT_ACCEPT_CHOICE_BUTTON_WIDTH, DEFAULT_ACCEPT_CHOICE_BUTTON_HEIGHT), parent);
         initializeSpriteList();
+        active = false;
     }
 
     private void initializeSpriteList() {
@@ -48,4 +59,57 @@ public class AcceptChoiceButton extends Button
             observers.get(i).update(this, ((CardChoosePanel)(parent)).groupChosenCards());
         ((CardChoosePanel)(parent)).clearCardChoices();
     }
+
+    public void update(Observable o, Object arg)
+    {
+        active = areCardProperlyChosen();
+        if(canBeChosen(id) && belongsToCurrentScene() && active) {
+            onHover();
+            clickableUpdate();
+        }
+        else {
+            nonHover();
+        }
+    }
+
+    public void render(Renderer r) {
+        spriteRender(r);
+        childrenRender(r);
+        hoverRender(r, hovered, id);
+        inactiveRender(r);
+    }
+
+    private void inactiveRender(Renderer r){
+        if(!active)
+            r.drawRectangle(pos, dim, 0xA0A0A0A0, 1, id);
+    }
+
+    private boolean areCardProperlyChosen(){
+        LinkedList<Integer>[] cards = ((CardChoosePanel)(parent)).groupChosenCardsByPlayer();
+        return isCorrectAmountOfCardsChosen(cards) && areChosenCardsUnique(cards)
+                && areChosenCardsProperlyDistributed(cards);
+    }
+
+    private boolean isCorrectAmountOfCardsChosen(LinkedList<Integer>[] cards){
+        int cardAmount = ((CardChoosePanel)(parent)).getCardAmount();
+        return (cardAmount == cards[0].size());
+    }
+
+    private boolean areChosenCardsUnique(LinkedList<Integer>[] cards){
+       for(int i = 0; i < PLAYER_COUNT; i++){
+           Set<Integer> set = new HashSet<Integer>(cards[i]);
+           if(set.size() < cards[i].size())
+               return false;
+       }
+       return true;
+    }
+
+    private boolean areChosenCardsProperlyDistributed(LinkedList<Integer>[] cards){
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(cards[i].size() != cards[(i + 1) % PLAYER_COUNT].size())
+                return false;
+        }
+        return true;
+    }
+
 }
