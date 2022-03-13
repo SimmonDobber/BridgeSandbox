@@ -1,4 +1,4 @@
-package main.game.table.buttons;
+package main.game.buttons;
 
 import main.engine.ProgramContainer;
 import main.engine.structures.button.Button;

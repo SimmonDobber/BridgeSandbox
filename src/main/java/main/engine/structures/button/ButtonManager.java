@@ -23,6 +23,13 @@ public abstract class ButtonManager extends GameObject
         children.add(button);
     }
 
+    public void addButton(Button button, Observer[] observers) {
+        for(Observer observer : observers)
+            button.attach(observer);
+        buttons.add(button);
+        children.add(button);
+    }
+
     public void addButton(Button button) {
         buttons.add(button);
         children.add(button);
