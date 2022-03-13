@@ -85,9 +85,10 @@ public class AcceptChoiceButton extends Button
     }
 
     private boolean areCardProperlyChosen(){
-        LinkedList<Integer>[] cards = ((CardChoosePanel)(parent)).groupChosenCardsByPlayer();
-        return isCorrectAmountOfCardsChosen(cards) && areChosenCardsUnique(cards)
-                && areChosenCardsProperlyDistributed(cards);
+        LinkedList<Integer>[] playerCards = ((CardChoosePanel)(parent)).groupChosenCardsByPlayer();
+        LinkedList<Integer> groupedCards = ((CardChoosePanel)(parent)).groupChosenCards();
+        return isCorrectAmountOfCardsChosen(playerCards) && areChosenCardsUnique(groupedCards)
+                && areChosenCardsProperlyDistributed(playerCards);
     }
 
     private boolean isCorrectAmountOfCardsChosen(LinkedList<Integer>[] cards){
@@ -95,13 +96,9 @@ public class AcceptChoiceButton extends Button
         return (cardAmount == cards[0].size());
     }
 
-    private boolean areChosenCardsUnique(LinkedList<Integer>[] cards){
-       for(int i = 0; i < PLAYER_COUNT; i++){
-           Set<Integer> set = new HashSet<Integer>(cards[i]);
-           if(set.size() < cards[i].size())
-               return false;
-       }
-       return true;
+    private boolean areChosenCardsUnique(LinkedList<Integer> cards){
+        Set<Integer> set = new HashSet<>(cards);
+        return set.size() == cards.size();
     }
 
     private boolean areChosenCardsProperlyDistributed(LinkedList<Integer>[] cards){

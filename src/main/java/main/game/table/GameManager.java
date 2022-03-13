@@ -8,10 +8,10 @@ import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.GameConstants;
+import main.game.buttons.CardAmountChangeButton;
+import main.game.buttons.ShuffleButton;
 import main.game.cardChoosePanel.AcceptChoiceButton;
 import main.game.contractChoosePanel.ContractChooseButton;
-import main.game.table.buttons.CardAmountChangeButton;
-import main.game.table.buttons.ShuffleButton;
 import main.game.table.card.CardColor;
 
 import java.util.ArrayList;
@@ -79,19 +79,16 @@ public class GameManager extends GameObject implements Observer
         table.getButtonManager().reloadButtons();
     }
 
-    private void initializeGame() {
+    public void initializeGame() {
         resetVariables();
         dealRandom();
         manageActivity();
-        if(table.getTextManager() != null)
-            table.getTextManager().reloadTexts();
     }
 
     private void initializeGame(List<Integer> cardsId) {
         resetVariables();
         dealSetCards(cardsId);
         manageActivity();
-        table.getTextManager().reloadTexts();
     }
 
     private void resetVariables() {
@@ -107,7 +104,7 @@ public class GameManager extends GameObject implements Observer
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             hand[i] = dealToHand(deck, cardAmount, i);
             children.add(hand[i]);
-            hand[i].attachObserversToCards(this);
+            hand[i].attachObserversToCards(((Table)(parent)));
         }
     }
 
@@ -116,7 +113,7 @@ public class GameManager extends GameObject implements Observer
         for (int i = 0; i < GameConstants.PLAYER_COUNT; i++) {
             hand[i] = dealToHand(cardsId, cardAmount, i);
             children.add(hand[i]);
-            hand[i].attachObserversToCards(this);
+            hand[i].attachObserversToCards(((Table)(parent)));
         }
     }
 
@@ -147,7 +144,6 @@ public class GameManager extends GameObject implements Observer
     private void nextTurn() {
         hand[currentPlayer.ordinal()].removeCard(getPlayedCardId());
         currentPlayer = currentPlayer.nextPlayer();
-        table.getTextManager().reloadTexts();
         if (isPlayerFirstInTurn())
             summarizeTurn();
         manageActivity();
@@ -189,7 +185,7 @@ public class GameManager extends GameObject implements Observer
 
     private int getCardsHandId(TableCard tableCard) {
         for(int i = 0; i < PLAYER_COUNT; i++) {
-            if(hand[i].getTableCard().contains(tableCard))
+            if(hand[i].getCards().contains(tableCard))
                 return i;
         }
         return -1;
@@ -197,14 +193,12 @@ public class GameManager extends GameObject implements Observer
 
     private void summarizeTurn() {
         currentPlayer = lastWinner = selectWinner();
-        table.getTextManager().reloadTexts();
         clearTableCenter();
         addPoints();
     }
 
     private void addPoints() {
         taken[lastWinner.ordinal() % 2]++;
-        table.getTextManager().reloadTexts();
     }
 
     private boolean isNewWinning(TableCard old, TableCard _new, CardColor currentAtu) {
@@ -216,8 +210,8 @@ public class GameManager extends GameObject implements Observer
     }
 
     private void manageHandActivity(Hand hand) {
-        for (int j = 0; j < hand.getTableCard().size(); j++)
-            hand.getTableCard().get(j).setActive(isCardToActivate(hand.getTableCard().get(j), !hand.hasColor(getFirstColorInTurn())));
+        for (int j = 0; j < hand.getCards().size(); j++)
+            hand.getCards().get(j).setActive(isCardToActivate(hand.getCards().get(j), !hand.hasColor(getFirstColorInTurn())));
     }
 
     private boolean isCardToActivate(TableCard tableCard, boolean hasVoid) {
@@ -238,9 +232,9 @@ public class GameManager extends GameObject implements Observer
     }
 
     private TableCard getPlayedCardId() {
-        for (int i = 0; i < hand[currentPlayer.ordinal()].getTableCard().size(); i++) {
+        for (int i = 0; i < hand[currentPlayer.ordinal()].getCards().size(); i++) {
             if (hasAlreadyPlayed(currentPlayer) && isPlayedCardMatchingTable(i))
-                return hand[currentPlayer.ordinal()].getTableCard().get(i);
+                return hand[currentPlayer.ordinal()].getCards().get(i);
         }
         return null;
     }
@@ -252,7 +246,7 @@ public class GameManager extends GameObject implements Observer
     }
 
     private boolean isPlayedCardMatchingTable(int cardId) {
-        return hand[currentPlayer.ordinal()].getTableCard().get(cardId).getCardId() == chosenTableCards[currentPlayer.ordinal()].getCardId();
+        return hand[currentPlayer.ordinal()].getCards().get(cardId).getCardId() == chosenTableCards[currentPlayer.ordinal()].getCardId();
     }
 
     private boolean hasNewAtuAdvantage(TableCard old, TableCard _new) {
@@ -268,7 +262,7 @@ public class GameManager extends GameObject implements Observer
     }
 
     private boolean isCardOwnedByCurrentPlayer(TableCard tableCard) {
-        return hand[currentPlayer.ordinal()].getTableCard().contains(tableCard);
+        return hand[currentPlayer.ordinal()].getCards().contains(tableCard);
     }
 
     private boolean isCardColorMatchingCurrentColor(TableCard tableCard) {

@@ -19,7 +19,7 @@ public class Hand extends GameObject
     public static final int[] OWNER_CENTER_X = {556, 676, 556, 436};
     public static final int[] OWNER_CENTER_Y = {192, 277, 363, 277};
     @Getter
-    private List<TableCard> tableCard;
+    private List<TableCard> cards;
 
     public Hand(int[] id, int cardAmount, int playerId, GameObject parent)
     {
@@ -29,40 +29,41 @@ public class Hand extends GameObject
 
     private void initializeCards(int[] id, int cardAmount)
     {
-        tableCard = new ArrayList<>();
+        cards = new ArrayList<>();
         for(int i = 0; i < cardAmount; i++)
         {
             CardFigure cardFigure = CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT];
             CardColor cardColor = CardColor.values()[id[i] / GameConstants.FIGURE_COUNT];
-            tableCard.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, cardFigure, cardColor));
-            children.add(tableCard.get(tableCard.size() - 1));
+            cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, cardFigure, cardColor));
+            children.add(cards.get(cards.size() - 1));
         }
     }
-    public void attachObserversToCards(GameManager gameManager)
+    public void attachObserversToCards(Table table)
     {
-        for(int i = 0; i < tableCard.size(); i++)
+        for(int i = 0; i < cards.size(); i++)
         {
-            tableCard.get(i).attach(gameManager);
+            cards.get(i).attach(table.getGameManager());
+            cards.get(i).attach(table.getTextManager());
         }
     }
 
-    public void removeCard(TableCard tableCard) {
-        children.remove(tableCard);
-        this.tableCard.remove(tableCard);
+    public void removeCard(TableCard card) {
+        children.remove(card);
+        this.cards.remove(card);
         repositionCards();
     }
 
     private void repositionCards() {
-        for (int i = 0; i < tableCard.size(); i++) {
-            tableCard.get(i).getPos().setX(pos.getX() + i * Hand.CARD_SPACE);
+        for (int i = 0; i < cards.size(); i++) {
+            cards.get(i).getPos().setX(pos.getX() + i * Hand.CARD_SPACE);
         }
     }
 
     public boolean hasColor(CardColor c)
     {
-        for(int i = 0; i < tableCard.size(); i++)
+        for(int i = 0; i < cards.size(); i++)
         {
-            if(tableCard.get(i).getColor() == c)
+            if(cards.get(i).getColor() == c)
                 return true;
         }
         return false;
