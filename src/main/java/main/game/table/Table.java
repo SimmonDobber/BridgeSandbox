@@ -2,14 +2,13 @@ package main.game.table;
 
 import lombok.Getter;
 import main.engine.display.Window;
-import main.engine.structures.TextManager;
-import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.Scene;
 import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.gameObject.Position;
 import main.game.buttons.*;
+import main.game.table.bestMovesTable.BestMovesTable;
 import main.game.table.solver.Solver;
 
 import static main.game.GameConstants.*;
@@ -21,15 +20,30 @@ public class Table extends GameObject implements Scene
     private Solver solver;
     private TableButtonManager buttonManager;
     private TableTextManager textManager;
+    private BestMovesTable bestMovesTable;
 
     public Table() {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeTextManager();
         initializeSpriteList();
         initializeGameManager();
+        initializeBestMovesTable();
         initializeSolver();
+
         initializeButtonManager();
         startGame();
+    }
+
+    public int getCardAmount(){
+        return gameManager.getCardAmount();
+    }
+
+    public PlayerSide getCurrentPlayer(){
+        return gameManager.getCurrentPlayer();
+    }
+
+    public PlayerSide getLastWinner(){
+        return gameManager.getLastWinner();
     }
 
     public String getCurrentPlayerAsciiString() {
@@ -43,14 +57,6 @@ public class Table extends GameObject implements Scene
 
     public int getContractId(){
         return gameManager.getContractId();
-    }
-
-    public void reloadTexts(){
-        textManager.reloadTexts();
-    }
-
-    public void reloadButtons(){
-        buttonManager.reloadButtons();
     }
 
     public String getName() {
@@ -73,7 +79,7 @@ public class Table extends GameObject implements Scene
     }
 
     private void initializeSolver() {
-        solver = new Solver(this);
+        solver = new Solver(this, bestMovesTable);
     }
 
     private void initializeButtonManager() {
@@ -84,5 +90,10 @@ public class Table extends GameObject implements Scene
     private void initializeTextManager() {
         textManager = new TableTextManager(this);
         children.add(textManager);
+    }
+
+    private void initializeBestMovesTable() {
+        bestMovesTable = new BestMovesTable(this);
+        children.add(bestMovesTable);
     }
 }

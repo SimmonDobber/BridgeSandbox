@@ -14,16 +14,16 @@ import java.util.List;
 public class Hand extends GameObject
 {
     public static final int CARD_SPACE = 24;
-    private static final int[] OWNER_X = {412, 803, 412, 24};
-    private static final int[] OWNER_Y = {24, 277, 531, 277};
-    public static final int[] OWNER_CENTER_X = {556, 676, 556, 436};
-    public static final int[] OWNER_CENTER_Y = {192, 277, 363, 277};
+    private static final int[] POS_X = {412, 803, 412, 24};
+    private static final int[] POS_Y = {24, 240, 531, 240};
+    public static final int[] CENTER_POS_X = {556, 676, 556, 436};
+    public static final int[] CENTER_POS_Y = {192, 277, 363, 277};
     @Getter
     private List<TableCard> cards;
 
     public Hand(int[] id, int cardAmount, int playerId, GameObject parent)
     {
-        super(new Position(OWNER_X[playerId], OWNER_Y[playerId]), new Dimensions(), parent);
+        super(new Position(POS_X[playerId], POS_Y[playerId]), new Dimensions(), parent);
         initializeCards(id, cardAmount);
     }
 

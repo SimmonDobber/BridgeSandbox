@@ -8,6 +8,7 @@ import main.engine.structures.drawable.Image;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
+import main.game.GameConstants;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;

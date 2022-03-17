@@ -71,6 +71,10 @@ public class CardAmountChangeButton extends Button
 
     private void initializeSpriteList() {
         spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
-        spriteList.add(new Text("change card\namount (+ -)\n(LPM, PPM)", new Position(16, 4), 24, GRAY, 1));
+        spriteList.add(new Text(getButtonTextString(), new Position(16, 4), 24, GRAY, 1));
+    }
+
+    private String getButtonTextString() {
+        return "change card\nnumber (+ -)\n(LPM, PPM)";
     }
 }

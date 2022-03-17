@@ -2,7 +2,6 @@ package main.game.table;
 
 import lombok.Getter;
 import lombok.Setter;
-import main.engine.structures.IntPair;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
@@ -180,7 +179,7 @@ public class GameManager extends GameObject implements Observer
     }
 
     private void moveCardToCenter(TableCard tableCard, int handId) {
-        tableCard.setPos(new Position(Hand.OWNER_CENTER_X[handId], Hand.OWNER_CENTER_Y[handId]));
+        tableCard.setPos(new Position(Hand.CENTER_POS_X[handId], Hand.CENTER_POS_Y[handId]));
     }
 
     private int getCardsHandId(TableCard tableCard) {
