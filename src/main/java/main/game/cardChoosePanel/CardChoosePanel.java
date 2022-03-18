@@ -14,6 +14,7 @@ import main.game.buttons.CardAmountChangeButton;
 import main.game.table.GameManager;
 import main.game.table.Table;
 import main.game.table.card.CardColor;
+import main.game.table.card.CardData;
 import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
@@ -136,10 +137,8 @@ public class CardChoosePanel extends GameObject implements Scene
 
     private ChoiceCard initializeCard(int playerId, int cardId)
     {
-        CardColor color = CardColor.values()[cardId % 4];
-        CardFigure figure = CardFigure.values()[cardId / 4];
         Position cardPos = new Position(getCardXPosInRow(cardId),ChoiceCard.DEFAULT_HEIGHT * playerId);
-        ChoiceCard card = new ChoiceCard(cardPos, this, figure, color);
+        ChoiceCard card = new ChoiceCard(cardPos, this, new CardData(cardId));
         children.add(card);
         return card;
     }

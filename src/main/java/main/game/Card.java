@@ -15,6 +15,7 @@ import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.table.card.CardColor;
+import main.game.table.card.CardData;
 import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
@@ -28,8 +29,7 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
     public static final int DEFAULT_HEIGHT = 120;
     public static final int DEFAULT_STATE_AMOUNT = 2;
 
-    protected CardFigure figure;
-    protected CardColor color;
+    protected CardData cardData;
     @Setter
     protected boolean active;
     @Setter
@@ -39,11 +39,11 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
     protected int stateCount;
     protected LinkedList<Observer> observers;
 
-    public Card(Position pos, GameObject parent, CardFigure figure, CardColor color) {
+    public Card(Position pos, GameObject parent, CardData cardData) {
         super(pos, new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), parent);
         this.observers = new LinkedList<>();
         Input.getInput().attach(this);
-        initializeVariables(figure, color);
+        initializeVariables(cardData);
         initializeSpriteList();
     }
 
@@ -98,10 +98,6 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
         hovered = false;
     }
 
-    public int getCardId() {
-        return color.ordinal() * GameConstants.FIGURE_COUNT + figure.ordinal();
-    }
-
     public void incState() {
         currentState = (currentState + 1) % stateCount;
     }
@@ -121,9 +117,20 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
 
     }
 
-    protected void initializeVariables(CardFigure figure, CardColor color) {
-        this.figure = figure;
-        this.color = color;
+    public CardColor getColor(){
+        return cardData.color;
+    }
+
+    public CardFigure getFigure(){
+        return cardData.figure;
+    }
+
+    public int getCardId(){
+        return cardData.getCardId();
+    }
+
+    protected void initializeVariables(CardData cardData) {
+        this.cardData = cardData;
         this.active = true;
         this.hovered = false;
         this.stateCount = DEFAULT_STATE_AMOUNT;
@@ -131,19 +138,23 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
     }
 
     private void initializeSpriteList() {
-        spriteList.add(new Rectangle(new Position(), dim, SILVER, color.getCardColor(), 1));
+        spriteList.add(new Rectangle(new Position(), dim, SILVER, cardData.getCardColor(), 1));
         initializeFigureTextSprites();
         initializeColorTextSprites();
     }
 
     private void initializeFigureTextSprites() {
-        spriteList.add(new Text(figure.getAsciiString(), getTopFigurePosition(), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
-        spriteList.add(new Text(figure.getAsciiString(), getBottomFigurePosition(), DEFAULT_FONT_SIZE, color.getCardColor(),1));
+        spriteList.add(new Text(cardData.getFigureAsciiString(), getTopFigurePosition(),
+                DEFAULT_FONT_SIZE, cardData.getCardColor(), 1));
+        spriteList.add(new Text(cardData.getFigureAsciiString(), getBottomFigurePosition(),
+                DEFAULT_FONT_SIZE, cardData.getCardColor(),1));
     }
 
     private void initializeColorTextSprites() {
-        spriteList.add(new Text(color.getAsciiString(), getTopColorPosition(), DEFAULT_FONT_SIZE, color.getCardColor(),1));
-        spriteList.add(new Text(color.getAsciiString(), getBottomColorPosition(), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
+        spriteList.add(new Text(cardData.getColorAsciiString(), getTopColorPosition(),
+                DEFAULT_FONT_SIZE, cardData.getCardColor(),1));
+        spriteList.add(new Text(cardData.getColorAsciiString(), getBottomColorPosition(),
+                DEFAULT_FONT_SIZE, cardData.getCardColor(), 1));
     }
 
     private Position getTopFigurePosition() {
@@ -165,4 +176,5 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
         int y = dim.getH() - DEFAULT_FONT_SIZE * 2 + 6;
         return new Position(x, y);
     }
+
 }

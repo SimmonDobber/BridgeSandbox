@@ -4,10 +4,8 @@ import lombok.Getter;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.game.GameConstants;
 import main.game.table.card.CardColor;
-import main.game.table.card.CardFigure;
-
+import main.game.table.card.CardData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,29 +19,23 @@ public class Hand extends GameObject
     @Getter
     private List<TableCard> cards;
 
-    public Hand(int[] id, int cardAmount, int playerId, GameObject parent)
-    {
+    public Hand(int[] id, int cardAmount, int playerId, GameObject parent) {
         super(new Position(POS_X[playerId], POS_Y[playerId]), new Dimensions(), parent);
         initializeCards(id, cardAmount);
     }
 
-    private void initializeCards(int[] id, int cardAmount)
-    {
+    private void initializeCards(int[] id, int cardAmount) {
         cards = new ArrayList<>();
-        for(int i = 0; i < cardAmount; i++)
-        {
-            CardFigure cardFigure = CardFigure.values()[id[i] % GameConstants.FIGURE_COUNT];
-            CardColor cardColor = CardColor.values()[id[i] / GameConstants.FIGURE_COUNT];
-            cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, cardFigure, cardColor));
+        for(int i = 0; i < cardAmount; i++) {
+            cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, new CardData(id[i])));
             children.add(cards.get(cards.size() - 1));
         }
     }
-    public void attachObserversToCards(Table table)
-    {
-        for(int i = 0; i < cards.size(); i++)
-        {
-            cards.get(i).attach(table.getGameManager());
-            cards.get(i).attach(table.getTextManager());
+
+    public void attachObserversToCards(Table table) {
+        for (TableCard card : cards) {
+            card.attach(table.getGameManager());
+            card.attach(table.getTextManager());
         }
     }
 
@@ -59,11 +51,9 @@ public class Hand extends GameObject
         }
     }
 
-    public boolean hasColor(CardColor c)
-    {
-        for(int i = 0; i < cards.size(); i++)
-        {
-            if(cards.get(i).getColor() == c)
+    public boolean hasColor(CardColor c) {
+        for (TableCard card : cards) {
+            if (card.getColor() == c)
                 return true;
         }
         return false;
