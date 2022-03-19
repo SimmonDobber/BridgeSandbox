@@ -50,13 +50,12 @@ public class CardChoosePanel extends GameObject implements Scene
             initializePlayerCards(i);
     }
 
-    private void initializeTextManager(){
+    private void initializeTextManager() {
         this.cardChoosePanelTextManager = new CardChoosePanelTextManager(gameManager, this);
         children.add(cardChoosePanelTextManager);
     }
 
-    private void initializeSprites()
-    {
+    private void initializeSprites() {
         spriteList.add(new Rectangle(new Position(), dim, GREEN, 1));
         spriteList.add(new Text("N;", new Position(16, 16), PLAYER_SIGNATURE_SIZE, GRAY, 1));
         spriteList.add(new Text("E;", new Position(30, 136), PLAYER_SIGNATURE_SIZE, GRAY, 1));
@@ -64,8 +63,7 @@ public class CardChoosePanel extends GameObject implements Scene
         spriteList.add(new Text("W;", new Position(6, 376), PLAYER_SIGNATURE_SIZE, GRAY, 1));
     }
 
-    private void initializeButtons()
-    {
+    private void initializeButtons() {
         initializeAcceptChoiceButton();
         initializeCardAmountChangeButton();
     }
@@ -84,8 +82,7 @@ public class CardChoosePanel extends GameObject implements Scene
         cardAmountChangeButton.attach(cardChoosePanelTextManager);
     }
 
-    public void clearCardChoices()
-    {
+    public void clearCardChoices() {
         for(int i = 0; i < PLAYER_COUNT; i++) {
             for(int j = 0; j < DECK_SIZE; j++) {
                 card[i][j].setCurrentState(0);
@@ -125,8 +122,7 @@ public class CardChoosePanel extends GameObject implements Scene
         return gameManager.getCardAmount();
     }
 
-    private void initializePlayerCards(int playerId)
-    {
+    private void initializePlayerCards(int playerId) {
         for(int i = 0; i < COLOR_COUNT; i++) {
             for(int j = 0; j < FIGURE_COUNT; j++) {
                 int cardId = i + j * COLOR_COUNT;
@@ -135,16 +131,14 @@ public class CardChoosePanel extends GameObject implements Scene
         }
     }
 
-    private ChoiceCard initializeCard(int playerId, int cardId)
-    {
+    private ChoiceCard initializeCard(int playerId, int cardId) {
         Position cardPos = new Position(getCardXPosInRow(cardId),ChoiceCard.DEFAULT_HEIGHT * playerId);
         ChoiceCard card = new ChoiceCard(cardPos, this, new CardData(cardId));
         children.add(card);
         return card;
     }
 
-    private int getCardXPosInRow(int cardId)
-    {
+    private int getCardXPosInRow(int cardId) {
         int figureId = cardId / COLOR_COUNT;
         int colorId = cardId % COLOR_COUNT;
         return CARD_ROW_OFFSET + (colorId * FIGURE_COUNT + figureId) * CARD_SPACE;

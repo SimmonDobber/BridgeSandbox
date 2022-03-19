@@ -1,5 +1,8 @@
 package main.game.table.card;
 
+import java.util.Objects;
+
+import static main.game.GameConstants.FIGURE_COUNT;
 import static main.game.GameConstants.PLAYER_COUNT;
 
 public class CardData
@@ -18,8 +21,8 @@ public class CardData
     }
 
     public CardData(int cardId){
-        this.figure = CardFigure.values()[cardId / PLAYER_COUNT];
-        this.color = CardColor.values()[cardId % PLAYER_COUNT];
+        this.figure = CardFigure.values()[cardId % FIGURE_COUNT];
+        this.color = CardColor.values()[cardId / FIGURE_COUNT];
     }
 
     public int getCardId(){
@@ -44,5 +47,14 @@ public class CardData
 
     public String getColorAsciiString(){
         return color.getAsciiString();
+    }
+
+    public boolean equals(CardData cardData) {
+        return figure == cardData.figure && color == cardData.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(figure, color);
     }
 }

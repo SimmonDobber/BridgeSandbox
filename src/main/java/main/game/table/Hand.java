@@ -7,6 +7,7 @@ import main.engine.structures.gameObject.Position;
 import main.game.table.card.CardColor;
 import main.game.table.card.CardData;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Hand extends GameObject
@@ -24,19 +25,18 @@ public class Hand extends GameObject
         initializeCards(id, cardAmount);
     }
 
-    private void initializeCards(int[] id, int cardAmount) {
-        cards = new ArrayList<>();
-        for(int i = 0; i < cardAmount; i++) {
-            cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, new CardData(id[i])));
-            children.add(cards.get(cards.size() - 1));
-        }
-    }
-
     public void attachObserversToCards(Table table) {
         for (TableCard card : cards) {
             card.attach(table.getGameManager());
             card.attach(table.getTextManager());
         }
+    }
+
+    public List<CardData> getCardsData(){
+        List<CardData> cardsData = new LinkedList<>();
+        for(TableCard card : cards)
+            cardsData.add(card.getCardData());
+        return cardsData;
     }
 
     public void removeCard(TableCard card) {
@@ -45,17 +45,25 @@ public class Hand extends GameObject
         repositionCards();
     }
 
-    private void repositionCards() {
-        for (int i = 0; i < cards.size(); i++) {
-            cards.get(i).getPos().setX(pos.getX() + i * Hand.CARD_SPACE);
-        }
-    }
-
     public boolean hasColor(CardColor c) {
         for (TableCard card : cards) {
             if (card.getColor() == c)
                 return true;
         }
         return false;
+    }
+
+    private void initializeCards(int[] id, int cardAmount) {
+        cards = new ArrayList<>();
+        for(int i = 0; i < cardAmount; i++) {
+            cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, new CardData(id[i])));
+            children.add(cards.get(cards.size() - 1));
+        }
+    }
+
+    private void repositionCards() {
+        for (int i = 0; i < cards.size(); i++) {
+            cards.get(i).getPos().setX(pos.getX() + i * Hand.CARD_SPACE);
+        }
     }
 }
