@@ -26,7 +26,7 @@ public class SolverButton extends Button
         super(new Position(DEFAULT_SOLVER_BUTTON_X, DEFAULT_SOLVER_BUTTON_Y),
                 new Dimensions(DEFAULT_SOLVER_BUTTON_WIDTH, DEFAULT_SOLVER_BUTTON_HEIGHT), parent);
         initializeSpriteList();
-        active = false;
+        active = true;
     }
 
     private void initializeSpriteList() {

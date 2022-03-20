@@ -77,6 +77,7 @@ public class GameManager extends GameObject implements Observer
 
     public void initializeGame() {
         resetVariables();
+        resetBestMoveTable();
         dealRandom();
         manageActivity();
     }
@@ -100,6 +101,7 @@ public class GameManager extends GameObject implements Observer
 
     private void initializeGame(List<Integer> cardsId) {
         resetVariables();
+        resetBestMoveTable();
         dealSetCards(cardsId);
         manageActivity();
     }
@@ -109,6 +111,10 @@ public class GameManager extends GameObject implements Observer
         chosenCards = new TableCard[PLAYER_COUNT];
         lastWinner = PlayerSide.N;
         currentPlayer = PlayerSide.N;
+    }
+
+    private void resetBestMoveTable(){
+        ((Table)(parent)).clearBestMovesTable();
     }
 
     private void dealRandom() {

@@ -32,14 +32,18 @@ public class BestMovesTableField extends GameObject
         spriteList.add(new Text(text, new Position(2, 2), DEFAULT_FONT_SIZE, GRAY, 1));
     }
 
-    public void spriteReload(int cardId){
+    public void spriteReload(int cardId, boolean winner){
         removeSprites();
-        addFieldBackgroundSprite();
+        addFieldBackgroundSprite(winner);
         addCardSignatureTexts(cardId);
     }
 
-    private void addFieldBackgroundSprite(){
-        spriteList.add(new Rectangle(new Position(), dim, CYAN, BROWN, 1));
+    public void removeSprites(){
+        spriteList.clear();
+    }
+
+    private void addFieldBackgroundSprite(boolean winner){
+        spriteList.add(new Rectangle(new Position(), dim, (winner ? TEAL : CYAN), BROWN, 1));
     }
 
     private void addCardSignatureTexts(int cardId){
@@ -55,9 +59,5 @@ public class BestMovesTableField extends GameObject
     private void addCardSignatureColor(int cardId){
         CardColor color = CardColor.values()[cardId % COLOR_COUNT];
         spriteList.add(new Text(color.getAsciiString(), new Position(22, 4), DEFAULT_FONT_SIZE, color.getCardColor(), 1));
-    }
-
-    private void removeSprites(){
-        spriteList.clear();
     }
 }

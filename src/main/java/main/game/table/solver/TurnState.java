@@ -15,8 +15,14 @@ public class TurnState
 
     public TurnState(CardData[] cardData, PlayerSide currentPlayer, PlayerSide lastWinner, CardColor atu){
         TurnState.atu = atu;
+        this.currentPlayer = currentPlayer;
         this.lastWinner = lastWinner;
-        this.currentPlayer = lastWinner;
+        this.cardData = cardData;
+    }
+
+    public TurnState(CardData[] cardData, PlayerSide currentPlayer, PlayerSide lastWinner){
+        this.currentPlayer = currentPlayer;
+        this.lastWinner = lastWinner;
         this.cardData = cardData;
     }
 

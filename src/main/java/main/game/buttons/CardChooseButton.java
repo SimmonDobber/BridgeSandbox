@@ -9,7 +9,7 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
-import main.game.cardChoosePanel.CardChoosePanel;
+import main.game.cardChoosePanel.CardChoicePanel;
 
 import static main.game.GameConstants.*;
 
@@ -30,7 +30,7 @@ public class CardChooseButton extends Button implements Observable
     @Override
     public void onClick() {
         notifyObservers();
-        ((CardChoosePanel)(ProgramContainer.getProgramContainer().getCardChoosePanel())).reloadTextSprites();
+        ((CardChoicePanel)(ProgramContainer.getProgramContainer().getCardChoosePanel())).reloadTextSprites();
     }
 
     @Override

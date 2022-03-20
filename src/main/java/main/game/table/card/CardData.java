@@ -1,9 +1,6 @@
 package main.game.table.card;
 
-import java.util.Objects;
-
-import static main.game.GameConstants.FIGURE_COUNT;
-import static main.game.GameConstants.PLAYER_COUNT;
+import static main.game.GameConstants.*;
 
 public class CardData
 {
@@ -20,21 +17,21 @@ public class CardData
         this.color = cardData.color;
     }
 
-    public CardData(int cardId){
-        this.figure = CardFigure.values()[cardId % FIGURE_COUNT];
-        this.color = CardColor.values()[cardId / FIGURE_COUNT];
+    public CardData(int cardId) {
+        this.figure = CardFigure.values()[cardId / COLOR_COUNT];
+        this.color = CardColor.values()[cardId % COLOR_COUNT];
     }
 
     public int getCardId(){
         int figureId = figure.ordinal();
         int colorId = color.ordinal();
-        return figureId * PLAYER_COUNT + colorId;
+        return figureId * COLOR_COUNT + colorId;
     }
 
     public static int getCardId(CardFigure figure, CardColor color){
         int figureId = figure.ordinal();
         int colorId = color.ordinal();
-        return figureId * PLAYER_COUNT + colorId;
+        return figureId * COLOR_COUNT + colorId;
     }
 
     public int getCardColor(){
@@ -53,8 +50,4 @@ public class CardData
         return figure == cardData.figure && color == cardData.color;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(figure, color);
-    }
 }

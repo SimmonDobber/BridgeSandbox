@@ -9,20 +9,15 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.engine.structures.observer.Observer;
 import main.game.buttons.CardAmountChangeButton;
 import main.game.table.GameManager;
-import main.game.table.Table;
-import main.game.table.card.CardColor;
 import main.game.table.card.CardData;
-import main.game.table.card.CardFigure;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import static main.game.GameConstants.*;
 
-public class CardChoosePanel extends GameObject implements Scene
+public class CardChoicePanel extends GameObject implements Scene
 {
     private static final int CARD_SPACE = 20;
     private static final int CARD_ROW_OFFSET = 96;
@@ -32,10 +27,10 @@ public class CardChoosePanel extends GameObject implements Scene
     private AcceptChoiceButton acceptChoiceButton;
     private CardAmountChangeButton cardAmountChangeButton;
     @Getter
-    private CardChoosePanelTextManager cardChoosePanelTextManager;
+    private CardChoicePanelTextManager cardChoosePanelTextManager;
     private GameManager gameManager;
 
-    public CardChoosePanel(GameManager gameManager) {
+    public CardChoicePanel(GameManager gameManager) {
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         this.gameManager = gameManager;
         initializeTextManager();
@@ -51,7 +46,7 @@ public class CardChoosePanel extends GameObject implements Scene
     }
 
     private void initializeTextManager() {
-        this.cardChoosePanelTextManager = new CardChoosePanelTextManager(gameManager, this);
+        this.cardChoosePanelTextManager = new CardChoicePanelTextManager(gameManager, this);
         children.add(cardChoosePanelTextManager);
     }
 
@@ -106,14 +101,18 @@ public class CardChoosePanel extends GameObject implements Scene
         return cards;
     }
 
-    public LinkedList<Integer>[] groupChosenCardsByPlayer() {
+    public LinkedList<Integer>[] getGroupedCardsByPlayer() {
         LinkedList[] cards = new LinkedList[PLAYER_COUNT];
-        for(int i = 0; i < PLAYER_COUNT; i++) {
-            cards[i] = new LinkedList<Integer>();
-            for(int j = 0; j < DECK_SIZE; j++) {
-                if(card[i][j].getCurrentState() == 1)
-                    cards[i].add(card[i][j].getCardId());
-            }
+        for(int i = 0; i < PLAYER_COUNT; i++)
+            cards[i] = getPlayersChosenCards(i);
+        return cards;
+    }
+
+    private LinkedList<Integer> getPlayersChosenCards(int playerId){
+        LinkedList<Integer> cards = new LinkedList<>();
+        for(int j = 0; j < DECK_SIZE; j++) {
+            if(card[playerId][j].getCurrentState() == 1)
+                cards.add(card[playerId][j].getCardId());
         }
         return cards;
     }

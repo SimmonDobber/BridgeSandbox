@@ -29,6 +29,7 @@ public class Solver implements Observer
 
     @Override
     public void update(Observable o, Object arg) {
+        bestMovesTable.clearCardSignatureFields();
         run();
     }
 
@@ -36,12 +37,16 @@ public class Solver implements Observer
         GameState initialGameState = new GameState(getCardDataFromTable(), getCurrentTableTurnState(),
                 gameManager.getCardAmount(), gameManager.getAtu());
         Feedback outcome = makeMove(initialGameState);
-        System.out.println(outcome.outcome + " " + GameState.totalMoves);
-        /*for(CardData card : outcome.moveHistory)
-            System.out.println(card.figure + " " + card.color);*/
+        showFeedback(outcome);
     }
 
-    Feedback makeMove(GameState gameState){
+    private void showFeedback(Feedback outcome){
+        List<CardData> fullMoveHistory = outcome.getFullMoveHistory(getCurrentTableTurnState());
+        List<Integer> lastWinnersIds = outcome.getLastWinnersIds(getCurrentTableTurnState());
+        bestMovesTable.updateCardSignatureFields(fullMoveHistory, lastWinnersIds);
+    }
+
+    private Feedback makeMove(GameState gameState){
         GameState.totalMoves++;
         if(gameState.playerHands[gameState.getCurrentPlayerId()].isEmpty())
             return new Feedback(gameState.takenNS);

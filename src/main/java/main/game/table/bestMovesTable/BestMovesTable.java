@@ -5,7 +5,9 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.game.table.PlayerSide;
+import main.game.table.card.CardData;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static main.game.GameConstants.*;
@@ -26,13 +28,24 @@ public class BestMovesTable extends GameObject
         initializeSprites();
     }
 
-    public void updateCardSignatureFields(List<Integer> cardIds){
-        for(int i = 0; i < DECK_SIZE; i++){
-            if(i < cardIds.size() && cardIds.get(i) != null)
-                cardSignatureFields[i].spriteReload(cardIds.get(i));
-            else
-                cardSignatureFields[i].spriteReload(null);
+    public void updateCardSignatureFields(List<CardData> cardIds, List<Integer> lastWinnersIds){
+        for(int i = 0; i < lastWinnersIds.size() - 1; i++) {
+            for (int j = 0; j < PLAYER_COUNT; j++) {
+                updateCardSignatureField(cardIds, lastWinnersIds, i, j);
+            }
         }
+    }
+
+    public void clearCardSignatureFields(){
+        for(int i = 0; i < DECK_SIZE; i++)
+            cardSignatureFields[i].removeSprites();
+    }
+
+    private void updateCardSignatureField(List<CardData> cardIds, List<Integer> lastWinnersIds, int turnNumber, int playerInTurnNumber){
+        int cardSignatureFieldId = getCardSignatureFieldId(turnNumber, playerInTurnNumber, lastWinnersIds);
+        int cardId = cardIds.get(turnNumber * PLAYER_COUNT + playerInTurnNumber).getCardId();
+        boolean fieldBelongsToWinner = isFieldBelongingToWinner(turnNumber, playerInTurnNumber, lastWinnersIds);
+        cardSignatureFields[cardSignatureFieldId].spriteReload(cardId, fieldBelongsToWinner);
     }
 
     private void initializeSprites(){
@@ -46,7 +59,8 @@ public class BestMovesTable extends GameObject
     }
 
     private void initializePlayerTagField(int playerId){
-        playerTagFields[playerId] = new BestMovesTableField(getPlayerTagPosition(playerId), this, getPlayerTagString(playerId));
+        playerTagFields[playerId] =
+                new BestMovesTableField(getPlayerTagPosition(playerId), this, getPlayerTagString(playerId));
         children.add(playerTagFields[playerId]);
     }
 
@@ -74,5 +88,15 @@ public class BestMovesTable extends GameObject
 
     private String getPlayerTagString(int playerId){
         return " " + PlayerSide.values()[playerId].getAsciiString();
+    }
+
+    private boolean isFieldBelongingToWinner(int turnNumber, int playerInTurnNumber, List<Integer> lastWinnersIds){
+        int lastWinnerId = lastWinnersIds.get(turnNumber);
+        int winnerId = lastWinnersIds.get(turnNumber + 1);
+        return (lastWinnerId + playerInTurnNumber) % PLAYER_COUNT == winnerId;
+    }
+
+    private int getCardSignatureFieldId(int turnNumber, int playerInTurnNumber, List<Integer> previousWinnersIds){
+        return turnNumber * PLAYER_COUNT + (previousWinnersIds.get(turnNumber) + playerInTurnNumber) % PLAYER_COUNT;
     }
 }

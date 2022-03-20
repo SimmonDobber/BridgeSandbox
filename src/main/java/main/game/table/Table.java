@@ -26,12 +26,15 @@ public class Table extends GameObject implements Scene
         super(new Position(), new Dimensions(Window.WIDTH, Window.HEIGHT), null);
         initializeTextManager();
         initializeSpriteList();
-        initializeGameManager();
         initializeBestMovesTable();
+        initializeGameManager();
         initializeSolver();
-
         initializeButtonManager();
         startGame();
+    }
+
+    public void clearBestMovesTable(){
+        bestMovesTable.clearCardSignatureFields();
     }
 
     public int getCardAmount(){

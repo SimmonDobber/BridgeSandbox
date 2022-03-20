@@ -9,8 +9,6 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -56,8 +54,8 @@ public class AcceptChoiceButton extends Button
     @Override
     public void notifyObservers() {
         for(int i = 0; i < observers.size(); i++)
-            observers.get(i).update(this, ((CardChoosePanel)(parent)).groupChosenCards());
-        ((CardChoosePanel)(parent)).clearCardChoices();
+            observers.get(i).update(this, ((CardChoicePanel)(parent)).groupChosenCards());
+        ((CardChoicePanel)(parent)).clearCardChoices();
     }
 
     public void update(Observable o, Object arg)
@@ -85,14 +83,14 @@ public class AcceptChoiceButton extends Button
     }
 
     private boolean areCardProperlyChosen(){
-        LinkedList<Integer>[] playerCards = ((CardChoosePanel)(parent)).groupChosenCardsByPlayer();
-        LinkedList<Integer> groupedCards = ((CardChoosePanel)(parent)).groupChosenCards();
+        LinkedList<Integer>[] playerCards = ((CardChoicePanel)(parent)).getGroupedCardsByPlayer();
+        LinkedList<Integer> groupedCards = ((CardChoicePanel)(parent)).groupChosenCards();
         return isCorrectAmountOfCardsChosen(playerCards) && areChosenCardsUnique(groupedCards)
                 && areChosenCardsProperlyDistributed(playerCards);
     }
 
     private boolean isCorrectAmountOfCardsChosen(LinkedList<Integer>[] cards){
-        int cardAmount = ((CardChoosePanel)(parent)).getCardAmount();
+        int cardAmount = ((CardChoicePanel)(parent)).getCardAmount();
         return (cardAmount == cards[0].size());
     }
 

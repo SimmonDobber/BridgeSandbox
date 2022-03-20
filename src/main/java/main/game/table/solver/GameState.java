@@ -9,7 +9,6 @@ import java.util.List;
 
 import static main.game.GameConstants.PLAYER_COUNT;
 
-
 public class GameState
 {
     public static CardColor atu;

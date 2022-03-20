@@ -6,7 +6,7 @@ import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
 import main.game.cardChoosePanel.AcceptChoiceButton;
-import main.game.cardChoosePanel.CardChoosePanel;
+import main.game.cardChoosePanel.CardChoicePanel;
 import main.game.contractChoosePanel.ContractChooseButton;
 import main.game.contractChoosePanel.ContractChoosePanel;
 import main.game.table.Table;
@@ -30,7 +30,7 @@ public class ProgramContainer implements Observer
     public void initializeScenes() {
         table = new Table();
         contractChoosePanel = new ContractChoosePanel(((Table)(table)).getGameManager(), new Position(409, 164));
-        cardChoosePanel = new CardChoosePanel(((Table)(table)).getGameManager());
+        cardChoosePanel = new CardChoicePanel(((Table)(table)).getGameManager());
         switchSceneToTable();
     }
 

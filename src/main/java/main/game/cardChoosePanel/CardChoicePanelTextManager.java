@@ -9,10 +9,10 @@ import main.game.table.GameManager;
 import static main.game.GameConstants.DEFAULT_FONT_SIZE;
 import static main.game.GameConstants.GRAY;
 
-public class CardChoosePanelTextManager extends TextManager
+public class CardChoicePanelTextManager extends TextManager
 {
     GameManager gameManager;
-    public CardChoosePanelTextManager(GameManager gameManager, GameObject parent) {
+    public CardChoicePanelTextManager(GameManager gameManager, GameObject parent) {
         super(parent);
         this.gameManager = gameManager;
         loadTexts();
