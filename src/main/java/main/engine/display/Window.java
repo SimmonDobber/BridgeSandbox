@@ -15,7 +15,6 @@ public class Window
     public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
-    public static final int HEADER_HEIGHT = 37;
     public static double widthScale = 1;
     public static double heightScale = 1;
     private static int scaledWidth = (int)(WIDTH * SCALE);
@@ -82,12 +81,12 @@ public class Window
     }
 
     private void rescale(){
-        if(frame.getWidth() != scaledWidth){
-            scaledWidth = frame.getWidth();
+        if(frame.getContentPane().getWidth() != scaledWidth){
+            scaledWidth = frame.getContentPane().getWidth();
             widthScale = (double)scaledWidth / WIDTH;
         }
-        if(frame.getHeight() != scaledHeight + HEADER_HEIGHT){
-            scaledHeight = frame.getHeight() - HEADER_HEIGHT;
+        if(frame.getContentPane().getHeight() != scaledHeight){
+            scaledHeight = frame.getContentPane().getHeight();
             heightScale = (double)scaledHeight / HEIGHT;
         }
     }
