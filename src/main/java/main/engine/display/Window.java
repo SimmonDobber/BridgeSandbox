@@ -12,9 +12,16 @@ import java.awt.image.BufferedImage;
 public class Window
 {
     private static Window WINDOW = null;
+    public static final double SCALE = 1.0;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
+    public static final int HEADER_HEIGHT = 37;
+    public static double widthScale = 1;
+    public static double heightScale = 1;
+    private static int scaledWidth = (int)(WIDTH * SCALE);
+    private static int scaledHeight = (int)(HEIGHT * SCALE);
     private BufferStrategy bs;
+    private JFrame frame;
     @Getter private Canvas canvas;
     @Getter private BufferedImage image;
     @Getter private Graphics2D g;
@@ -44,25 +51,26 @@ public class Window
 
     private void initializeCanvasSize(Canvas canvas)
     {
-        Dimension s = new Dimension(WIDTH, HEIGHT);
+        Dimension s = new Dimension(scaledWidth, scaledHeight);
         canvas.setPreferredSize(s);
         canvas.setMaximumSize(s);
         canvas.setMinimumSize(s);
     }
 
     private void initializeFrame() {
-        JFrame frame = new JFrame("");
+        frame = new JFrame("");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(canvas, BorderLayout.CENTER);
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setVisible(true);
     }
 
     public void render() {
-        g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
+        rescale();
+        g.drawImage(image, 0, 0, scaledWidth, scaledHeight, null);
         bs.show();
     }
 
@@ -71,5 +79,16 @@ public class Window
         if(WINDOW == null)
             WINDOW = new Window();
         return WINDOW;
+    }
+
+    private void rescale(){
+        if(frame.getWidth() != scaledWidth){
+            scaledWidth = frame.getWidth();
+            widthScale = (double)scaledWidth / WIDTH;
+        }
+        if(frame.getHeight() != scaledHeight + HEADER_HEIGHT){
+            scaledHeight = frame.getHeight() - HEADER_HEIGHT;
+            heightScale = (double)scaledHeight / HEIGHT;
+        }
     }
 }
