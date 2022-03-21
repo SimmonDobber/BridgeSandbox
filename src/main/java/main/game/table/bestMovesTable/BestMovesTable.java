@@ -5,9 +5,8 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.game.table.PlayerSide;
-import main.game.table.card.CardData;
+import main.game.card.CardData;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static main.game.GameConstants.*;

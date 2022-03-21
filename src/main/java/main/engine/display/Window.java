@@ -14,18 +14,12 @@ public class Window
     private static Window WINDOW = null;
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 675;
-    @Getter
-    private Canvas canvas;
     private BufferStrategy bs;
-    @Getter
-    private BufferedImage image;
-    @Getter
-    private Graphics2D g;
-    @Getter
-    @Setter
-    private Renderer renderer;
-    @Getter
-    private Camera camera;
+    @Getter private Canvas canvas;
+    @Getter private BufferedImage image;
+    @Getter private Graphics2D g;
+    @Getter @Setter private Renderer renderer;
+    @Getter private Camera camera;
 
     private Window() {
         initializeWindowObjects();

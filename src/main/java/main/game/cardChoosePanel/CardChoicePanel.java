@@ -11,7 +11,7 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.game.buttons.CardAmountChangeButton;
 import main.game.table.GameManager;
-import main.game.table.card.CardData;
+import main.game.card.CardData;
 
 import java.util.LinkedList;
 
@@ -22,12 +22,10 @@ public class CardChoicePanel extends GameObject implements Scene
     private static final int CARD_SPACE = 20;
     private static final int CARD_ROW_OFFSET = 96;
     private static final int PLAYER_SIGNATURE_SIZE = 80;
-    @Getter
-    private ChoiceCard[][] card;
+    @Getter private ChoiceCard[][] card;
+    @Getter private CardChoicePanelTextManager cardChoosePanelTextManager;
     private AcceptChoiceButton acceptChoiceButton;
     private CardAmountChangeButton cardAmountChangeButton;
-    @Getter
-    private CardChoicePanelTextManager cardChoosePanelTextManager;
     private GameManager gameManager;
 
     public CardChoicePanel(GameManager gameManager) {

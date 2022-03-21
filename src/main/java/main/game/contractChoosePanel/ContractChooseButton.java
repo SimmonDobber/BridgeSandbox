@@ -8,7 +8,7 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
-import main.game.table.card.CardColor;
+import main.game.card.CardColor;
 
 import java.util.LinkedList;
 
@@ -19,8 +19,7 @@ public class ContractChooseButton extends Button
     public final static int DEFAULT_WIDTH = 75;
     public final static int DEFAULT_HEIGHT = 49;
     private LinkedList<Observer> observers;
-    @Getter
-    private int contractId;
+    @Getter private int contractId;
     public ContractChooseButton(Position pos, GameObject parent, int contractId) {
         super(pos,
                 new Dimensions(DEFAULT_WIDTH, DEFAULT_HEIGHT), parent);

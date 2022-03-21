@@ -11,25 +11,19 @@ import main.game.buttons.CardAmountChangeButton;
 import main.game.buttons.ShuffleButton;
 import main.game.cardChoosePanel.AcceptChoiceButton;
 import main.game.contractChoosePanel.ContractChooseButton;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
+import main.game.card.CardColor;
+import main.game.card.CardData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static main.game.GameConstants.*;
 
 @Getter
 public class GameManager extends GameObject implements Observer
 {
-    @Getter
+    @Setter private int contractId;
+    @Setter private PlayerSide currentPlayer;
     private int cardAmount;
-    @Setter
-    private int contractId;
-    @Setter
-    private PlayerSide currentPlayer;
     private PlayerSide lastWinner;
     private int taken[];
     private Hand[] hand;
@@ -152,11 +146,11 @@ public class GameManager extends GameObject implements Observer
     }
 
     private Hand dealToHand(List<Integer> deck, int cardAmount, int playerId) {
-        int[] cardIds = new int[cardAmount];
+        Integer[] cardIds = new Integer[cardAmount];
         for (int j = 0; j < cardAmount; j++) {
             cardIds[j] = deck.get(playerId * cardAmount + j);
         }
-        Arrays.sort(cardIds);
+        Arrays.sort(cardIds, Comparator.comparingInt((Integer a) -> ((a % COLOR_COUNT) * FIGURE_COUNT) + a / COLOR_COUNT));
         return new Hand(cardIds, cardAmount, playerId, this);
     }
 

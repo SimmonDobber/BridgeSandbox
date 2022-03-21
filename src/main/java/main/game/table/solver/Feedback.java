@@ -1,8 +1,7 @@
 package main.game.table.solver;
 
-import main.game.Card;
 import main.game.table.PlayerSide;
-import main.game.table.card.CardData;
+import main.game.card.CardData;
 import java.util.LinkedList;
 import java.util.List;
 

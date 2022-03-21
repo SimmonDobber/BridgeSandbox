@@ -1,8 +1,8 @@
 package main.game.table.solver;
 
 import main.game.table.PlayerSide;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
+import main.game.card.CardColor;
+import main.game.card.CardData;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class GameState
 {
     public static CardColor atu;
     public static int initialCardAmount;
-    public static int totalMoves;
+    public static int totalCases;
     public TurnState turnState;
     public List<CardData>[] playerHands;
     public int takenNS;
@@ -21,7 +21,7 @@ public class GameState
     public GameState(List<CardData>[] playerHands, TurnState turnState, int initialCardAmount, CardColor atu){
         GameState.initialCardAmount = initialCardAmount;
         GameState.atu = atu;
-        GameState.totalMoves = 0;
+        GameState.totalCases = 0;
         this.turnState = turnState;
         this.playerHands = playerHands;
         this.takenNS = 0;

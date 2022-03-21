@@ -1,4 +1,4 @@
-package main.game;
+package main.game.card;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +14,9 @@ import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
-import main.game.table.card.CardFigure;
+import main.game.card.CardColor;
+import main.game.card.CardData;
+import main.game.card.CardFigure;
 
 import java.util.LinkedList;
 
@@ -28,14 +28,10 @@ public abstract class Card extends GameObject implements Clickable, Activatable,
     public static final int DEFAULT_WIDTH = 85;
     public static final int DEFAULT_HEIGHT = 120;
     public static final int DEFAULT_STATE_AMOUNT = 2;
-
+    @Setter protected boolean active;
+    @Setter protected boolean hovered;
+    @Setter protected int currentState;
     protected CardData cardData;
-    @Setter
-    protected boolean active;
-    @Setter
-    protected boolean hovered;
-    @Setter
-    protected int currentState;
     protected int stateCount;
     protected LinkedList<Observer> observers;
 

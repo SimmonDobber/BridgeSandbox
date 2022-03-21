@@ -4,8 +4,8 @@ import lombok.Getter;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
+import main.game.card.CardColor;
+import main.game.card.CardData;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +17,9 @@ public class Hand extends GameObject
     private static final int[] POS_Y = {24, 240, 531, 240};
     public static final int[] CENTER_POS_X = {556, 676, 556, 436};
     public static final int[] CENTER_POS_Y = {192, 277, 363, 277};
-    @Getter
-    private List<TableCard> cards;
+    @Getter private List<TableCard> cards;
 
-    public Hand(int[] id, int cardAmount, int playerId, GameObject parent) {
+    public Hand(Integer[] id, int cardAmount, int playerId, GameObject parent) {
         super(new Position(POS_X[playerId], POS_Y[playerId]), new Dimensions(), parent);
         initializeCards(id, cardAmount);
     }
@@ -53,7 +52,7 @@ public class Hand extends GameObject
         return false;
     }
 
-    private void initializeCards(int[] id, int cardAmount) {
+    private void initializeCards(Integer[] id, int cardAmount) {
         cards = new ArrayList<>();
         for(int i = 0; i < cardAmount; i++) {
             cards.add(new TableCard(new Position(pos.getX() + i * CARD_SPACE, pos.getY()), this, new CardData(id[i])));

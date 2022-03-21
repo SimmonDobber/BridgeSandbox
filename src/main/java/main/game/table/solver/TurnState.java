@@ -1,8 +1,8 @@
 package main.game.table.solver;
 
 import main.game.table.PlayerSide;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
+import main.game.card.CardColor;
+import main.game.card.CardData;
 
 import static main.game.GameConstants.PLAYER_COUNT;
 

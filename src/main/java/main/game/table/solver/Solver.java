@@ -2,13 +2,12 @@ package main.game.table.solver;
 
 import main.engine.structures.observer.Observable;
 import main.engine.structures.observer.Observer;
-import main.game.Card;
 import main.game.table.GameManager;
 import main.game.table.PlayerSide;
 import main.game.table.bestMovesTable.BestMovesTable;
 import main.game.table.Table;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardData;
+import main.game.card.CardColor;
+import main.game.card.CardData;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +36,7 @@ public class Solver implements Observer
         GameState initialGameState = new GameState(getCardDataFromTable(), getCurrentTableTurnState(),
                 gameManager.getCardAmount(), gameManager.getAtu());
         Feedback outcome = makeMove(initialGameState);
+        System.out.println(GameState.totalCases);
         showFeedback(outcome);
     }
 
@@ -47,9 +47,10 @@ public class Solver implements Observer
     }
 
     private Feedback makeMove(GameState gameState){
-        GameState.totalMoves++;
-        if(gameState.playerHands[gameState.getCurrentPlayerId()].isEmpty())
+        if(gameState.playerHands[gameState.getCurrentPlayerId()].isEmpty()){
+            GameState.totalCases++;
             return new Feedback(gameState.takenNS);
+        }
         return getBestMoveOutcome(gameState);
     }
 

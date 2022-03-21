@@ -6,12 +6,9 @@ import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.Position;
 
 public class FontImage extends Image {
-    @Getter
-    private static final int SYMBOL_BEGINNING_MARK_COLOR = 0xFF0000FF;
-    @Getter
-    private static final int SYMBOL_END_MARK_COLOR = 0xFFFFFF00;
-    @Getter
-    private int currentPixelLocationPointer;
+    public static final int SYMBOL_BEGINNING_MARK_COLOR = 0xFF0000FF;
+    public static final int SYMBOL_END_MARK_COLOR = 0xFFFFFF00;
+    @Getter private int currentPixelLocationPointer;
     private final int symbolAmount;
 
     public FontImage(String path, Dimensions dim, int symbolAmount) {

@@ -5,8 +5,8 @@ import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Dimensions;
 import main.engine.structures.gameObject.GameObject;
 import main.engine.structures.gameObject.Position;
-import main.game.table.card.CardColor;
-import main.game.table.card.CardFigure;
+import main.game.card.CardColor;
+import main.game.card.CardFigure;
 
 import static main.game.GameConstants.*;
 

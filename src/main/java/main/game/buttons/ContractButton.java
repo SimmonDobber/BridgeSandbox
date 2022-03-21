@@ -8,7 +8,7 @@ import main.engine.structures.drawable.Rectangle;
 import main.engine.structures.drawable.Text;
 import main.engine.structures.gameObject.Position;
 import main.engine.structures.observer.Observer;
-import main.game.table.card.CardColor;
+import main.game.card.CardColor;
 
 import static main.game.GameConstants.*;
 

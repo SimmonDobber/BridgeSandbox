@@ -17,12 +17,9 @@ public class ProgramContainer implements Observer
 {
     private static ProgramContainer PROGRAM_CONTAINER = null;
     private MainLoop mainLoop;
-    @Getter
-    private Scene table;
-    @Getter
-    private Scene contractChoosePanel;
-    @Getter
-    private Scene cardChoosePanel;
+    @Getter private Scene table;
+    @Getter private Scene contractChoosePanel;
+    @Getter private Scene cardChoosePanel;
     private ProgramContainer() {
         mainLoop = MainLoop.getMainLoop();
     }

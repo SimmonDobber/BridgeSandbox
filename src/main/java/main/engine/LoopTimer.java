@@ -8,18 +8,13 @@ public class LoopTimer
     private double prevTime;
     private double absoluteTime;
     private double unprocessedTime;
-    @Getter
-    private double passedTime;
-    @Getter
-    private double elapsedTime;
     private double frameTime;
     private double frames;
-    @Getter
-    private double fps;
-    @Getter
-    private boolean toUpdate;
-    @Getter
-    private boolean toRender;
+    @Getter private double passedTime;
+    @Getter private double elapsedTime;
+    @Getter private double fps;
+    @Getter private boolean toUpdate;
+    @Getter private boolean toRender;
 
     public LoopTimer(double updateCap)
     {

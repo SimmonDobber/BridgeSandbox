@@ -22,8 +22,7 @@ public class Renderer
     private final Camera camera;
     private final Font font;
     private int[] p;
-    @Getter
-    private int[] pOwner;
+    @Getter private int[] pOwner;
 
     private Renderer(Window window) {
         dim = new Dimensions(Window.WIDTH, Window.HEIGHT);
